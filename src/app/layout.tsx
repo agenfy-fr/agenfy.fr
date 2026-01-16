@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agefy | Conseil & Intégration Technologique - Data, IA, Cloud",
+  title: "Agenfy | Conseil & Intégration Technologique - Data, IA, Cloud",
   description:
-    "Agefy accompagne les entreprises dans leur transformation digitale. Expertise en Data, Intelligence Artificielle, Infrastructure Cloud et Conseil stratégique.",
+    "Agenfy accompagne les entreprises dans leur transformation digitale. Expertise en Data, Intelligence Artificielle, Infrastructure Cloud et Conseil stratégique.",
   keywords: [
     "conseil",
     "intégration",
@@ -29,19 +29,19 @@ export const metadata: Metadata = {
     "consulting",
     "tech",
   ],
-  authors: [{ name: "Agefy" }],
+  authors: [{ name: "Agenfy" }],
   openGraph: {
-    title: "Agefy | Conseil & Intégration Technologique",
+    title: "Agenfy | Conseil & Intégration Technologique",
     description:
       "Transformez vos données en avantage concurrentiel. Data, IA, Cloud et Conseil.",
-    url: "https://agefy.com",
-    siteName: "Agefy",
+    url: "https://agenfy.fr",
+    siteName: "Agenfy",
     locale: "fr_FR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Agefy | Conseil & Intégration Technologique",
+    title: "Agenfy | Conseil & Intégration Technologique",
     description:
       "Transformez vos données en avantage concurrentiel. Data, IA, Cloud et Conseil.",
   },

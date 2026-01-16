@@ -53,7 +53,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-6">
               <Image 
                 src="/logo.svg" 
-                alt="Agefy" 
+                alt="Agenfy" 
                 width={140} 
                 height={45}
                 className="h-12 w-auto"
@@ -139,7 +139,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-muted-foreground text-sm">
-            © 2026 Agefy. Tous droits réservés.
+            © 2026 Agenfy. Tous droits réservés.
           </p>
           <p className="text-muted-foreground text-sm">
             Conçu avec passion à Paris 🇫🇷

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Database, Brain, Cloud, Users, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Nos Services | Agefy - Data, IA, Cloud & Conseil",
+  title: "Nos Services | Agenfy - Data, IA, Cloud & Conseil",
   description: "Découvrez nos 4 piliers d'expertise : Data, Intelligence Artificielle, Infrastructure Cloud et Conseil stratégique pour votre transformation digitale.",
 };
 

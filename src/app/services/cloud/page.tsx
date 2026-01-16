@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Cloud, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Infrastructure & Cloud | Agefy - Cloud Native & DevOps",
+  title: "Infrastructure & Cloud | Agenfy - Cloud Native & DevOps",
   description: "Une infrastructure à la hauteur de vos ambitions. Architecture Cloud Native, Migration, DevOps, Kubernetes et sécurité.",
 };
 

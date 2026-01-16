@@ -50,7 +50,7 @@ export function Header() {
           <Link href="/" className="flex items-center gap-2">
             <Image 
               src="/logo.svg" 
-              alt="Agefy" 
+              alt="Agenfy" 
               width={160} 
               height={50}
               className="h-14 w-auto"

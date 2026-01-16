@@ -36,7 +36,7 @@ export function Hero() {
 
         {/* Subtitle */}
         <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-12 opacity-0 animate-fade-in-up stagger-2">
-          Agefy accompagne les entreprises ambitieuses dans leur transformation digitale. 
+          Agenfy accompagne les entreprises ambitieuses dans leur transformation digitale. 
           Data, IA, Cloud et Conseil : nous construisons ensemble les fondations technologiques de votre succès.
         </p>
 

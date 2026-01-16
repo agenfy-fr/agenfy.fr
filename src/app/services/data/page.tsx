@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Database, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Data | Agefy - Architecture Data & Analytics",
+  title: "Data | Agenfy - Architecture Data & Analytics",
   description: "Exploitez le plein potentiel de vos données. Architecture Lakehouse, pipelines ETL/ELT, Data Governance et Business Intelligence.",
 };
 

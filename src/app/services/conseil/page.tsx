@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Users, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Conseil | Agefy - Stratégie & Transformation Digitale",
+  title: "Conseil | Agenfy - Stratégie & Transformation Digitale",
   description: "Une vision stratégique pour vos décisions tech. Audit, roadmap technologique, accompagnement au changement et formation.",
 };
 

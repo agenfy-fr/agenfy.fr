@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Brain, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Intelligence Artificielle | Agefy - IA & Machine Learning",
+  title: "Intelligence Artificielle | Agenfy - IA & Machine Learning",
   description: "L'IA au service de votre performance. Machine Learning, LLM, IA Générative, Computer Vision et MLOps pour automatiser vos processus.",
 };
 
