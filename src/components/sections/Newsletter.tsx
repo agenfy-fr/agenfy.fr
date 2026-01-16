@@ -7,12 +7,38 @@ import { useState } from "react";
 export function Newsletter() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Intégrer Supabase ici
-    console.log("Newsletter signup:", email);
-    setSubmitted(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Une erreur est survenue');
+        setLoading(false);
+        return;
+      }
+
+      setSubmitted(true);
+      setEmail("");
+    } catch (err) {
+      setError('Erreur de connexion. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,12 +73,20 @@ export function Newsletter() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="votre@email.com"
                 required
-                className="w-full pl-12 pr-4 py-3 rounded-full bg-card border border-border focus:border-primary outline-none transition-colors"
+                disabled={loading}
+                className="w-full pl-12 pr-4 py-3 rounded-full bg-card border border-border focus:border-primary outline-none transition-colors disabled:opacity-50"
               />
             </div>
-            <Button type="submit" className="rounded-full px-8 gradient-btn border-0">
-              S&apos;abonner
+            <Button 
+              type="submit" 
+              disabled={loading}
+              className="rounded-full px-8 gradient-btn border-0"
+            >
+              {loading ? "Inscription..." : "S'abonner"}
             </Button>
+            {error && (
+              <p className="w-full text-center text-red-500 text-sm">{error}</p>
+            )}
           </form>
         ) : (
           <div className="bg-primary/10 border border-primary/30 rounded-2xl p-6 max-w-md mx-auto">
