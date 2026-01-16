@@ -58,9 +58,9 @@ export function Hero() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 pt-12 border-t border-border/30 opacity-0 animate-fade-in-up stagger-4">
           {[
-            { value: "10+", label: "Technologies maîtrisées" },
+            { value: "25+", label: "Technologies maîtrisées" },
             { value: "100%", label: "Engagement qualité" },
-            { value: "10+", label: "Experts passionnés" },
+            { value: "100%", label: "Solutions sur-mesure" },
             { value: "5 ans", label: "D'expérience terrain" },
           ].map((stat) => (
             <div key={stat.label} className="text-center group">

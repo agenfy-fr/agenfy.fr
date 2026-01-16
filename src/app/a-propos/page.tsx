@@ -36,10 +36,10 @@ const values = [
 ];
 
 const stats = [
-  { value: "10+", label: "Technologies maîtrisées" },
+  { value: "25+", label: "Technologies maîtrisées" },
   { value: "100%", label: "Engagement qualité" },
-  { value: "10+", label: "Experts disponibles" },
-  { value: "5+", label: "Années d'expérience cumulées" },
+  { value: "100%", label: "Solutions sur-mesure" },
+  { value: "5 ans", label: "D'expérience terrain" },
 ];
 
 const expertise = [
