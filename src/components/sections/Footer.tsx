@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
-import { Linkedin, Mail, Facebook } from "lucide-react";
+import { Linkedin, Mail, Github } from "lucide-react";
 
 // Custom X (Twitter) icon component
 const XIcon = ({ className }: { className?: string }) => (
@@ -37,9 +37,9 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Linkedin, href: "https://linkedin.com/company/agenfy", label: "LinkedIn" },
-  { icon: XIcon, href: "https://x.com/agenfy", label: "X (Twitter)" },
-  { icon: Facebook, href: "https://facebook.com/agenfy", label: "Facebook" },
+  { icon: Linkedin, href: "https://www.linkedin.com/company/agenfy-fr/", label: "LinkedIn" },
+  { icon: XIcon, href: "https://x.com/Agenfy_", label: "X (Twitter)" },
+  { icon: Github, href: "https://github.com/agenfy-fr", label: "GitHub" },
   { icon: Mail, href: "mailto:contact@agenfy.fr", label: "Email" },
 ];
 

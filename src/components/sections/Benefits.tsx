@@ -53,7 +53,7 @@ export function Benefits() {
 
         {/* Benefits grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {benefits.map((benefit, index) => (
+          {benefits.map((benefit) => (
             <Card
               key={benefit.title}
               className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 group"

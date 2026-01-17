@@ -68,7 +68,7 @@ export function Process() {
           <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent" />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {steps.map((step, index) => (
+            {steps.map((step) => (
               <Card
                 key={step.number}
                 className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300 group relative"
