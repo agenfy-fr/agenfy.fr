@@ -7,8 +7,17 @@ import Link from "next/link";
 import { ArrowRight, Quote } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Cas Clients | Agefy - Nos réalisations et témoignages",
-  description: "Découvrez nos réalisations et les témoignages de nos clients. Des résultats concrets en Data, IA et Cloud.",
+  title: "Cas Clients - Nos Réalisations et Témoignages",
+  description: "Découvrez nos réalisations et les témoignages de nos clients. Des résultats concrets en Data Engineering, Intelligence Artificielle et Infrastructure Cloud.",
+  alternates: {
+    canonical: "https://agenfy.fr/cas-clients",
+  },
+  openGraph: {
+    title: "Cas Clients - Nos Réalisations et Témoignages | Agenfy",
+    description: "Des résultats concrets en Data, IA et Cloud. Découvrez nos études de cas.",
+    url: "https://agenfy.fr/cas-clients",
+    type: "website",
+  },
 };
 
 const caseStudies = [

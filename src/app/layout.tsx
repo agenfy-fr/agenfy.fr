@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import {
+  OrganizationSchema,
+  WebsiteSchema,
+  LocalBusinessSchema,
+} from "@/components/schemas";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,40 +20,84 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agenfy | Conseil & Intégration Technologique - Data, IA, Cloud",
+  metadataBase: new URL("https://agenfy.fr"),
+  title: {
+    default: "Agenfy | Conseil & Intégration Technologique - Data, IA, Cloud",
+    template: "%s | Agenfy",
+  },
   description:
-    "Agenfy accompagne les entreprises dans leur transformation digitale. Expertise en Data, Intelligence Artificielle, Infrastructure Cloud et Conseil stratégique.",
+    "Agenfy accompagne les entreprises dans leur transformation digitale. Expertise en Data Engineering, Intelligence Artificielle, Infrastructure Cloud et Conseil stratégique. Cabinet de conseil tech à Paris.",
   keywords: [
-    "conseil",
-    "intégration",
-    "data",
+    "conseil data",
+    "data engineering",
     "intelligence artificielle",
     "IA",
-    "cloud",
+    "machine learning",
+    "cloud computing",
+    "AWS",
+    "GCP",
+    "Azure",
     "transformation digitale",
-    "consulting",
-    "tech",
+    "consulting tech",
+    "architecture data",
+    "RAG",
+    "LLM",
+    "MLOps",
+    "FinOps",
+    "cabinet conseil Paris",
   ],
-  authors: [{ name: "Agenfy" }],
+  authors: [{ name: "Agenfy", url: "https://agenfy.fr" }],
+  creator: "Agenfy",
+  publisher: "Agenfy",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
-    title: "Agenfy | Conseil & Intégration Technologique",
-    description:
-      "Transformez vos données en avantage concurrentiel. Data, IA, Cloud et Conseil.",
+    type: "website",
+    locale: "fr_FR",
     url: "https://agenfy.fr",
     siteName: "Agenfy",
-    locale: "fr_FR",
-    type: "website",
+    title: "Agenfy | Conseil & Intégration Technologique - Data, IA, Cloud",
+    description:
+      "Transformez vos données en avantage concurrentiel. Expertise en Data Engineering, Intelligence Artificielle et Infrastructure Cloud.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Agenfy - Conseil Data, IA & Cloud",
+        type: "image/jpeg",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    site: "@Agenfy_",
+    creator: "@Agenfy_",
     title: "Agenfy | Conseil & Intégration Technologique",
     description:
       "Transformez vos données en avantage concurrentiel. Data, IA, Cloud et Conseil.",
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
+  alternates: {
+    canonical: "https://agenfy.fr",
+  },
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -58,6 +107,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" suppressHydrationWarning>
+      <head>
+        <OrganizationSchema />
+        <WebsiteSchema />
+        <LocalBusinessSchema />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="theme-color" content="#3200F8" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

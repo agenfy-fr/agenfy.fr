@@ -8,8 +8,17 @@ import Image from "next/image";
 import { ArrowRight, Target, Heart, Lightbulb, Users, Zap, Shield, Code, Cpu } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "À propos | Agenfy - Notre vision et notre équipe",
-  description: "Découvrez Agenfy, notre mission, nos valeurs et l'équipe qui accompagne les entreprises dans leur transformation digitale par la Data, l'IA et le Cloud.",
+  title: "À propos - Notre Vision et Notre Équipe",
+  description: "Découvrez Agenfy, notre mission, nos valeurs et l'équipe qui accompagne les entreprises dans leur transformation digitale par la Data, l'IA et le Cloud. Cabinet conseil tech à Paris.",
+  alternates: {
+    canonical: "https://agenfy.fr/a-propos",
+  },
+  openGraph: {
+    title: "À propos - Notre Vision et Notre Équipe | Agenfy",
+    description: "Découvrez Agenfy, notre mission, nos valeurs et l'équipe d'experts Data, IA et Cloud.",
+    url: "https://agenfy.fr/a-propos",
+    type: "website",
+  },
 };
 
 const values = [
