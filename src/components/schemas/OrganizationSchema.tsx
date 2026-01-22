@@ -4,10 +4,10 @@ export function OrganizationSchema() {
     '@type': 'Organization',
     name: 'Agenfy',
     legalName: 'Hasfy SAS',
-    url: 'https://agenfy.fr',
-    logo: 'https://agenfy.fr/logo.svg',
+    url: 'https://www.agenfy.fr',
+    logo: 'https://www.agenfy.fr/logo.svg',
     description:
-      "Cabinet de conseil et d'intégration technologique spécialisé en Data Engineering, Intelligence Artificielle et Infrastructure Cloud",
+      "Cabinet de conseil tech spécialisé en Data Engineering, Intelligence Artificielle et Infrastructure Cloud",
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'FR',
@@ -94,15 +94,15 @@ export function WebsiteSchema() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Agenfy',
-    url: 'https://agenfy.fr',
+    url: 'https://www.agenfy.fr',
     description:
-      'Cabinet de conseil et intégration technologique - Data, IA, Cloud',
+      'Cabinet de conseil tech - Data, IA, Cloud',
     publisher: {
       '@type': 'Organization',
       name: 'Agenfy',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://agenfy.fr/logo.svg',
+        url: 'https://www.agenfy.fr/logo.svg',
       },
     },
     inLanguage: 'fr-FR',
@@ -110,7 +110,7 @@ export function WebsiteSchema() {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://agenfy.fr/blog?q={search_term_string}',
+        urlTemplate: 'https://www.agenfy.fr/blog?q={search_term_string}',
       },
       'query-input': 'required name=search_term_string',
     },
@@ -129,8 +129,8 @@ export function LocalBusinessSchema() {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
     name: 'Agenfy',
-    image: 'https://agenfy.fr/logo.svg',
-    url: 'https://agenfy.fr',
+    image: 'https://www.agenfy.fr/logo.svg',
+    url: 'https://www.agenfy.fr',
     telephone: '',
     email: 'contact@agenfy.fr',
     address: {

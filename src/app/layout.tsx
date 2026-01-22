@@ -20,13 +20,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://agenfy.fr"),
+  metadataBase: new URL("https://www.agenfy.fr"),
   title: {
-    default: "Agenfy | Conseil & Intégration Technologique - Data, IA, Cloud",
+    default: "Agenfy | Conseil Data, IA & Cloud à Paris",
     template: "%s | Agenfy",
   },
   description:
-    "Agenfy accompagne les entreprises dans leur transformation digitale. Expertise en Data Engineering, Intelligence Artificielle, Infrastructure Cloud et Conseil stratégique. Cabinet de conseil tech à Paris.",
+    "Cabinet de conseil tech spécialisé en Data Engineering, Intelligence Artificielle et Cloud. Nous accompagnons les PME et scale-ups dans leur transformation digitale.",
   keywords: [
     "conseil data",
     "data engineering",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     "FinOps",
     "cabinet conseil Paris",
   ],
-  authors: [{ name: "Agenfy", url: "https://agenfy.fr" }],
+  authors: [{ name: "Agenfy", url: "https://www.agenfy.fr" }],
   creator: "Agenfy",
   publisher: "Agenfy",
   formatDetection: {
@@ -57,11 +57,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://agenfy.fr",
+    url: "https://www.agenfy.fr",
     siteName: "Agenfy",
-    title: "Agenfy | Conseil & Intégration Technologique - Data, IA, Cloud",
+    title: "Agenfy | Conseil Data, IA & Cloud à Paris",
     description:
-      "Transformez vos données en avantage concurrentiel. Expertise en Data Engineering, Intelligence Artificielle et Infrastructure Cloud.",
+      "Cabinet de conseil tech. Expertise en Data Engineering, Intelligence Artificielle et Infrastructure Cloud.",
     images: [
       {
         url: "/og-image.jpg",
@@ -76,9 +76,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@Agenfy_",
     creator: "@Agenfy_",
-    title: "Agenfy | Conseil & Intégration Technologique",
+    title: "Agenfy | Conseil Data, IA & Cloud",
     description:
-      "Transformez vos données en avantage concurrentiel. Data, IA, Cloud et Conseil.",
+      "Cabinet de conseil tech. Data, IA, Cloud.",
     images: ["/og-image.jpg"],
   },
   robots: {
@@ -95,7 +95,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://agenfy.fr",
+    canonical: "https://www.agenfy.fr",
   },
   category: "technology",
 };

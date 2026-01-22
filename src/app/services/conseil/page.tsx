@@ -7,16 +7,16 @@ import Link from "next/link";
 import { Users, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Conseil Tech - Stratégie & Transformation Digitale",
-  description: "Une vision stratégique pour vos décisions tech. Audit SI, roadmap technologique, accompagnement au changement et formation. Cabinet conseil tech Paris.",
+  title: "Conseil & Stratégie Tech",
+  description: "Audit SI, roadmap technologique, accompagnement au changement. Cabinet conseil tech à Paris.",
   keywords: ["conseil technologique", "transformation digitale", "audit SI", "roadmap tech", "accompagnement changement", "cabinet conseil Paris"],
   alternates: {
-    canonical: "https://agenfy.fr/services/conseil",
+    canonical: "https://www.agenfy.fr/services/conseil",
   },
   openGraph: {
-    title: "Conseil Tech - Stratégie & Transformation Digitale | Agenfy",
-    description: "Audit, roadmap technologique, accompagnement au changement et formation.",
-    url: "https://agenfy.fr/services/conseil",
+    title: "Conseil & Stratégie Tech | Agenfy",
+    description: "Audit, roadmap technologique et accompagnement.",
+    url: "https://www.agenfy.fr/services/conseil",
     type: "website",
   },
 };

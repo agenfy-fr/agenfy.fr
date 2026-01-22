@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/_next/', '/private/'],
+        disallow: ['/api/', '/private/'],
       },
       {
         userAgent: 'Googlebot',
@@ -17,7 +17,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: 'https://agenfy.fr/sitemap.xml',
-    host: 'https://agenfy.fr',
+    sitemap: 'https://www.agenfy.fr/sitemap.xml',
+    host: 'https://www.agenfy.fr',
   };
 }

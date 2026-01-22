@@ -1084,6 +1084,588 @@ export const blogPosts: BlogPost[] = [
       </>
     ),
   },
+  {
+    slug: "finops-pme-reduire-facture-cloud",
+    title: "FinOps pour PME : Comment Réduire votre Facture Cloud de 40%",
+    excerpt: "Découvrez les stratégies FinOps éprouvées pour optimiser vos coûts AWS, GCP ou Azure. Guide pratique avec cas concrets et ROI mesurable.",
+    category: "Cloud",
+    author: "Équipe Agenfy",
+    readTime: "8 min",
+    date: "2026-01-18",
+    featured: true,
+    content: (
+      <>
+        <Callout emoji="💸">
+          <Strong>En 2026, les PME françaises dépensent en moyenne 47% de trop sur leur infrastructure cloud.</Strong> Ce n&apos;est pas une fatalité. Voici comment reprendre le contrôle.
+        </Callout>
+
+        <H2>Le Constat : Une Hémorragie Silencieuse</H2>
+        <P>
+          Chaque mois, des milliers d&apos;euros s&apos;évaporent dans des instances surdimensionnées, des ressources orphelines 
+          et des architectures mal optimisées. Et le pire ? La plupart des dirigeants ne s&apos;en rendent compte qu&apos;au moment de la facture.
+        </P>
+
+        <H3>Les 5 Sources de Gaspillage les Plus Courantes</H3>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>Source</Th>
+              <Th>% du gaspillage</Th>
+              <Th>Exemple concret</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td><Strong>Instances surdimensionnées</Strong></Td><Td>35%</Td><Td>Une VM t3.xlarge utilisée à 15% de sa capacité</Td></Tr>
+            <Tr><Td><Strong>Ressources orphelines</Strong></Td><Td>25%</Td><Td>Volumes EBS détachés, snapshots obsolètes</Td></Tr>
+            <Tr><Td><Strong>Absence de Reserved Instances</Strong></Td><Td>20%</Td><Td>Payer le prix On-Demand pour des workloads stables</Td></Tr>
+            <Tr><Td><Strong>Transferts de données</Strong></Td><Td>12%</Td><Td>Architecture multi-région non optimisée</Td></Tr>
+            <Tr><Td><Strong>Stockage mal tiéré</Strong></Td><Td>8%</Td><Td>Données froides sur S3 Standard</Td></Tr>
+          </Tbody>
+        </Table>
+
+        <Divider />
+
+        <H2>La Méthode FinOps en 4 Étapes</H2>
+
+        <H3>Étape 1 : Visibilité Totale (Semaine 1)</H3>
+        <P>
+          Impossible d&apos;optimiser ce qu&apos;on ne mesure pas. La première étape consiste à cartographier précisément vos dépenses.
+        </P>
+        <P><Strong>Outils recommandés :</Strong></P>
+        <Ul>
+          <Li><Strong>AWS</Strong> : Cost Explorer + AWS Budgets</Li>
+          <Li><Strong>GCP</Strong> : Cloud Billing Reports + Recommender</Li>
+          <Li><Strong>Azure</Strong> : Cost Management + Advisor</Li>
+        </Ul>
+        <Callout emoji="🏷️">
+          <Strong>Action immédiate :</Strong> Activez le tagging systématique de toutes vos ressources par projet, environnement et owner.
+        </Callout>
+
+        <H3>Étape 2 : Quick Wins (Semaines 2-3)</H3>
+        <P>Certaines optimisations génèrent un ROI immédiat sans risque.</P>
+        <Ul>
+          <Li type="check"><Strong>Arrêter les environnements de dev/staging la nuit et le week-end</Strong> - Économie potentielle : 65%</Li>
+          <Li type="check"><Strong>Supprimer les ressources orphelines</Strong> - Volumes EBS non attachés, Elastic IPs non utilisées</Li>
+          <Li type="check"><Strong>Rightsizing des instances</Strong> - Downsizer les instances utilisées à moins de 40%</Li>
+          <Li type="check"><Strong>Activer S3 Intelligent-Tiering</Strong> - Migration automatique vers les classes optimales</Li>
+        </Ul>
+
+        <H3>Étape 3 : Optimisation Structurelle (Mois 2-3)</H3>
+        <P>C&apos;est ici que les économies deviennent significatives.</P>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>Critère</Th>
+              <Th>Reserved Instances</Th>
+              <Th>Savings Plans</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td>Flexibilité</Td><Td>Faible (instance fixe)</Td><Td>Haute (famille flexible)</Td></Tr>
+            <Tr><Td>Économie max</Td><Td>Jusqu&apos;à 72%</Td><Td>Jusqu&apos;à 66%</Td></Tr>
+            <Tr><Td>Engagement</Td><Td>1 ou 3 ans</Td><Td>1 ou 3 ans</Td></Tr>
+            <Tr><Td>Recommandé pour</Td><Td>Workloads très stables</Td><Td>Workloads évolutifs</Td></Tr>
+          </Tbody>
+        </Table>
+        <P>
+          <Strong>Notre recommandation :</Strong> Commencez par des Savings Plans Compute pour 50% de votre baseline, 
+          puis ajustez avec des Reserved Instances pour les workloads ultra-stables.
+        </P>
+
+        <H3>Étape 4 : Gouvernance Continue</H3>
+        <P>L&apos;optimisation n&apos;est pas un projet, c&apos;est une culture.</P>
+        <Ul>
+          <Li>Alertes budgétaires à 50%, 80% et 100%</Li>
+          <Li>Revue mensuelle FinOps avec analyse des anomalies</Li>
+          <Li>Ajustement continu des reservations</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>Cas Concret : Scale-up SaaS B2B (45 employés)</H2>
+        <H3>Contexte Initial</H3>
+        <Ul>
+          <Li>Facture AWS mensuelle : <Strong>18 500€</Strong></Li>
+          <Li>Infrastructure : EKS, RDS, ElastiCache, S3</Li>
+          <Li>Croissance : +15%/mois</Li>
+        </Ul>
+
+        <H3>Actions Menées (sur 8 semaines)</H3>
+        <Ul>
+          <Li type="check">Semaine 1-2 : Audit et tagging complet</Li>
+          <Li type="check">Semaine 3 : Suppression ressources orphelines (-2 100€)</Li>
+          <Li type="check">Semaine 4 : Rightsizing RDS et ElastiCache (-1 800€)</Li>
+          <Li type="check">Semaine 5-6 : Migration vers Graviton ARM (-2 400€)</Li>
+          <Li type="check">Semaine 7-8 : Savings Plans 1 an (-3 200€)</Li>
+        </Ul>
+
+        <H3>Résultats</H3>
+        <Table>
+          <Thead>
+            <Tr><Th>Métrique</Th><Th>Avant</Th><Th>Après</Th><Th>Évolution</Th></Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td>Facture mensuelle</Td><Td>18 500€</Td><Td>9 000€</Td><Td><Strong>-51%</Strong></Td></Tr>
+            <Tr><Td>Coût par utilisateur</Td><Td>4,12€</Td><Td>2,00€</Td><Td>-51%</Td></Tr>
+            <Tr><Td>Instances actives</Td><Td>47</Td><Td>31</Td><Td>-34%</Td></Tr>
+          </Tbody>
+        </Table>
+        <Callout emoji="🚀">
+          <Strong>ROI de l&apos;accompagnement : 12x en première année</Strong>
+        </Callout>
+
+        <Divider />
+
+        <H2>Les Erreurs à Éviter</H2>
+        <Ul>
+          <Li type="cross"><Strong>Erreur #1 : Optimiser sans comprendre</Strong> - Ne coupez jamais des ressources sans avoir analysé leur utilisation sur au moins 2 semaines</Li>
+          <Li type="cross"><Strong>Erreur #2 : Sur-optimiser la production</Strong> - Concentrez vos efforts sur dev/staging d&apos;abord</Li>
+          <Li type="cross"><Strong>Erreur #3 : Ignorer les coûts de transfert</Strong> - Les data transfer costs peuvent représenter 15% de votre facture</Li>
+          <Li type="cross"><Strong>Erreur #4 : Acheter des Reserved Instances trop tôt</Strong> - Attendez 3-6 mois d&apos;historique stable</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>Checklist FinOps pour Démarrer Demain</H2>
+        <Ul>
+          <Li type="check">Activer le tagging sur toutes les ressources</Li>
+          <Li type="check">Configurer des alertes budgétaires à 50%, 80% et 100%</Li>
+          <Li type="check">Identifier les instances utilisées à moins de 30%</Li>
+          <Li type="check">Lister les volumes EBS non attachés</Li>
+          <Li type="check">Analyser les recommandations natives du cloud provider</Li>
+          <Li type="check">Planifier une revue mensuelle des coûts</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>Conclusion : Le FinOps, un Avantage Compétitif</H2>
+        <P>
+          En 2026, les PME qui maîtrisent leurs coûts cloud peuvent réinvestir ces économies dans l&apos;innovation. 
+          C&apos;est un cercle vertueux : moins de dépenses infrastructure = plus de budget produit = meilleure compétitivité.
+        </P>
+        <Callout emoji="💡">
+          <Strong>Le FinOps n&apos;est plus une option, c&apos;est une nécessité stratégique.</Strong>
+        </Callout>
+      </>
+    ),
+  },
+  {
+    slug: "rag-llm-urgence-entreprise",
+    title: "RAG et LLM en Entreprise : Pourquoi Vous Ne Pouvez Plus Attendre",
+    excerpt: "L&apos;IA générative transforme les entreprises. Découvrez comment le RAG permet d&apos;exploiter vos données internes avec les LLM.",
+    category: "IA",
+    author: "Équipe Agenfy",
+    readTime: "10 min",
+    date: "2026-01-17",
+    featured: true,
+    content: (
+      <>
+        <Callout emoji="🤖">
+          <Strong>En janvier 2026, 67% des entreprises du CAC40 utilisent déjà des solutions basées sur les LLM en production.</Strong> Et vous ?
+        </Callout>
+
+        <H2>L&apos;Urgence : Vos Concurrents Avancent</H2>
+        <P>
+          Pendant que vous hésitez, vos concurrents automatisent leur support client, accélèrent leur R&amp;D 
+          et optimisent leurs processus métier grâce à l&apos;IA générative.
+        </P>
+
+        <H3>Ce Qui a Changé en 2025-2026</H3>
+        <Table>
+          <Thead>
+            <Tr><Th>Évolution</Th><Th>Impact Business</Th></Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td><Strong>GPT-4.5 Turbo</Strong></Td><Td>Coût divisé par 10, latence réduite de 60%</Td></Tr>
+            <Tr><Td><Strong>Claude 3.5 Sonnet</Strong></Td><Td>Capacité de contexte 200K tokens</Td></Tr>
+            <Tr><Td><Strong>Mistral Large 2</Strong></Td><Td>Alternative européenne performante et souveraine</Td></Tr>
+            <Tr><Td><Strong>Embedding models</Strong></Td><Td>Recherche sémantique ultra-précise</Td></Tr>
+            <Tr><Td><Strong>Infrastructure RAG</Strong></Td><Td>Solutions clé-en-main (LangChain, LlamaIndex)</Td></Tr>
+          </Tbody>
+        </Table>
+        <P><Strong>La barrière technologique s&apos;est effondrée. Il ne reste que la barrière de l&apos;action.</Strong></P>
+
+        <Divider />
+
+        <H2>RAG : La Clé pour Exploiter VOS Données</H2>
+
+        <H3>Le Problème des LLM Classiques</H3>
+        <P>ChatGPT et Claude sont puissants, mais ils ont deux limites majeures pour l&apos;entreprise :</P>
+        <Ul>
+          <Li type="cross"><Strong>Connaissance figée</Strong> : Ils ne connaissent pas vos données internes</Li>
+          <Li type="cross"><Strong>Hallucinations</Strong> : Ils peuvent inventer des informations</Li>
+        </Ul>
+
+        <H3>La Solution RAG</H3>
+        <P>
+          Le <Strong>RAG (Retrieval-Augmented Generation)</Strong> résout ces deux problèmes en combinant :
+        </P>
+        <Ul>
+          <Li><Strong>Retrieval</Strong> : Recherche dans vos documents internes</Li>
+          <Li><Strong>Augmented</Strong> : Enrichissement du contexte du LLM</Li>
+          <Li><Strong>Generation</Strong> : Réponse générée avec VOS données</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>5 Cas d&apos;Usage Immédiatement Rentables</H2>
+
+        <H3>1. Assistant Support Client Augmenté</H3>
+        <P><Strong>Le problème</Strong> : Vos agents support passent 40% de leur temps à chercher des informations.</P>
+        <P><Strong>La solution RAG</Strong> : Un chatbot qui répond instantanément en citant les sources.</P>
+        <Ul>
+          <Li type="check">Temps de réponse : <Strong>-65%</Strong></Li>
+          <Li type="check">Escalades niveau 2 : <Strong>-40%</Strong></Li>
+          <Li type="check">Satisfaction client : <Strong>+25 points NPS</Strong></Li>
+        </Ul>
+
+        <H3>2. Recherche Documentaire Intelligente</H3>
+        <P><Strong>Le problème</Strong> : Vos équipes perdent 2h/jour à chercher des informations dispersées.</P>
+        <P><Strong>La solution RAG</Strong> : Une interface de recherche sémantique sur l&apos;ensemble de votre base documentaire.</P>
+
+        <H3>3. Onboarding Automatisé</H3>
+        <P><Strong>Le problème</Strong> : Former un nouveau collaborateur prend 3 mois et mobilise vos seniors.</P>
+        <P><Strong>La solution RAG</Strong> : Un assistant qui répond à toutes les questions sur les process et bonnes pratiques.</P>
+
+        <H3>4. Analyse de Contrats et Documents Juridiques</H3>
+        <P><Strong>Le problème</Strong> : Analyser un contrat de 100 pages prend une journée à vos juristes.</P>
+        <P><Strong>La solution RAG</Strong> : Extraction automatique des clauses clés, identification des risques.</P>
+        <Ul>
+          <Li type="check">Temps d&apos;analyse : 8h → 30 min</Li>
+          <Li type="check">Clauses à risque détectées : +35%</Li>
+          <Li type="check">Coût par contrat analysé : <Strong>-80%</Strong></Li>
+        </Ul>
+
+        <H3>5. Base de Connaissances Technique</H3>
+        <P><Strong>Le problème</Strong> : Vos développeurs seniors sont constamment interrompus par des questions.</P>
+        <P><Strong>La solution RAG</Strong> : Un assistant technique formé sur votre codebase et documentation.</P>
+
+        <Divider />
+
+        <H2>Implémentation : La Roadmap en 8 Semaines</H2>
+
+        <H3>Phase 1 : Proof of Concept (Semaines 1-2)</H3>
+        <Ul>
+          <Li>Sélection d&apos;un cas d&apos;usage prioritaire</Li>
+          <Li>Collecte de 50-100 documents représentatifs</Li>
+          <Li>Setup de l&apos;infrastructure (OpenAI + Pinecone)</Li>
+          <Li>Développement du MVP</Li>
+        </Ul>
+        <P><Strong>Budget estimé :</Strong> 5-10K€</P>
+
+        <H3>Phase 2 : Pilote (Semaines 3-5)</H3>
+        <Ul>
+          <Li>Extension de la base documentaire</Li>
+          <Li>Fine-tuning des prompts</Li>
+          <Li>Intégration avec vos outils (Slack, Teams)</Li>
+          <Li>Mesure des KPIs</Li>
+        </Ul>
+
+        <H3>Phase 3 : Industrialisation (Semaines 6-8)</H3>
+        <Ul>
+          <Li>Mise en place de la CI/CD</Li>
+          <Li>Monitoring et observabilité</Li>
+          <Li>Documentation et formation</Li>
+          <Li>Plan de maintenance</Li>
+        </Ul>
+
+        <H3>Stack Technique Recommandée</H3>
+        <Table>
+          <Thead>
+            <Tr><Th>Composant</Th><Th>Option recommandée</Th><Th>Alternative</Th></Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td>LLM</Td><Td>GPT-4o</Td><Td>Claude 3.5 Sonnet</Td></Tr>
+            <Tr><Td>Embeddings</Td><Td>text-embedding-3-large</Td><Td>Mistral Embed</Td></Tr>
+            <Tr><Td>Vector DB</Td><Td>Pinecone</Td><Td>Qdrant (self-hosted)</Td></Tr>
+            <Tr><Td>Framework</Td><Td>LangChain</Td><Td>LlamaIndex</Td></Tr>
+            <Tr><Td>Orchestration</Td><Td>LangGraph</Td><Td>Haystack</Td></Tr>
+          </Tbody>
+        </Table>
+
+        <Divider />
+
+        <H2>Les Pièges à Éviter</H2>
+        <Ul>
+          <Li type="cross"><Strong>Piège #1 : Vouloir tout faire d&apos;un coup</Strong> - Commencez petit avec un cas d&apos;usage bien défini</Li>
+          <Li type="cross"><Strong>Piège #2 : Négliger la qualité des données</Strong> - Garbage in, garbage out</Li>
+          <Li type="cross"><Strong>Piège #3 : Ignorer les aspects sécurité</Strong> - Où sont stockées vos données ? Conformité RGPD ?</Li>
+          <Li type="cross"><Strong>Piège #4 : Sous-estimer le prompt engineering</Strong> - La qualité dépend à 50% des prompts</Li>
+          <Li type="cross"><Strong>Piège #5 : Oublier l&apos;humain dans la boucle</Strong> - L&apos;IA augmente vos équipes, elle ne les remplace pas</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>Calculer le ROI de Votre Projet RAG</H2>
+        <H3>Exemple : Support Client</H3>
+        <Table>
+          <Thead>
+            <Tr><Th>Paramètre</Th><Th>Valeur</Th></Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td>Volume tickets/mois</Td><Td>2 000</Td></Tr>
+            <Tr><Td>Temps moyen de traitement</Td><Td>15 min</Td></Tr>
+            <Tr><Td>Coût horaire agent</Td><Td>35€</Td></Tr>
+            <Tr><Td>Réduction temps avec RAG</Td><Td>50%</Td></Tr>
+          </Tbody>
+        </Table>
+        <P><Strong>Calcul :</Strong></P>
+        <Ul>
+          <Li>Coût actuel : 2000 × 0.25h × 35€ = <Strong>17 500€/mois</Strong></Li>
+          <Li>Coût avec RAG : 8 750€ + 1 500€ infra = <Strong>10 250€/mois</Strong></Li>
+          <Li>Économie : <Strong>7 250€/mois = 87 000€/an</Strong></Li>
+        </Ul>
+        <Callout emoji="💰">
+          <Strong>Avec un projet à 40K€, le ROI est atteint en 5.5 mois.</Strong>
+        </Callout>
+
+        <Divider />
+
+        <H2>Conclusion : L&apos;Heure est à l&apos;Action</H2>
+        <P>
+          Le RAG n&apos;est plus une technologie expérimentale. C&apos;est un avantage compétitif accessible dès maintenant.
+        </P>
+        <Callout emoji="⚠️">
+          <Strong>Les entreprises qui n&apos;auront pas intégré l&apos;IA générative dans leurs process d&apos;ici fin 2026 
+          accumuleront un retard difficile à rattraper.</Strong>
+        </Callout>
+      </>
+    ),
+  },
+  {
+    slug: "migration-modern-data-stack-guide",
+    title: "Migration vers une Modern Data Stack : Guide Complet 2026",
+    excerpt: "De la stack legacy à l&apos;architecture moderne : Snowflake, dbt, Fivetran, Airbyte. Méthodologie, pièges à éviter et ROI attendu.",
+    category: "Data",
+    author: "Équipe Agenfy",
+    readTime: "12 min",
+    date: "2026-01-16",
+    featured: true,
+    content: (
+      <>
+        <Callout emoji="📊">
+          <Strong>Votre stack data actuelle vous freine ?</Strong> 73% des entreprises considèrent leur infrastructure data 
+          comme un obstacle à l&apos;innovation. Voici comment moderniser sans tout casser.
+        </Callout>
+
+        <H2>Pourquoi Migrer Maintenant ?</H2>
+
+        <H3>Les Signes que Votre Stack est Obsolète</H3>
+        <Ul>
+          <Li type="cross">Vos rapports prennent plus de 24h à générer</Li>
+          <Li type="cross">Seul votre DBA comprend comment fonctionne le pipeline</Li>
+          <Li type="cross">Ajouter une nouvelle source de données prend des semaines</Li>
+          <Li type="cross">Vos data scientists passent 80% de leur temps à préparer les données</Li>
+          <Li type="cross">Vous avez peur de toucher au code ETL</Li>
+          <Li type="cross">Vos coûts data explosent sans amélioration de performance</Li>
+        </Ul>
+        <P><Strong>Si vous avez coché plus de 2 cases, il est temps d&apos;agir.</Strong></P>
+
+        <Divider />
+
+        <H2>Les Composants d&apos;une Modern Data Stack</H2>
+
+        <H3>1. Data Warehouse Cloud-Native</H3>
+        <Table>
+          <Thead>
+            <Tr><Th>Solution</Th><Th>Forces</Th><Th>Idéal pour</Th></Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td><Strong>Snowflake</Strong></Td><Td>Simplicité, scaling automatique</Td><Td>Entreprises de toutes tailles</Td></Tr>
+            <Tr><Td><Strong>Databricks</Strong></Td><Td>Lakehouse, ML intégré</Td><Td>Data Science intensive</Td></Tr>
+            <Tr><Td><Strong>BigQuery</Strong></Td><Td>Serverless, intégration GCP</Td><Td>Écosystème Google</Td></Tr>
+            <Tr><Td><Strong>Redshift Serverless</Strong></Td><Td>Intégration AWS native</Td><Td>Heavy AWS users</Td></Tr>
+          </Tbody>
+        </Table>
+
+        <H3>2. Ingestion de Données (EL)</H3>
+        <P><Strong>Fivetran</Strong> (SaaS)</P>
+        <Ul>
+          <Li type="check">400+ connecteurs pré-construits</Li>
+          <Li type="check">Maintenance zéro</Li>
+          <Li type="cross">Coût élevé à l&apos;échelle</Li>
+        </Ul>
+        <P><Strong>Airbyte</Strong> (Open-source)</P>
+        <Ul>
+          <Li type="check">Gratuit (self-hosted)</Li>
+          <Li type="check">350+ connecteurs</Li>
+          <Li type="cross">Maintenance requise</Li>
+        </Ul>
+
+        <H3>3. Transformation (dbt)</H3>
+        <P><Strong>dbt (data build tool)</Strong> est devenu le standard de facto.</P>
+        <Ul>
+          <Li type="check"><Strong>SQL-first</Strong> : Pas besoin d&apos;apprendre un nouveau langage</Li>
+          <Li type="check"><Strong>Version control</Strong> : Vos transformations dans Git</Li>
+          <Li type="check"><Strong>Tests intégrés</Strong> : Qualité de données automatisée</Li>
+          <Li type="check"><Strong>Documentation auto-générée</Strong> : Lineage et dictionnaire</Li>
+          <Li type="check"><Strong>Modularité</Strong> : Modèles réutilisables</Li>
+        </Ul>
+
+        <H3>4. Orchestration</H3>
+        <Table>
+          <Thead>
+            <Tr><Th>Outil</Th><Th>Type</Th><Th>Forces</Th></Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td><Strong>dbt Cloud</Strong></Td><Td>SaaS</Td><Td>Intégration native dbt, simple</Td></Tr>
+            <Tr><Td><Strong>Dagster</Strong></Td><Td>Open-source</Td><Td>Assets-based, moderne</Td></Tr>
+            <Tr><Td><Strong>Prefect</Strong></Td><Td>Hybride</Td><Td>Pythonic, flexible</Td></Tr>
+            <Tr><Td><Strong>Airflow</Strong></Td><Td>Open-source</Td><Td>Standard établi</Td></Tr>
+          </Tbody>
+        </Table>
+
+        <H3>5. Business Intelligence</H3>
+        <Ul>
+          <Li><Strong>Looker</Strong> : Semantic layer puissant, intégration Google</Li>
+          <Li><Strong>Tableau</Strong> : Visualisations riches, large adoption</Li>
+          <Li><Strong>Metabase</Strong> : Open-source, simple, rapide à déployer</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>Méthodologie de Migration : Le Framework LIMA</H2>
+
+        <H3>L = List (Semaine 1-2)</H3>
+        <P><Strong>Inventaire exhaustif de l&apos;existant :</Strong></P>
+        <Ul>
+          <Li>Sources de données (type, volume, fréquence, criticité)</Li>
+          <Li>Transformations existantes (pipeline, technologie, mainteneur)</Li>
+          <Li>Consommateurs (dashboards, utilisateurs, SLA)</Li>
+        </Ul>
+
+        <H3>I = Identify (Semaine 2-3)</H3>
+        <P><Strong>Quick wins</Strong> (ROI immédiat) :</P>
+        <Ul>
+          <Li type="check">Remplacer les exports Excel manuels</Li>
+          <Li type="check">Automatiser les rapports récurrents</Li>
+          <Li type="check">Connecter les sources SaaS simples</Li>
+        </Ul>
+        <P><Strong>Risques majeurs</Strong> :</P>
+        <Ul>
+          <Li type="cross">Dépendances circulaires dans les pipelines</Li>
+          <Li type="cross">Logique métier non documentée</Li>
+          <Li type="cross">Données sensibles (RGPD)</Li>
+        </Ul>
+
+        <H3>M = Migrate (Semaine 4-10)</H3>
+        <P><Strong>Approche par vagues :</Strong></P>
+        <Ul>
+          <Li><Strong>Vague 1 (S4-5)</Strong> : Fondations - Setup Snowflake + dbt, CI/CD, 2-3 sources simples</Li>
+          <Li><Strong>Vague 2 (S6-7)</Strong> : Extension - Sources critiques, transformations core, tests qualité</Li>
+          <Li><Strong>Vague 3 (S8-9)</Strong> : Migration complète - Toutes sources et modèles, BI migration</Li>
+          <Li><Strong>Vague 4 (S10)</Strong> : Décommissionnement - Validation parallèle, cutover, archivage</Li>
+        </Ul>
+
+        <H3>A = Adopt (Ongoing)</H3>
+        <P><Strong>Assurer l&apos;adoption par les équipes :</Strong></P>
+        <Ul>
+          <Li type="check">Formation dbt pour les data analysts</Li>
+          <Li type="check">Documentation des conventions</Li>
+          <Li type="check">Office hours hebdomadaires</Li>
+          <Li type="check">Champions dans chaque équipe métier</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>Cas Concret : Scale-up SaaS B2B (150 employés)</H2>
+
+        <H3>Contexte Initial</H3>
+        <Ul>
+          <Li>Data warehouse : PostgreSQL on-premise</Li>
+          <Li>ETL : Scripts Python custom + crons</Li>
+          <Li>BI : Metabase + exports Excel</Li>
+          <Li>Douleurs : Pipelines fragiles, 2 jours pour ajouter une source</Li>
+        </Ul>
+
+        <H3>Timeline et Budget</H3>
+        <Table>
+          <Thead>
+            <Tr><Th>Phase</Th><Th>Durée</Th><Th>Effort interne</Th><Th>Budget externe</Th></Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td>Audit &amp; Design</Td><Td>2 sem</Td><Td>20 j/h</Td><Td>8 000€</Td></Tr>
+            <Tr><Td>Setup infra</Td><Td>2 sem</Td><Td>15 j/h</Td><Td>6 000€</Td></Tr>
+            <Tr><Td>Migration sources</Td><Td>4 sem</Td><Td>30 j/h</Td><Td>15 000€</Td></Tr>
+            <Tr><Td>Migration transfo</Td><Td>3 sem</Td><Td>25 j/h</Td><Td>12 000€</Td></Tr>
+            <Tr><Td>BI &amp; adoption</Td><Td>2 sem</Td><Td>20 j/h</Td><Td>8 000€</Td></Tr>
+            <Tr><Td><Strong>Total</Strong></Td><Td><Strong>13 sem</Strong></Td><Td><Strong>110 j/h</Strong></Td><Td><Strong>49 000€</Strong></Td></Tr>
+          </Tbody>
+        </Table>
+
+        <H3>Résultats à 6 Mois</H3>
+        <Table>
+          <Thead>
+            <Tr><Th>Métrique</Th><Th>Avant</Th><Th>Après</Th><Th>Amélioration</Th></Tr>
+          </Thead>
+          <Tbody>
+            <Tr><Td>Temps ajout source</Td><Td>2 semaines</Td><Td>2 heures</Td><Td><Strong>99%</Strong></Td></Tr>
+            <Tr><Td>Fraîcheur données</Td><Td>J+1</Td><Td>15 min</Td><Td><Strong>96x</Strong></Td></Tr>
+            <Tr><Td>Incidents pipeline/mois</Td><Td>12</Td><Td>1</Td><Td><Strong>-92%</Strong></Td></Tr>
+            <Tr><Td>Temps prep data analysts</Td><Td>60%</Td><Td>15%</Td><Td><Strong>-75%</Strong></Td></Tr>
+            <Tr><Td>Coût infrastructure</Td><Td>3 200€/mois</Td><Td>2 100€/mois</Td><Td><Strong>-34%</Strong></Td></Tr>
+          </Tbody>
+        </Table>
+
+        <Divider />
+
+        <H2>Les Erreurs qui Coûtent Cher</H2>
+        <Ul>
+          <Li type="cross"><Strong>Erreur #1 : Big Bang Migration</Strong> - Ne migrez pas tout d&apos;un coup, procédez par vagues</Li>
+          <Li type="cross"><Strong>Erreur #2 : Copier-coller la logique legacy</Strong> - Profitez de la migration pour refactorer</Li>
+          <Li type="cross"><Strong>Erreur #3 : Négliger la data quality</Strong> - Tests dbt dès le premier modèle</Li>
+          <Li type="cross"><Strong>Erreur #4 : Sous-dimensionner la conduite du changement</Strong> - 30% du budget en formation</Li>
+          <Li type="cross"><Strong>Erreur #5 : Oublier la documentation</Strong> - Doc-as-code avec dbt docs</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>Checklist de Migration</H2>
+        <H3>Pré-migration</H3>
+        <Ul>
+          <Li type="check">Inventaire complet des sources et pipelines</Li>
+          <Li type="check">Identification des data owners</Li>
+          <Li type="check">Cartographie des dépendances</Li>
+          <Li type="check">Définition des SLAs cibles</Li>
+          <Li type="check">Budget validé (infra + accompagnement)</Li>
+        </Ul>
+
+        <H3>Infrastructure</H3>
+        <Ul>
+          <Li type="check">Compte cloud data warehouse créé</Li>
+          <Li type="check">Projet dbt initialisé</Li>
+          <Li type="check">CI/CD configuré (GitHub Actions)</Li>
+          <Li type="check">Environnements dev/staging/prod séparés</Li>
+          <Li type="check">Monitoring et alerting en place</Li>
+        </Ul>
+
+        <H3>Adoption</H3>
+        <Ul>
+          <Li type="check">Formation équipes data</Li>
+          <Li type="check">Documentation utilisateur</Li>
+          <Li type="check">Champions identifiés</Li>
+          <Li type="check">Process de support défini</Li>
+        </Ul>
+
+        <Divider />
+
+        <H2>Conclusion : Le Meilleur Moment, c&apos;est Maintenant</H2>
+        <P>
+          La Modern Data Stack n&apos;est plus un luxe réservé aux GAFAM. Les outils se sont démocratisés, 
+          les coûts ont baissé, et les méthodologies sont éprouvées.
+        </P>
+        <Callout emoji="⏰">
+          <Strong>Chaque mois de retard, c&apos;est :</Strong>
+          <Ul>
+            <Li>Des heures perdues sur des pipelines fragiles</Li>
+            <Li>Des décisions prises sur des données obsolètes</Li>
+            <Li>Une dette technique qui s&apos;accumule</Li>
+          </Ul>
+          <P><Strong>Le ROI d&apos;une migration bien menée se mesure en semaines, pas en années.</Strong></P>
+        </Callout>
+      </>
+    ),
+  },
 ];
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {

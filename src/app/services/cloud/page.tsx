@@ -7,16 +7,16 @@ import Link from "next/link";
 import { Cloud, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Infrastructure Cloud - AWS, GCP, Azure & DevOps",
-  description: "Une infrastructure à la hauteur de vos ambitions. Architecture Cloud Native, Migration AWS/GCP/Azure, DevOps, Kubernetes, FinOps et sécurité.",
+  title: "Infrastructure Cloud & DevOps",
+  description: "Architecture Cloud Native, Migration AWS/GCP/Azure, DevOps, Kubernetes et FinOps. Experts Cloud à Paris.",
   keywords: ["cloud computing", "AWS", "GCP", "Azure", "DevOps", "Kubernetes", "FinOps", "migration cloud", "infrastructure"],
   alternates: {
-    canonical: "https://agenfy.fr/services/cloud",
+    canonical: "https://www.agenfy.fr/services/cloud",
   },
   openGraph: {
-    title: "Infrastructure Cloud - AWS, GCP, Azure & DevOps | Agenfy",
-    description: "Architecture Cloud Native, Migration, DevOps, Kubernetes et FinOps.",
-    url: "https://agenfy.fr/services/cloud",
+    title: "Infrastructure Cloud & DevOps | Agenfy",
+    description: "AWS, GCP, Azure, DevOps, Kubernetes et FinOps.",
+    url: "https://www.agenfy.fr/services/cloud",
     type: "website",
   },
 };

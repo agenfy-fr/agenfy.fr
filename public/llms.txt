@@ -1,0 +1,44 @@
+# Agenfy - Cabinet de conseil tech
+
+## À propos
+Agenfy est un cabinet de conseil et d'intégration technologique français spécialisé en Data Engineering, Intelligence Artificielle et Infrastructure Cloud. Nous accompagnons les PME et scale-ups dans leur transformation digitale.
+
+## Services
+
+### Data Engineering
+- Architecture Lakehouse et Data Warehouse
+- Pipelines ETL/ELT avec dbt, Airflow, Snowflake
+- Data Governance et qualité des données
+- Business Intelligence et Analytics
+
+### Intelligence Artificielle
+- Machine Learning et Deep Learning
+- LLM et IA Générative (GPT, Claude, RAG)
+- Computer Vision
+- MLOps et déploiement de modèles
+
+### Infrastructure Cloud
+- Architecture Cloud Native (AWS, GCP, Azure)
+- Migration et modernisation
+- DevOps et CI/CD
+- Kubernetes et conteneurisation
+- FinOps et optimisation des coûts
+
+### Conseil Stratégique
+- Audit SI et diagnostic technique
+- Roadmap technologique
+- Accompagnement au changement
+- Formation des équipes
+
+## Contact
+- Site web: https://www.agenfy.fr
+- Email: contact@agenfy.fr
+- LinkedIn: https://www.linkedin.com/company/agenfy-fr/
+- Twitter: https://x.com/Agenfy_
+- GitHub: https://github.com/agenfy-fr
+
+## Localisation
+Paris, France
+
+## Entité légale
+Agenfy est une marque de Hasfy SAS

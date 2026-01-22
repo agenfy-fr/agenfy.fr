@@ -7,16 +7,16 @@ import Link from "next/link";
 import { Database, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Data Engineering - Architecture Lakehouse & Analytics",
-  description: "Exploitez le plein potentiel de vos données. Architecture Lakehouse, pipelines ETL/ELT, Data Governance et Business Intelligence. Expert Data Engineering à Paris.",
+  title: "Data Engineering & Analytics",
+  description: "Exploitez vos données avec nos experts. Architecture Lakehouse, pipelines ETL/ELT, Data Governance et BI. Cabinet conseil Data à Paris.",
   keywords: ["data engineering", "architecture lakehouse", "ETL", "ELT", "data warehouse", "data lake", "Snowflake", "dbt", "data governance"],
   alternates: {
-    canonical: "https://agenfy.fr/services/data",
+    canonical: "https://www.agenfy.fr/services/data",
   },
   openGraph: {
-    title: "Data Engineering - Architecture Lakehouse & Analytics | Agenfy",
-    description: "Exploitez le plein potentiel de vos données. Architecture Lakehouse, pipelines ETL/ELT, Data Governance.",
-    url: "https://agenfy.fr/services/data",
+    title: "Data Engineering & Analytics | Agenfy",
+    description: "Architecture Lakehouse, pipelines ETL/ELT, Data Governance.",
+    url: "https://www.agenfy.fr/services/data",
     type: "website",
   },
 };

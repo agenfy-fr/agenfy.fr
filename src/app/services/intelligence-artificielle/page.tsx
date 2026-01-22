@@ -7,16 +7,16 @@ import Link from "next/link";
 import { Brain, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Intelligence Artificielle - IA, Machine Learning & LLM",
-  description: "L'IA au service de votre performance. Machine Learning, LLM, RAG, IA Générative, Computer Vision et MLOps pour automatiser vos processus. Experts IA à Paris.",
+  title: "Intelligence Artificielle & ML",
+  description: "L'IA au service de votre performance. Machine Learning, LLM, RAG, IA Générative et MLOps. Experts IA à Paris.",
   keywords: ["intelligence artificielle", "machine learning", "LLM", "RAG", "IA générative", "MLOps", "GPT", "Claude", "computer vision"],
   alternates: {
-    canonical: "https://agenfy.fr/services/intelligence-artificielle",
+    canonical: "https://www.agenfy.fr/services/intelligence-artificielle",
   },
   openGraph: {
-    title: "Intelligence Artificielle - IA, Machine Learning & LLM | Agenfy",
-    description: "L'IA au service de votre performance. Machine Learning, LLM, RAG, IA Générative et MLOps.",
-    url: "https://agenfy.fr/services/intelligence-artificielle",
+    title: "Intelligence Artificielle & ML | Agenfy",
+    description: "Machine Learning, LLM, RAG, IA Générative et MLOps.",
+    url: "https://www.agenfy.fr/services/intelligence-artificielle",
     type: "website",
   },
 };

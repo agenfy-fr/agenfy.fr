@@ -3,7 +3,7 @@ import { getAllPosts } from '@/lib/blog';
 import { caseStudies } from '@/lib/case-studies';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://agenfy.fr';
+  const baseUrl = 'https://www.agenfy.fr';
 
   // Routes statiques
   const staticRoutes = [
