@@ -89,7 +89,7 @@ export default function IAServicePage() {
                   <span className="gradient-text">Intelligence Artificielle</span>
                 </h1>
                 <p className="text-xl text-muted-foreground mb-8">
-                  L'IA au service de votre performance. Nous développons des solutions d'IA sur-mesure 
+                  L&apos;IA au service de votre performance. Nous développons des solutions d&apos;IA sur-mesure
                   qui automatisent vos processus et créent de nouvelles opportunités business.
                 </p>
                 <Button asChild size="lg" className="rounded-full px-8 gradient-btn border-0">
@@ -152,10 +152,10 @@ export default function IAServicePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold text-foreground mb-6">
-              Prêt à intégrer l'IA dans votre entreprise ?
+              Prêt à intégrer l&apos;IA dans votre entreprise ?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Découvrez comment l'intelligence artificielle peut transformer votre activité.
+              Découvrez comment l&apos;intelligence artificielle peut transformer votre activité.
             </p>
             <Button asChild size="lg" className="rounded-full px-8 gradient-btn border-0">
               <Link href="/contact">

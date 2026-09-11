@@ -68,10 +68,21 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
               </Link>
             </Button>
             
-            <div className="flex gap-2 mb-6">
+            <div className="flex flex-wrap gap-2 mb-6">
               <Badge className="rounded-full bg-primary/90">{study.category}</Badge>
               <Badge variant="outline" className="rounded-full">{study.industry}</Badge>
+              {study.caseType === "example" && (
+                <Badge variant="outline" className="rounded-full text-muted-foreground">
+                  Exemple / démonstration
+                </Badge>
+              )}
             </div>
+            {study.caseType === "example" && (
+              <p className="text-sm text-muted-foreground mb-6 max-w-3xl">
+                Ce cas illustre notre méthodologie sur un scénario type de la catégorie {study.category.toLowerCase()} ;
+                il ne représente pas une mission client nommée.
+              </p>
+            )}
             
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
               {study.title}

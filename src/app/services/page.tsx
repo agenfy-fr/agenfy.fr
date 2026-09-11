@@ -9,6 +9,15 @@ import { Database, Brain, Cloud, Users, ArrowRight, CheckCircle2 } from "lucide-
 export const metadata: Metadata = {
   title: "Nos Services | Agenfy - Data, IA, Cloud & Conseil",
   description: "Découvrez nos 4 piliers d'expertise : Data, Intelligence Artificielle, Infrastructure Cloud et Conseil stratégique pour votre transformation digitale.",
+  alternates: {
+    canonical: "https://www.agenfy.fr/services",
+  },
+  openGraph: {
+    title: "Nos Services | Agenfy",
+    description: "4 piliers d'expertise : Data, Intelligence Artificielle, Infrastructure Cloud et Conseil.",
+    url: "https://www.agenfy.fr/services",
+    type: "website",
+  },
 };
 
 const services = [
@@ -89,8 +98,8 @@ export default function ServicesPage() {
               <span className="gradient-text">votre transformation</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Une approche holistique qui couvre l'ensemble de vos besoins technologiques, 
-              de la stratégie à l'implémentation.
+              Une approche holistique qui couvre l&apos;ensemble de vos besoins technologiques,
+              de la stratégie à l&apos;implémentation.
             </p>
           </div>
         </section>

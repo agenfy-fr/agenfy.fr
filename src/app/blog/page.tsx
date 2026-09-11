@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Header, Footer } from "@/components/sections";
+import { Header, Footer, Newsletter } from "@/components/sections";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Clock, User, ArrowRight, Mail } from "lucide-react";
+import { Clock, User } from "lucide-react";
 import { blogPosts } from "@/lib/blog-posts";
 
 const categories = ["Tous", "Data", "IA", "Cloud", "Conseil", "Tech"];
@@ -22,7 +22,6 @@ function formatDate(dateString: string): string {
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("Tous");
-  const [email, setEmail] = useState("");
 
   const filteredPosts = useMemo(() => {
     if (selectedCategory === "Tous") {
@@ -168,33 +167,7 @@ export default function BlogPage() {
         )}
 
         {/* Newsletter */}
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-              <CardContent className="p-8 md:p-12 text-center">
-                <Mail className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h2 className="text-2xl font-bold text-foreground mb-2">
-                  Restez informé
-                </h2>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  Recevez nos derniers articles et insights tech directement dans votre boîte mail.
-                </p>
-                <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                  <input
-                    type="email"
-                    placeholder="votre@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-full bg-background border border-border/50 focus:border-primary focus:outline-none"
-                  />
-                  <Button type="submit" className="rounded-full gradient-btn">
-                    S&apos;abonner
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
+        <Newsletter />
       </main>
       <Footer />
     </div>

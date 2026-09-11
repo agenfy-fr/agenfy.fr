@@ -5,6 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export const metadata: Metadata = {
   title: "Mentions Légales | Agenfy",
   description: "Mentions légales et conditions générales du site Agenfy, marque de Hasfy SAS.",
+  alternates: {
+    canonical: "https://www.agenfy.fr/mentions-legales",
+  },
 };
 
 export default function MentionsLegalesPage() {

@@ -41,6 +41,11 @@ export interface CaseStudy {
   results: CaseStudyResult[];
   keyLearnings: string[];
   category: "Data" | "IA" | "Cloud" | "Conseil";
+  /**
+   * "example" : cas illustratif d'une méthodologie Agenfy, non attribué à un client nommé.
+   * "client" : mission réelle, vérifiable, avec accord du client pour publication.
+   */
+  caseType: "example" | "client";
 }
 
 export const caseStudies: CaseStudy[] = [
@@ -134,7 +139,8 @@ export const caseStudies: CaseStudy[] = [
       "La documentation et les tests dbt sont essentiels pour la maintenabilité",
       "Le self-service nécessite une couche sémantique bien pensée"
     ],
-    category: "Data"
+    category: "Data",
+    caseType: "example",
   },
   {
     id: "ecommerce-recommandation-ia",
@@ -226,7 +232,8 @@ export const caseStudies: CaseStudy[] = [
       "L'A/B testing est indispensable pour valider l'impact business réel",
       "Le monitoring des dérives de données est critique en production"
     ],
-    category: "IA"
+    category: "IA",
+    caseType: "example",
   },
   {
     id: "finance-migration-cloud",
@@ -318,7 +325,8 @@ export const caseStudies: CaseStudy[] = [
       "La formation des équipes est aussi importante que la technologie",
       "Une Landing Zone bien conçue facilite toutes les migrations futures"
     ],
-    category: "Cloud"
+    category: "Cloud",
+    caseType: "example",
   },
   {
     id: "industrie-transformation-digitale",
@@ -410,7 +418,8 @@ export const caseStudies: CaseStudy[] = [
       "La data governance doit être au service des métiers, pas une contrainte bureaucratique",
       "La formation et l'accompagnement sont aussi importants que la technologie"
     ],
-    category: "Conseil"
+    category: "Conseil",
+    caseType: "example",
   }
 ];
 

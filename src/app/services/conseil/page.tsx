@@ -152,7 +152,7 @@ export default function ConseilServicePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold text-foreground mb-6">
-              Besoin d'un regard expert sur votre stratégie ?
+              Besoin d&apos;un regard expert sur votre stratégie ?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
               Échangeons sur vos enjeux et définissons ensemble la meilleure approche.

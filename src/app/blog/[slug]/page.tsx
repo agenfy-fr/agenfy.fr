@@ -4,7 +4,7 @@ import { Header, Footer } from "@/components/sections";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft, Clock, User, Calendar, Share2 } from "lucide-react";
+import { ArrowLeft, Clock, User, Calendar } from "lucide-react";
 import { blogPosts, getBlogPostBySlug } from "@/lib/blog-posts";
 
 export async function generateStaticParams() {

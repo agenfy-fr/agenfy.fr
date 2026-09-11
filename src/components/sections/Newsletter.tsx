@@ -34,7 +34,7 @@ export function Newsletter() {
 
       setSubmitted(true);
       setEmail("");
-    } catch (err) {
+    } catch {
       setError('Erreur de connexion. Veuillez réessayer.');
     } finally {
       setLoading(false);

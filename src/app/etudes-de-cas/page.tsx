@@ -67,6 +67,13 @@ export default function CaseStudiesPage() {
                             {study.industry}
                           </Badge>
                         </div>
+                        {study.caseType === "example" && (
+                          <div className="absolute top-4 right-4">
+                            <Badge variant="outline" className="rounded-full bg-background/90 text-muted-foreground text-xs">
+                              Exemple / démonstration
+                            </Badge>
+                          </div>
+                        )}
                       </div>
                       
                       {/* Content */}
