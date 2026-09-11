@@ -14,7 +14,7 @@ src/
 │   ├── layouts/   # Layouts réutilisables (PageLayout)
 │   └── ui/        # Composants UI shadcn/ui (Button, Card, Badge...)
 ├── lib/           # Utilitaires et services (supabase, blog, case-studies)
-content/           # Contenu markdown pour le blog (non encore peuplé)
+content/blog/      # Articles markdown legacy, non branchés au blog rendu (voir docs/AGENFY-AUDIT.md §2.3)
 ```
 
 ### Patterns clés
@@ -69,10 +69,12 @@ API Route `/api/newsletter` → table Supabase `newsletter_subscribers`.
 
 ## Commandes
 
+Gestionnaire de paquets : **pnpm** (voir `packageManager` dans `package.json`).
+
 ```bash
-npm run dev    # Serveur de dev (localhost:3000)
-npm run build  # Build production
-npm run lint   # ESLint
+pnpm dev      # Serveur de dev (localhost:3000)
+pnpm build    # Build production
+pnpm lint     # ESLint
 ```
 
 ## Variables d'environnement requises
