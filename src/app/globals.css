@@ -46,6 +46,29 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Fluid type scale — one utility instead of a sm:/lg: stack repeated per page */
+  --text-hero: clamp(2.25rem, 1.4rem + 3.5vw, 4.5rem);
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.02em;
+  --text-h1: clamp(1.875rem, 1.4rem + 1.8vw, 3rem);
+  --text-h1--line-height: 1.15;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h2: clamp(1.5rem, 1.3rem + 0.9vw, 2.25rem);
+  --text-h2--line-height: 1.2;
+  --text-h3: clamp(1.125rem, 1.05rem + 0.3vw, 1.375rem);
+  --text-h3--line-height: 1.3;
+
+  /* Elevation — dark-mode aware via color-mix, replaces hardcoded light-only rgba() */
+  --shadow-glow-sm: 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
+  --shadow-glow: 0 0 40px color-mix(in srgb, var(--primary) 35%, transparent);
+  --shadow-card-hover: 0 20px 40px color-mix(in srgb, var(--primary) 15%, transparent);
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 600ms;
 }
 
 /* Light mode (default) */
@@ -144,7 +167,7 @@ html {
 
 /* Selection */
 ::selection {
-  background: rgba(50, 0, 248, 0.3);
+  background: color-mix(in srgb, var(--primary) 30%, transparent);
   color: var(--foreground);
 }
 
@@ -176,7 +199,7 @@ html {
 
 /* Glow effect */
 .glow {
-  box-shadow: 0 0 40px rgba(50, 0, 248, 0.3);
+  box-shadow: var(--shadow-glow-sm);
 }
 
 /* Gradient background utility */
@@ -192,7 +215,7 @@ html {
 
 .gradient-btn:hover {
   background: linear-gradient(135deg, #2800D8 0%, #4010E0 50%, #9A0AD0 100%);
-  box-shadow: 0 0 30px rgba(50, 0, 248, 0.5);
+  box-shadow: var(--shadow-glow);
 }
 
 /* Animation utilities */
@@ -218,10 +241,10 @@ html {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(50, 0, 248, 0.3);
+    box-shadow: var(--shadow-glow-sm);
   }
   50% {
-    box-shadow: 0 0 40px rgba(50, 0, 248, 0.5);
+    box-shadow: var(--shadow-glow);
   }
 }
 
@@ -348,11 +371,35 @@ html {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(50, 0, 248, 0.1) 50%,
+    color-mix(in srgb, var(--primary) 10%, transparent) 50%,
     transparent 100%
   );
   background-size: 200% 100%;
   animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Respect prefers-reduced-motion for the CSS-driven animations above.
+   fade-in/fade-in-up start from opacity:0, so reduced motion must force
+   them visible rather than merely canceling the animation. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-fade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .animate-pulse-glow,
+  .animate-float-slow,
+  .animate-float-slow-reverse,
+  .animate-pulse-slow,
+  .animate-orb-1,
+  .animate-orb-2,
+  .animate-orb-3,
+  .animate-shimmer,
+  .text-gradient-animate {
+    animation: none;
+  }
 }
 
 /* Stagger animations */
@@ -377,7 +424,7 @@ html {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(50, 0, 248, 0.15);
+  box-shadow: var(--shadow-card-hover);
 }
 
 /* Text gradient animation */

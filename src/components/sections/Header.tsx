@@ -1,22 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Menu, X, ChevronDown } from "lucide-react";
 
 const navLinks = [
-  { 
-    href: "/services", 
+  {
+    href: "/services",
     label: "Services",
     submenu: [
       { href: "/services/data", label: "Data" },
       { href: "/services/intelligence-artificielle", label: "Intelligence Artificielle" },
       { href: "/services/cloud", label: "Infrastructure & Cloud" },
       { href: "/services/conseil", label: "Conseil" },
-    ]
+    ],
   },
   { href: "/a-propos", label: "À propos" },
   { href: "/etudes-de-cas", label: "Études de cas" },
@@ -27,6 +28,8 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,6 +38,25 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!openSubmenu) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpenSubmenu(null);
+    }
+    function handleClickOutside(e: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenSubmenu(null);
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openSubmenu]);
 
   return (
     <header
@@ -48,10 +70,10 @@ export function Header() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Image 
-              src="/logo.svg" 
-              alt="Agenfy" 
-              width={160} 
+            <Image
+              src="/logo.svg"
+              alt="Agenfy"
+              width={160}
               height={50}
               className="h-14 w-auto"
               priority
@@ -59,36 +81,51 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav ref={navRef} className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <div key={link.href} className="relative group">
+              <div key={link.href} className="relative">
                 {link.submenu ? (
                   <>
                     <button
+                      type="button"
                       className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                      onMouseEnter={() => setOpenSubmenu(link.href)}
-                      onMouseLeave={() => setOpenSubmenu(null)}
+                      aria-haspopup="true"
+                      aria-expanded={openSubmenu === link.href}
+                      onClick={() =>
+                        setOpenSubmenu(openSubmenu === link.href ? null : link.href)
+                      }
                     >
                       {link.label}
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          openSubmenu === link.href ? "rotate-180" : ""
+                        }`}
+                      />
                     </button>
-                    <div 
-                      className={`absolute top-full left-0 pt-2 ${openSubmenu === link.href ? 'block' : 'hidden'} group-hover:block`}
-                      onMouseEnter={() => setOpenSubmenu(link.href)}
-                      onMouseLeave={() => setOpenSubmenu(null)}
-                    >
-                      <div className="bg-card border border-border rounded-xl p-2 min-w-[220px] shadow-xl">
-                        {link.submenu.map((sublink) => (
-                          <Link
-                            key={sublink.href}
-                            href={sublink.href}
-                            className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
-                          >
-                            {sublink.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
+                    <AnimatePresence>
+                      {openSubmenu === link.href && (
+                        <motion.div
+                          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -8 }}
+                          transition={{ duration: shouldReduceMotion ? 0 : 0.15 }}
+                          className="absolute top-full left-0 pt-2"
+                        >
+                          <div className="bg-card border border-border rounded-xl p-2 min-w-[220px] shadow-xl">
+                            {link.submenu.map((sublink) => (
+                              <Link
+                                key={sublink.href}
+                                href={sublink.href}
+                                className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
+                                onClick={() => setOpenSubmenu(null)}
+                              >
+                                {sublink.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </>
                 ) : (
                   <Link
@@ -117,6 +154,7 @@ export function Header() {
               className="p-2 text-foreground"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -133,10 +171,17 @@ export function Header() {
                     <>
                       <button
                         className="flex items-center justify-between w-full text-muted-foreground hover:text-foreground transition-colors text-lg font-medium py-2"
-                        onClick={() => setOpenSubmenu(openSubmenu === link.href ? null : link.href)}
+                        aria-expanded={openSubmenu === link.href}
+                        onClick={() =>
+                          setOpenSubmenu(openSubmenu === link.href ? null : link.href)
+                        }
                       >
                         {link.label}
-                        <ChevronDown className={`w-4 h-4 transition-transform ${openSubmenu === link.href ? 'rotate-180' : ''}`} />
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform ${
+                            openSubmenu === link.href ? "rotate-180" : ""
+                          }`}
+                        />
                       </button>
                       {openSubmenu === link.href && (
                         <div className="pl-4 flex flex-col gap-2 mt-2">
