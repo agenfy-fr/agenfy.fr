@@ -6,15 +6,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/'],
+        disallow: ['/api/', '/admin/'],
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
+        disallow: ['/api/', '/admin/'],
       },
       {
         userAgent: 'Bingbot',
         allow: '/',
+        disallow: ['/api/', '/admin/'],
       },
     ],
     sitemap: 'https://www.agenfy.fr/sitemap.xml',
