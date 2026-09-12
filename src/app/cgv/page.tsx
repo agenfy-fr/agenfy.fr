@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Header, Footer } from "@/components/sections";
 import { Badge } from "@/components/ui/badge";
+import { Reveal } from "@/components/effects";
 
 export const metadata: Metadata = {
   title: "Conditions Générales de Vente",
@@ -17,11 +18,13 @@ export default function CGVPage() {
       <main className="pt-20">
         <section className="py-24 lg:py-32">
           <div className="max-w-4xl mx-auto px-6 lg:px-8">
-            <Badge variant="outline" className="rounded-full px-4 py-2 mb-8 border-primary/30 bg-primary/5">
-              Légal
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-text">Conditions Générales de Vente</h1>
-            
+            <Reveal>
+              <Badge variant="outline" className="rounded-full px-4 py-2 mb-8 border-primary/30 bg-primary/5">
+                Légal
+              </Badge>
+              <h1 className="text-h1 font-bold mb-8 gradient-text">Conditions Générales de Vente</h1>
+            </Reveal>
+
             <div className="prose prose-neutral dark:prose-invert max-w-none">
               <p className="text-muted-foreground text-lg mb-8">
                 Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles entre Hasfy SAS (opérant sous la marque Agenfy) et ses clients pour toute prestation de conseil et d&apos;intégration technologique.

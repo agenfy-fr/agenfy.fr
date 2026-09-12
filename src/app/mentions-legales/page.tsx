@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Header, Footer } from "@/components/sections";
 import { Badge } from "@/components/ui/badge";
+import { Reveal } from "@/components/effects";
 
 export const metadata: Metadata = {
   title: "Mentions Légales",
@@ -17,11 +18,13 @@ export default function MentionsLegalesPage() {
       <main className="pt-20">
         <section className="py-24 lg:py-32">
           <div className="max-w-4xl mx-auto px-6 lg:px-8">
-            <Badge variant="outline" className="rounded-full px-4 py-2 mb-8 border-primary/30 bg-primary/5">
-              Légal
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-text">Mentions Légales & Conditions Générales</h1>
-            
+            <Reveal>
+              <Badge variant="outline" className="rounded-full px-4 py-2 mb-8 border-primary/30 bg-primary/5">
+                Légal
+              </Badge>
+              <h1 className="text-h1 font-bold mb-8 gradient-text">Mentions Légales & Conditions Générales</h1>
+            </Reveal>
+
             <div className="prose prose-neutral dark:prose-invert max-w-none">
               <p className="text-muted-foreground text-lg mb-8">
                 Conformément aux dispositions des articles 6-III et 19 de la loi n° 2004-575 du 21 juin 2004 pour la Confiance dans l&apos;Économie Numérique, dite L.C.E.N., il est porté à la connaissance des utilisateurs et visiteurs du site les informations suivantes :

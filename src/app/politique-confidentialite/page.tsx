@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Header, Footer } from "@/components/sections";
 import { Badge } from "@/components/ui/badge";
+import { Reveal } from "@/components/effects";
 
 export const metadata: Metadata = {
   title: "Politique de Confidentialité",
@@ -17,11 +18,13 @@ export default function PolitiqueConfidentialitePage() {
       <main className="pt-20">
         <section className="py-24 lg:py-32">
           <div className="max-w-4xl mx-auto px-6 lg:px-8">
-            <Badge variant="outline" className="rounded-full px-4 py-2 mb-8 border-primary/30 bg-primary/5">
-              Légal
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-text">Politique de Confidentialité</h1>
-            
+            <Reveal>
+              <Badge variant="outline" className="rounded-full px-4 py-2 mb-8 border-primary/30 bg-primary/5">
+                Légal
+              </Badge>
+              <h1 className="text-h1 font-bold mb-8 gradient-text">Politique de Confidentialité</h1>
+            </Reveal>
+
             <div className="prose prose-neutral dark:prose-invert max-w-none">
               <p className="text-muted-foreground text-lg mb-8">
                 Chez Agenfy (marque de Hasfy SAS), la protection de votre vie privée est importante pour nous. Cette politique de confidentialité a été rédigée pour vous informer sur la manière dont nous collectons, utilisons, partageons et protégeons vos informations lorsque vous utilisez notre site Web ou nos services.
