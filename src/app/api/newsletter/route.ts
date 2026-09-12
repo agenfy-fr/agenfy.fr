@@ -13,15 +13,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Insertion dans Supabase
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('newsletter_subscribers')
       .insert([
         {
           email,
           subscribed_at: new Date().toISOString(),
         },
-      ])
-      .select();
+      ]);
 
     if (error) {
       // Si l'email existe déjà
@@ -40,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: 'Inscription réussie', data },
+      { message: 'Inscription réussie' },
       { status: 201 }
     );
   } catch (error) {

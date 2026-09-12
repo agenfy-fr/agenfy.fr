@@ -70,3 +70,22 @@ Schéma cible pour les phases 8-11. Toutes ces tables ont RLS activé, écriture
 /admin/redirects
 /admin/content-engine     → pipeline IA (Phase 10)
 ```
+
+## 7. Suivi — ce qui est réellement construit (Phase 9, en cours)
+
+Cette section documente ce qui existe dans le code, pour que le reste de ce fichier (schéma cible complet, phases 8-11) ne soit pas confondu avec l'état actuel.
+
+**Construit :**
+
+- Authentification Supabase Auth (`@supabase/ssr`) : `middleware.ts` protège tout `/admin/*` sauf `/admin/login`, redirige les sessions déjà connectées loin de `/admin/login`. Server Actions `login`/`signOut`. Aucun compte n'a été créé — reste à faire manuellement via le dashboard Supabase.
+- `/admin` restructuré en route group `(dashboard)` (`src/app/admin/(dashboard)/`) : un layout partagé (nav + déconnexion) englobe le tableau de bord et `/admin/leads`, sans s'appliquer à `/admin/login` — le groupe ne change rien à l'URL.
+- Table `leads` (migration `supabase/migrations/0001_leads.sql`, **non appliquée** — à exécuter manuellement dans le SQL Editor Supabase) : colonnes conformes au schéma ci-dessus, RLS avec insert public (`anon`) et lecture/écriture réservées aux comptes authentifiés.
+- Formulaire de contact natif sur `/contact` (`src/app/contact/actions.ts`, Server Action `submitContactForm` avec `useActionState`) : en plus du widget Calendly existant, capture nom/entreprise/email/téléphone/service/message et insère dans `leads` avec `source: "contact_page"`.
+- `/admin/leads` : liste les leads (tri par date décroissante), changement de statut inline (`lead-status-select.tsx`, Server Action `updateLeadStatus`), et affiche un message explicite si la table n'existe pas encore plutôt qu'une erreur brute.
+- KPI "Nouveaux leads" ajouté au tableau de bord, avec fallback `—` si la requête échoue (table absente, etc.).
+
+**Pas construit** (reste dans le schéma cible, phases suivantes) : RBAC/`profiles`, `posts`, `case_studies` en base (les fichiers TS restent la source de vérité), `page_seo`, `redirects`, `content_generation_jobs`, `audit_logs`, rate limiting sur les routes publiques.
+
+**Faille de sécurité trouvée et corrigée (2026-09-12)** : `newsletter_subscribers` était lisible publiquement — vérifié empiriquement (insertion d'une ligne test avec la clé service role, relecture réussie avec la clé anon/publishable). N'importe qui inspectant le bundle JS du site pouvait donc exporter la liste complète des emails inscrits. Migration `supabase/migrations/0002_secure_newsletter_subscribers.sql` écrite (active RLS, ne garde que l'insert public, lecture/suppression réservées aux comptes authentifiés) — **non appliquée automatiquement, à exécuter en priorité**. `/api/newsletter/route.ts` ajusté en conséquence (retrait du `.select()` après insert, devenu inutile côté frontend et plus fragile une fois le SELECT anonyme retiré).
+
+**MCP Supabase** : serveur ajouté au scope projet (`.mcp.json`, `claude mcp add ...`) pour permettre l'application directe des migrations et l'audit RLS via les advisors Supabase. Statut au moment de la rédaction : `Pending approval` — nécessite qu'un utilisateur relance `claude` (ou réponde au prompt d'autorisation) puis valide l'OAuth Supabase dans le navigateur ; ni l'un ni l'autre ne peuvent être faits par l'agent. Une fois connecté, les deux migrations ci-dessus peuvent être appliquées directement, et l'ensemble des tables peut être audité pour RLS sans dépendre de tests empiriques via REST.
