@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Header, Footer } from "@/components/sections";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { BackgroundBeams, Reveal } from "@/components/effects";
 import Link from "next/link";
 import { ArrowLeft, Clock, User, Calendar } from "lucide-react";
 import { blogPosts, getBlogPostBySlug } from "@/lib/blog-posts";
@@ -58,10 +59,9 @@ export default async function BlogPostPage({
       <main className="pt-20">
         {/* Hero Section */}
         <section className="py-16 lg:py-24 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[128px]" />
-          
-          <div className="relative max-w-4xl mx-auto px-6 lg:px-8">
+          <BackgroundBeams />
+
+          <Reveal className="relative max-w-4xl mx-auto px-6 lg:px-8">
             {/* Back button */}
             <Link href="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8">
               <ArrowLeft className="w-4 h-4" />
@@ -79,7 +79,7 @@ export default async function BlogPostPage({
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+            <h1 className="text-h1 font-bold text-foreground mb-6">
               {post.title}
             </h1>
 
@@ -103,7 +103,7 @@ export default async function BlogPostPage({
                 {post.readTime} de lecture
               </span>
             </div>
-          </div>
+          </Reveal>
         </section>
 
         {/* Article Content */}
@@ -117,8 +117,8 @@ export default async function BlogPostPage({
 
         {/* CTA */}
         <section className="py-16 bg-secondary/20">
-          <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-            <h2 className="text-2xl font-bold text-foreground mb-4">
+          <Reveal className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+            <h2 className="text-h2 font-bold text-foreground mb-4">
               Vous avez un projet ?
             </h2>
             <p className="text-muted-foreground mb-6">
@@ -132,7 +132,7 @@ export default async function BlogPostPage({
                 <Link href="/blog">Voir plus d&apos;articles</Link>
               </Button>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
       <Footer />
