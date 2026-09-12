@@ -331,6 +331,15 @@ html {
   }
 }
 
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
 .animate-fade-in-up {
   animation: fade-in-up 0.8s ease-out forwards;
 }
@@ -378,6 +387,10 @@ html {
   animation: shimmer 3s ease-in-out infinite;
 }
 
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
 /* Respect prefers-reduced-motion for the CSS-driven animations above.
    fade-in/fade-in-up start from opacity:0, so reduced motion must force
    them visible rather than merely canceling the animation. */
@@ -397,8 +410,15 @@ html {
   .animate-orb-2,
   .animate-orb-3,
   .animate-shimmer,
+  .animate-marquee,
   .text-gradient-animate {
     animation: none;
+  }
+
+  /* The marquee's second copy exists only to loop the animation seamlessly;
+     without motion it would just duplicate the list visually. */
+  .marquee-clone {
+    display: none;
   }
 }
 

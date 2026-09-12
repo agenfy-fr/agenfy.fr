@@ -1,10 +1,12 @@
 import {
   Header,
   Hero,
+  Trust,
   Benefits,
   Expertise,
   Process,
   Clients,
+  Insights,
   CTA,
   Newsletter,
   Footer,
@@ -16,10 +18,12 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <Benefits />
+        <Trust />
         <Expertise />
+        <Benefits />
         <Process />
         <Clients />
+        <Insights />
         <CTA />
         <Newsletter />
       </main>
