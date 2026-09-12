@@ -50,7 +50,7 @@ export function Hero() {
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-full px-8 py-6 text-lg border-border/50 hover:bg-secondary/50">
-              <Link href="#services">
+              <Link href="#expertise">
                 Découvrir nos services
               </Link>
             </Button>

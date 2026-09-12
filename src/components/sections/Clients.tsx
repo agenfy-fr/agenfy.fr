@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Database, Brain, Cloud, Briefcase, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { caseStudies } from "@/lib/case-studies";
+import { Reveal } from "@/components/effects";
 
 const categoryIcons: Record<string, LucideIcon> = {
   Data: Database,
@@ -26,25 +27,26 @@ export function Clients() {
     <section id="clients" className="py-24 lg:py-32 relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section header */}
-        <div className="text-center mb-16">
+        <Reveal className="text-center mb-16">
           <p className="text-primary text-sm font-semibold uppercase tracking-wider mb-4">
             Études de cas
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+          <h2 className="text-h1 font-bold text-foreground mb-6">
             Des solutions <span className="gradient-text">éprouvées</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Découvrez nos approches concrètes sur des projets Data, IA, Cloud et Conseil. 
+            Découvrez nos approches concrètes sur des projets Data, IA, Cloud et Conseil.
             Cliquez pour explorer les détails.
           </p>
-        </div>
+        </Reveal>
 
         {/* Case studies grid */}
         <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {caseStudies.map((study) => {
+          {caseStudies.map((study, index) => {
             const Icon = categoryIcons[study.category];
             return (
-            <Link key={study.id} href={`/etudes-de-cas/${study.id}`} className="group">
+            <Reveal key={study.id} delay={index * 0.1}>
+            <Link href={`/etudes-de-cas/${study.id}`} className="group">
               <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300 overflow-hidden h-full py-0">
                 <CardContent className="p-0">
                   {/* Header with gradient */}
@@ -109,6 +111,7 @@ export function Clients() {
                 </CardContent>
               </Card>
             </Link>
+            </Reveal>
             );
           })}
         </div>

@@ -2,7 +2,7 @@ import {
   Header,
   Hero,
   Benefits,
-  Services,
+  Expertise,
   Process,
   Clients,
   CTA,
@@ -17,7 +17,7 @@ export default function Home() {
       <main>
         <Hero />
         <Benefits />
-        <Services />
+        <Expertise />
         <Process />
         <Clients />
         <CTA />

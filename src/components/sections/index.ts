@@ -1,7 +1,7 @@
 export { Header } from "./Header";
 export { Hero } from "./Hero";
 export { Benefits } from "./Benefits";
-export { Services } from "./Services";
+export { Expertise } from "./Expertise";
 export { Process } from "./Process";
 export { Clients } from "./Clients";
 export { CTA } from "./CTA";

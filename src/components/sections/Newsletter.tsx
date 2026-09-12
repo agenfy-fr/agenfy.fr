@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/effects";
 import { Mail, Sparkles } from "lucide-react";
 import { useState } from "react";
 
@@ -47,7 +48,7 @@ export function Newsletter() {
       <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[150px]" />
       
-      <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      <Reveal className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
         <div className="flex items-center justify-center gap-2 mb-6">
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-primary" />
@@ -103,7 +104,7 @@ export function Newsletter() {
             politique de confidentialité
           </a>.
         </p>
-      </div>
+      </Reveal>
     </section>
   );
 }

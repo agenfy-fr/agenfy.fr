@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Reveal } from "@/components/effects";
 import { MessageSquare, Search, Lightbulb, Rocket, RefreshCw } from "lucide-react";
 
 const steps = [
@@ -49,18 +50,18 @@ export function Process() {
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section header */}
-        <div className="text-center mb-16">
+        <Reveal className="text-center mb-16">
           <p className="text-primary text-sm font-semibold uppercase tracking-wider mb-4">
             Notre approche
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+          <h2 className="text-h1 font-bold text-foreground mb-6">
             Un processus éprouvé, des résultats garantis
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            De la première discussion au support continu, nous vous accompagnons 
+            De la première discussion au support continu, nous vous accompagnons
             à chaque étape avec rigueur et transparence.
           </p>
-        </div>
+        </Reveal>
 
         {/* Process steps */}
         <div className="relative">
@@ -68,31 +69,30 @@ export function Process() {
           <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent" />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {steps.map((step) => (
-              <Card
-                key={step.number}
-                className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300 group relative"
-              >
-                <CardContent className="p-6">
-                  {/* Step number */}
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-4xl font-bold text-primary/20 group-hover:text-primary/40 transition-colors">
-                      {step.number}
-                    </span>
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <step.icon className="w-5 h-5 text-primary" />
+            {steps.map((step, index) => (
+              <Reveal key={step.number} delay={index * 0.1}>
+                <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300 group relative h-full">
+                  <CardContent className="p-6">
+                    {/* Step number */}
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="text-4xl font-bold text-primary/20 group-hover:text-primary/40 transition-colors">
+                        {step.number}
+                      </span>
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                        <step.icon className="w-5 h-5 text-primary" />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Content */}
-                  <h3 className="text-lg font-semibold text-foreground mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {step.description}
-                  </p>
-                </CardContent>
-              </Card>
+                    {/* Content */}
+                    <h3 className="text-lg font-semibold text-foreground mb-3">
+                      {step.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {step.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </div>
