@@ -3,7 +3,7 @@ import { Header, Footer } from "@/components/sections";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
-  title: "Politique de Confidentialité | Agenfy",
+  title: "Politique de Confidentialité",
   description: "Politique de confidentialité du site Agenfy, marque de Hasfy SAS - Protection des données personnelles.",
   alternates: {
     canonical: "https://www.agenfy.fr/politique-confidentialite",

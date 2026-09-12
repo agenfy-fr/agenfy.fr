@@ -3,7 +3,7 @@ import { Header, Footer } from "@/components/sections";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
-  title: "Conditions Générales de Vente | Agenfy",
+  title: "Conditions Générales de Vente",
   description: "Conditions générales de vente des prestations Agenfy, marque de Hasfy SAS.",
   alternates: {
     canonical: "https://www.agenfy.fr/cgv",

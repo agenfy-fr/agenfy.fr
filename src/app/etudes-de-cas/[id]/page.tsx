@@ -25,11 +25,11 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
   const study = getCaseStudyById(id);
   
   if (!study) {
-    return { title: "Étude de cas non trouvée | Agenfy" };
+    return { title: "Étude de cas non trouvée" };
   }
 
   return {
-    title: `${study.title} | Agenfy - Étude de cas`,
+    title: `${study.title} - Étude de cas`,
     description: study.description,
   };
 }

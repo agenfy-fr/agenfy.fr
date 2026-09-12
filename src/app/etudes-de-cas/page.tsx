@@ -8,7 +8,7 @@ import { ArrowRight, Lightbulb, Clock, Users, CheckCircle2 } from "lucide-react"
 import { caseStudies } from "@/lib/case-studies";
 
 export const metadata: Metadata = {
-  title: "Études de cas | Agenfy - Nos approches et méthodologies",
+  title: "Études de cas - Nos approches et méthodologies",
   description: "Découvrez nos études de cas détaillées. Des approches concrètes en Data, IA et Cloud pour transformer votre entreprise.",
 };
 

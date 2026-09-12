@@ -22,11 +22,11 @@ export async function generateMetadata({
   const post = getBlogPostBySlug(slug);
   
   if (!post) {
-    return { title: "Article non trouvé | Agenfy" };
+    return { title: "Article non trouvé" };
   }
 
   return {
-    title: `${post.title} | Agenfy Blog`,
+    title: `${post.title} - Blog`,
     description: post.excerpt,
   };
 }
