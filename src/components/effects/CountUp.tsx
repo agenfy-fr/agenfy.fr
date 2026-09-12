@@ -17,8 +17,11 @@ function parseValue(value: string): { prefix: string; number: number; suffix: st
 }
 
 /**
- * Animates a stat's leading number up from 0 once it scrolls into view.
- * Renders the final value immediately under prefers-reduced-motion.
+ * Displays the real value at all times (SSR, no-JS, pre-hydration, and
+ * before it scrolls into view all show e.g. "25+" — never a placeholder
+ * "0", which crawlers and text extractors would otherwise pick up as the
+ * real number). Once it scrolls into view, briefly animates down to 0 and
+ * back up as a visual flourish on top of that already-correct text.
  */
 export function CountUp({ value, className }: CountUpProps) {
   const { prefix, number, suffix } = parseValue(value);
@@ -29,8 +32,8 @@ export function CountUp({ value, className }: CountUpProps) {
   const springValue = useSpring(motionValue, { damping: 30, stiffness: 90 });
 
   useEffect(() => {
-    if (isInView) motionValue.set(number);
-  }, [isInView, motionValue, number]);
+    if (isInView && !shouldReduceMotion) motionValue.set(number);
+  }, [isInView, motionValue, number, shouldReduceMotion]);
 
   useEffect(() => {
     if (shouldReduceMotion) return;
@@ -40,17 +43,9 @@ export function CountUp({ value, className }: CountUpProps) {
     return unsubscribe;
   }, [springValue, prefix, suffix, shouldReduceMotion]);
 
-  if (shouldReduceMotion) {
-    return (
-      <span ref={ref} className={className}>
-        {value}
-      </span>
-    );
-  }
-
   return (
     <span ref={ref} className={className}>
-      {prefix}0{suffix}
+      {value}
     </span>
   );
 }

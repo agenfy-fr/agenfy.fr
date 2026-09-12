@@ -14,7 +14,6 @@ src/
 │   ├── layouts/   # Layouts réutilisables (PageLayout)
 │   └── ui/        # Composants UI shadcn/ui (Button, Card, Badge...)
 ├── lib/           # Utilitaires et services (supabase, blog, case-studies)
-content/blog/      # Articles markdown legacy, non branchés au blog rendu (voir docs/AGENFY-AUDIT.md §2.3)
 ```
 
 ### Patterns clés
@@ -62,7 +61,7 @@ import { PageLayout } from "@/components/layouts";
 Données statiques TypeScript dans `src/lib/case-studies.ts` avec interface `CaseStudy`.
 
 ### Blog
-Articles Markdown dans `content/blog/` parsés via `gray-matter`. Fonctions dans `src/lib/blog.ts`.
+Articles en dur dans `src/lib/blog-posts.tsx` (tableau `blogPosts`, contenu en JSX). Pas de CMS ni de fichiers markdown — voir `docs/CONTENT-STRATEGY.md` pour la cible (migration Supabase en Phase 8).
 
 ### Newsletter
 API Route `/api/newsletter` → table Supabase `newsletter_subscribers`.

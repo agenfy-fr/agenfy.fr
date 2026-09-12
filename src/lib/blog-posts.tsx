@@ -1252,7 +1252,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "rag-llm-urgence-entreprise",
     title: "RAG et LLM en Entreprise : Pourquoi Vous Ne Pouvez Plus Attendre",
-    excerpt: "L&apos;IA générative transforme les entreprises. Découvrez comment le RAG permet d&apos;exploiter vos données internes avec les LLM.",
+    excerpt: "L'IA générative transforme les entreprises. Découvrez comment le RAG permet d'exploiter vos données internes avec les LLM.",
     category: "IA",
     author: "Équipe Agenfy",
     readTime: "10 min",
@@ -1435,7 +1435,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "migration-modern-data-stack-guide",
     title: "Migration vers une Modern Data Stack : Guide Complet 2026",
-    excerpt: "De la stack legacy à l&apos;architecture moderne : Snowflake, dbt, Fivetran, Airbyte. Méthodologie, pièges à éviter et ROI attendu.",
+    excerpt: "De la stack legacy à l'architecture moderne : Snowflake, dbt, Fivetran, Airbyte. Méthodologie, pièges à éviter et ROI attendu.",
     category: "Data",
     author: "Équipe Agenfy",
     readTime: "12 min",

@@ -15,19 +15,20 @@ Voir [SEO-STRATEGY.md](SEO-STRATEGY.md) §3 pour la décision de garder `/servic
 | Construire un pipeline MLOps en 2026 | IA | Partiel — manque une section coût/alternatives claire |
 | Le conseil tech : au-delà de l'audit | Conseil | Partiel — pas de comparatif ni de FAQ |
 | Rust vs Go pour vos microservices | Tech (hors cluster) | Oui sur la forme — mais catégorie "Tech" ne correspond à aucun des 4 clusters métier ; à requalifier ou assumer comme contenu de notoriété technique hors funnel commercial |
+| RAG et LLM en Entreprise | IA | Oui — urgence chiffrée, 5 cas d'usage, étapes de mise en œuvre |
+| Migration vers une Modern Data Stack | Data | Oui — composants détaillés, coûts, erreurs à éviter |
+| FinOps pour PME | Cloud | Oui — tableaux de coûts, ROI chiffré, erreurs classiques |
 
-*(Les 3 articles restants n'ont pas été audités ligne à ligne — même exercice à faire avant la Phase 8.)*
-
-**Contenu markdown orphelin** (`content/blog/*.md`, 3 fichiers, voir audit §2.3) : `finops-pme-reduire-facture-cloud`, `migration-modern-data-stack-guide`, `rag-llm-urgence-entreprise`. Rédactionnellement bons (le fichier RAG suit déjà la grille GEO avec un tableau et des chiffres datés), mais jamais rendus sur le site. **Décision Phase 8** : les migrer dans le vrai pipeline (probablement les meilleurs candidats pour combler les manques du cluster IA/Cloud ci-dessus) plutôt que les perdre.
+**Mise à jour** : le contenu autrefois orphelin en markdown (`content/blog/*.md`) a été porté dans `lib/blog-posts.tsx` sous les mêmes slugs (RAG, Modern Data Stack, FinOps ci-dessus) et est maintenant réellement publié. `content/blog/`, `lib/blog.ts` et la dépendance `gray-matter` ont été supprimés, devenus redondants.
 
 ## 3. Backlog de satellites à produire (mission §9, priorisé par manque le plus criant)
 
 | Cluster | Manque le plus visible | Prochain article suggéré |
 |---|---|---|
-| IA | Rien sur RAG ni agents IA dans le pipeline **rendu** (existe seulement en markdown orphelin) | Migrer `rag-llm-urgence-entreprise.md` en premier |
-| Cloud | FinOps existe seulement en markdown orphelin | Migrer `finops-pme-reduire-facture-cloud.md` |
-| Data | Rien sur Data Governance, BI, MLOps côté data (MLOps existant est classé IA) | Nouvel article Data Governance |
+| IA | Rien sur les agents IA autonomes spécifiquement (RAG et LLM généraliste sont couverts) | Nouvel article "Agents IA en entreprise : cas d'usage et limites" |
+| Data | Rien sur Data Governance ni BI en tant que tel (MLOps existant est classé IA) | Nouvel article Data Governance |
 | Conseil | Le plus faible des 4 : 1 seul article, pas de FAQ, pas de comparatif | Nouvel article "Audit SI : comment ça se passe" avec grille de coût |
+| Cloud | Bien couvert (migration, Kubernetes, FinOps) — prochain effort à faible priorité | Comparatif AWS vs Azure vs GCP par cas d'usage |
 
 ## 4. Pipeline éditorial — statuts (verrouillés ici pour rester cohérents avec le schéma `posts` de ADMIN-ARCHITECTURE.md)
 
