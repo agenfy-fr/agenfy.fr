@@ -1,6 +1,7 @@
 export { Header } from "./Header";
 export { Hero } from "./Hero";
 export { Trust } from "./Trust";
+export { Problem } from "./Problem";
 export { Benefits } from "./Benefits";
 export { Expertise } from "./Expertise";
 export { Process } from "./Process";

@@ -2,6 +2,7 @@ import {
   Header,
   Hero,
   Trust,
+  Problem,
   Benefits,
   Expertise,
   Process,
@@ -19,6 +20,7 @@ export default function Home() {
       <main>
         <Hero />
         <Trust />
+        <Problem />
         <Expertise />
         <Benefits />
         <Process />
