@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Header, Footer } from "@/components/sections";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { BackgroundBeams, Reveal } from "@/components/effects";
 import { Mail, Phone, MapPin, CheckCircle2 } from "lucide-react";
 
 const benefits = [
@@ -30,7 +31,7 @@ const contactInfo = [
     icon: MapPin,
     label: "Adresse",
     value: "229 rue Saint-Honoré, 75001 Paris",
-    href: "#",
+    href: "https://www.google.com/maps/search/?api=1&query=229+rue+Saint-Honor%C3%A9%2C+75001+Paris",
   },
 ];
 
@@ -52,27 +53,25 @@ export default function ContactPage() {
       <main className="pt-20">
         {/* Hero Section */}
         <section className="py-24 lg:py-32 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[128px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[128px]" />
-          
+          <BackgroundBeams />
+
           <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               {/* Left content */}
-              <div>
+              <Reveal>
                 <Badge variant="outline" className="rounded-full px-4 py-2 mb-8 border-primary/30 bg-primary/5">
                   Contact
                 </Badge>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+                <h1 className="text-hero font-bold mb-6">
                   <span className="text-foreground">Prêt à </span>
                   <span className="gradient-text">accélérer</span>
                   <span className="text-foreground"> ?</span>
                 </h1>
                 <p className="text-lg text-muted-foreground mb-8">
-                  Échangeons sur vos enjeux technologiques. En 30 minutes, nous identifions 
+                  Échangeons sur vos enjeux technologiques. En 30 minutes, nous identifions
                   ensemble les leviers de croissance et les quick wins pour votre entreprise.
                 </p>
-                
+
                 <ul className="space-y-3 mb-8">
                   {benefits.map((benefit) => (
                     <li key={benefit} className="flex items-center gap-3">
@@ -88,6 +87,8 @@ export default function ContactPage() {
                     <a
                       key={info.label}
                       href={info.href}
+                      target={info.href.startsWith("http") ? "_blank" : undefined}
+                      rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined}
                       className="flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
@@ -100,19 +101,21 @@ export default function ContactPage() {
                     </a>
                   ))}
                 </div>
-              </div>
+              </Reveal>
 
               {/* Right content - Calendly */}
-              <Card className="bg-card/50 border-border/50">
-                <CardContent className="p-0">
-                  {/* Calendly inline widget */}
-                  <div 
-                    className="calendly-inline-widget rounded-xl overflow-hidden" 
-                    data-url="https://calendly.com/contact-agenfy/30min?primary_color=6b4eff"
-                    style={{ minWidth: "320px", height: "650px" }}
-                  />
-                </CardContent>
-              </Card>
+              <Reveal delay={0.1}>
+                <Card className="bg-card/50 border-border/50">
+                  <CardContent className="p-0">
+                    {/* Calendly inline widget */}
+                    <div
+                      className="calendly-inline-widget rounded-xl overflow-hidden"
+                      data-url="https://calendly.com/contact-agenfy/30min?primary_color=6b4eff"
+                      style={{ minWidth: "320px", height: "650px" }}
+                    />
+                  </CardContent>
+                </Card>
+              </Reveal>
             </div>
           </div>
         </section>

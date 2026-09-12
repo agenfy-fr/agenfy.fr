@@ -3,6 +3,7 @@ import { Header, Footer } from "@/components/sections";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { BackgroundBeams, Reveal } from "@/components/effects";
 import Link from "next/link";
 import { Database, Brain, Cloud, Users, ArrowRight, CheckCircle2 } from "lucide-react";
 
@@ -86,14 +87,13 @@ export default function ServicesPage() {
       <main className="pt-20">
         {/* Hero Section */}
         <section className="py-24 lg:py-32 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[128px]" />
-          
-          <div className="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
+          <BackgroundBeams />
+
+          <Reveal className="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
             <Badge variant="outline" className="rounded-full px-4 py-2 mb-8 border-primary/30 bg-primary/5">
               Nos expertises
             </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+            <h1 className="text-hero font-bold mb-6">
               <span className="text-foreground">4 piliers pour </span>
               <span className="gradient-text">votre transformation</span>
             </h1>
@@ -101,45 +101,47 @@ export default function ServicesPage() {
               Une approche holistique qui couvre l&apos;ensemble de vos besoins technologiques,
               de la stratégie à l&apos;implémentation.
             </p>
-          </div>
+          </Reveal>
         </section>
 
         {/* Services Grid */}
         <section className="py-16 lg:py-24">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-8">
-              {services.map((service) => (
-                <Card key={service.id} className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300 group overflow-hidden">
-                  <CardContent className="p-8">
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="w-14 h-14 rounded-xl gradient-bg flex items-center justify-center flex-shrink-0">
-                        <service.icon className="w-7 h-7 text-white" />
+              {services.map((service, index) => (
+                <Reveal key={service.id} delay={index * 0.1}>
+                  <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300 group overflow-hidden h-full">
+                    <CardContent className="p-8">
+                      <div className="flex items-start gap-4 mb-6">
+                        <div className="w-14 h-14 rounded-xl gradient-bg flex items-center justify-center flex-shrink-0">
+                          <service.icon className="w-7 h-7 text-white" />
+                        </div>
+                        <div>
+                          <h2 className="text-2xl font-bold text-foreground mb-1">{service.title}</h2>
+                          <p className="text-primary text-sm">{service.tagline}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-foreground mb-1">{service.title}</h2>
-                        <p className="text-primary text-sm">{service.tagline}</p>
-                      </div>
-                    </div>
-                    
-                    <p className="text-muted-foreground mb-6">{service.description}</p>
-                    
-                    <ul className="space-y-2 mb-6">
-                      {service.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2 text-sm">
-                          <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
-                          <span className="text-foreground">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    
-                    <Button asChild variant="outline" className="rounded-full group-hover:border-primary/50">
-                      <Link href={service.href}>
-                        En savoir plus
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
+
+                      <p className="text-muted-foreground mb-6">{service.description}</p>
+
+                      <ul className="space-y-2 mb-6">
+                        {service.features.map((feature) => (
+                          <li key={feature} className="flex items-center gap-2 text-sm">
+                            <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
+                            <span className="text-foreground">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <Button asChild variant="outline" className="rounded-full group-hover:border-primary/50">
+                        <Link href={service.href}>
+                          En savoir plus
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -148,8 +150,8 @@ export default function ServicesPage() {
         {/* CTA Section */}
         <section className="py-24 lg:py-32 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
-          <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
+          <Reveal className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
+            <h2 className="text-h1 font-bold text-foreground mb-6">
               Vous avez un projet en tête ?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
@@ -161,7 +163,7 @@ export default function ServicesPage() {
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
-          </div>
+          </Reveal>
         </section>
       </main>
       <Footer />
