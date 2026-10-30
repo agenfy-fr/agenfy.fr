@@ -4,7 +4,7 @@
     {
       "name": "agenfy-dev",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev"],
+      "runtimeArgs": ["--filter", "@agenfy/web", "dev"],
       "port": 3000
     }
   ]

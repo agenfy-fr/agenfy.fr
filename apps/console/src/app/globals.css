@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 118 38% 100%;
+    --foreground: 118 0% 0%;
+    --muted: 238 0% 91.2%;
+    --muted-foreground: 0 0% 40.71%;
+    --card: 0 0% 96%;
+    --card-foreground: 118 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --border: 118 9% 94%;
+    /* Contour des champs : >= 3:1 sur le fond (WCAG 1.4.11). */
+    --input: 0 0% 57%;
+    /* Agenfy primary #3200F8 */
+    --primary: 252 100% 49%;
+    --primary-foreground: 0 0% 100%;
+    /* Agenfy accent #AA0BE2 */
+    --brand-accent: 284 91% 47%;
+    /* Couleur de TEXTE primaire/destructive (text-primary, text-destructive) :
+       distincte du fond de bouton pour tenir 4.5:1 en mode sombre. */
+    --primary-text: 252 100% 45%;
+    --destructive-text: 0 67.66% 46.08%;
+    --secondary: 0 0% 25.5%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 358 0% 94.87%;
+    --accent-foreground: 358 0% 0%;
+    --destructive: 0 67.66% 46.08%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 252 100% 49%;
+    --radius: 0.5rem;
+
+    --chart-green: 97 60% 54%;
+    --chart-orange: 27 74% 57%;
+    --chart-yellow: 45 83% 60%;
+    --chart-blue: 210 100% 50%;
+    --chart-red: 6 72% 57%;
+    --chart-gray: 0 0% 71%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 252 100% 49%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 252 100% 49%;
+  }
+
+  .dark {
+    --background: 0 0% 12.16%;
+    --foreground: 0 0% 100%;
+    --muted: 0 0% 15.69%;
+    --muted-foreground: 0 0% 74%;
+    --card: 0 0% 17.25%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 17.25%;
+    --popover-foreground: 0 0% 100%;
+    --border: 0 0% 29.8%;
+    --input: 0 0% 45%;
+    --primary: 252 100% 55%;
+    --primary-foreground: 0 0% 100%;
+    --brand-accent: 284 85% 62%;
+    --primary-text: 252 100% 80%;
+    --destructive-text: 0 90% 72%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 0 0% 29%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 67.7% 46.1%;
+    --destructive-foreground: 0 0% 100%;
+    /* Anneau de focus visible sur fond sombre (>= 3:1, WCAG 2.4.7/1.4.11). */
+    --ring: 252 100% 75%;
+
+    --chart-green: 97 60% 54%;
+    --chart-orange: 27 74% 57%;
+    --chart-yellow: 45 83% 60%;
+    --chart-blue: 210 100% 50%;
+    --chart-red: 6 72% 57%;
+    --chart-gray: 0 0% 50%;
+
+    --sidebar-background: 0 0% 10.59%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 252 100% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 19%;
+    --sidebar-accent-foreground: 0 0% 64%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 252 100% 75%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+}
+
+/* Respecte « réduire les animations » (WCAG 2.3.3) : coupe les animations
+   Tailwind (animate-*, tailwindcss-animate) et les transitions longues. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Agenfy gradient (primary -> accent), used sparingly on brand marks. */
+.text-brand-gradient {
+  background-image: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--brand-accent)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

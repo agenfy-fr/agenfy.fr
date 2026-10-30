@@ -1,0 +1,285 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+/* stylelint-disable-next-line at-rule-no-unknown */
+@custom-variant dark (&:is(.dark *));
+
+/* stylelint-disable-next-line at-rule-no-unknown */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Fluid type scale — one utility instead of a sm:/lg: stack repeated per page */
+  --text-hero: clamp(2.25rem, 1.4rem + 3.5vw, 4.5rem);
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.02em;
+  --text-h1: clamp(1.875rem, 1.4rem + 1.8vw, 3rem);
+  --text-h1--line-height: 1.15;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h2: clamp(1.5rem, 1.3rem + 0.9vw, 2.25rem);
+  --text-h2--line-height: 1.2;
+  --text-h3: clamp(1.125rem, 1.05rem + 0.3vw, 1.375rem);
+  --text-h3--line-height: 1.3;
+
+  /* Elevation — dark-mode aware via color-mix, replaces hardcoded light-only rgba() */
+  --shadow-glow-sm: 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
+  --shadow-glow: 0 0 40px color-mix(in srgb, var(--primary) 35%, transparent);
+  --shadow-card-hover: 0 20px 40px color-mix(in srgb, var(--primary) 15%, transparent);
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 600ms;
+}
+
+/* Light mode (default) */
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #f8f8f8;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #3200F8;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f0f0f0;
+  --muted-foreground: #6b6b6b;
+  --accent: #AA0BE2;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #3200F8;
+  --chart-1: #3200F8;
+  --chart-2: #AA0BE2;
+  --chart-3: #5020FF;
+  --chart-4: #7040FF;
+  --chart-5: #9060FF;
+  --sidebar: #f8f8f8;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #3200F8;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f0f0f0;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #3200F8;
+}
+
+/* Dark mode */
+.dark {
+  --background: #0c0a15;
+  --foreground: #fafafa;
+  --card: #12101d;
+  --card-foreground: #fafafa;
+  --popover: #12101d;
+  --popover-foreground: #fafafa;
+  --primary: #6B4EFF;
+  --primary-foreground: #ffffff;
+  --secondary: #1c1828;
+  --secondary-foreground: #fafafa;
+  --muted: #1c1828;
+  --muted-foreground: #a8a0c0;
+  --accent: #BB4EFF;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --border: #2a2538;
+  --input: #2a2538;
+  --ring: #6B4EFF;
+  --chart-1: #6B4EFF;
+  --chart-2: #BB4EFF;
+  --chart-3: #8B6EFF;
+  --chart-4: #A07EFF;
+  --chart-5: #C49EFF;
+  --sidebar: #12101d;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #6B4EFF;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1c1828;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #2a2538;
+  --sidebar-ring: #6B4EFF;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection */
+::selection {
+  background: color-mix(in srgb, var(--primary) 30%, transparent);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------------------
+   Brand utilities (same as apps/web)
+   --------------------------------------------------------------------------- */
+.gradient-text {
+  background: linear-gradient(135deg, #3200F8 0%, #AA0BE2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #3200F8 0%, #AA0BE2 100%);
+}
+
+.gradient-btn {
+  background: linear-gradient(135deg, #3200F8 0%, #5020FF 50%, #AA0BE2 100%);
+  transition: all 0.3s ease;
+}
+
+.gradient-btn:hover {
+  background: linear-gradient(135deg, #2800D8 0%, #4010E0 50%, #9A0AD0 100%);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ---------------------------------------------------------------------------
+   Lesson reader (Markdown) — typography plugin mapped on design tokens
+   --------------------------------------------------------------------------- */
+.lesson-prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--primary);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--accent);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
+.lesson-prose :where(code):not(:where(pre code)) {
+  background: var(--muted);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.35rem;
+  font-weight: 500;
+}
+
+.lesson-prose :where(code):not(:where(pre code))::before,
+.lesson-prose :where(code):not(:where(pre code))::after {
+  content: none;
+}
+
+.lesson-prose :where(pre) {
+  border: 1px solid var(--border);
+  white-space: pre-wrap;
+}
+
+.lesson-prose :where(blockquote) {
+  font-style: normal;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 0.25rem 1rem;
+}
+
+.lesson-prose :where(blockquote p)::before,
+.lesson-prose :where(blockquote p)::after {
+  content: none;
+}
+
+.lesson-prose :where(table) {
+  display: block;
+  overflow-x: auto;
+}
+
+/* ---------------------------------------------------------------------------
+   Print (attestation, émargement)
+   --------------------------------------------------------------------------- */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .print-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
