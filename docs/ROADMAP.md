@@ -31,6 +31,10 @@ Suivi des 13 phases définies pour la transformation d'Agenfy. Mis à jour au fi
 | CMS cible : Supabase (Postgres), pas de headless CMS tiers | Phase 2 | `@supabase/supabase-js` déjà en dépendance, `SUPABASE_SERVICE_ROLE_KEY` déjà provisionnée mais inutilisée — infra prête |
 | Auth admin : Supabase Auth | Phase 2 | Cohérent avec le choix CMS, évite d'ajouter un 2ᵉ système d'identité |
 
-## Prochaine étape immédiate
+## Mise à jour du 29/10/2026 — repositionnement IA-first
+
+Voir [STRATEGIE-2026.md](STRATEGIE-2026.md). Le repo est devenu un monorepo (`apps/web`, `apps/console`, `apps/app`). Phases 3-7 largement livrées sur le site (design system, UI, motion, SEO, GEO) ; l'admin `/admin` du site a vocation à migrer vers console.agenfy.fr.
+
+## Prochaine étape immédiate (historique)
 
 Phase 3 (Design System) : construire les primitives et effets Aceternity adaptés à l'identité Agenfy, en commençant par le Hero et la Navbar (voir DESIGN-SYSTEM.md §4 pour l'ordre de priorité).
