@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { OrganizationSchema, WebsiteSchema } from "@/components/schemas";
 import { SITE, DEFAULT_AUTHOR } from "@/lib/site";
 import "./globals.css";
+import { RouteTransition } from "@/components/effects/RouteTransition";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,6 +88,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <RouteTransition />
         </ThemeProvider>
         <SpeedInsights />
       </body>

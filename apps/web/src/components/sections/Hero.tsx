@@ -14,7 +14,7 @@ const commitments = [
   { title: "À vous", label: "Code, prompts et données vous appartiennent" },
 ];
 
-export function Hero() {
+export function Hero({ visual }: { visual?: React.ReactNode } = {}) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       <BackgroundBeams />
@@ -58,6 +58,8 @@ export function Hero() {
             </Button>
           </div>
         </Reveal>
+
+        {visual && <div className="mt-16 max-w-5xl mx-auto">{visual}</div>}
 
         <Reveal delay={0.4}>
           <ul className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 pt-12 border-t border-border/30 text-left md:text-center">

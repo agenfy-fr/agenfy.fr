@@ -9,6 +9,7 @@ import { buildMetadata } from "@/lib/seo";
 import { getOffer } from "@/lib/offers";
 import { COURSES, FORMATIONS_FAQ } from "@/lib/courses";
 import { SITE } from "@/lib/site";
+import { Illustration } from "@/components/effects/Illustration";
 
 const offer = getOffer("formation-ia");
 
@@ -49,6 +50,7 @@ export default function FormationsPage() {
                 </Button>
               </div>
             </Reveal>
+            <Illustration name="formation" priority className="mt-14" />
           </div>
         </section>
 

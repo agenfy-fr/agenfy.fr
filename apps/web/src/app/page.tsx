@@ -15,6 +15,7 @@ import {
 } from "@/components/sections";
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata: Metadata = {
   alternates: { canonical: SITE.url, types: { "text/plain": `${SITE.url}/llms.txt` } },
@@ -53,7 +54,7 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main>
-        <Hero />
+        <Hero visual={<Illustration name="hero" priority />} />
         <Trust />
         <Problem />
         <Expertise />
