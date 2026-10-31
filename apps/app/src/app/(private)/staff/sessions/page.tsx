@@ -62,7 +62,7 @@ export default async function SessionsPage({ searchParams }: { searchParams: Pro
               <option key={o.id} value={o.id}>{o.name}</option>
             ))}
           </select>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="text-sm font-medium" htmlFor="c-start">Début</label>
               <Input id="c-start" name="start_date" type="date" />
@@ -93,7 +93,7 @@ export default async function SessionsPage({ searchParams }: { searchParams: Pro
           </select>
           <label className="text-sm font-medium" htmlFor="s-title">Intitulé (facultatif)</label>
           <Input id="s-title" name="title" />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="text-sm font-medium" htmlFor="s-date">Date</label>
               <Input id="s-date" name="date" type="date" required />

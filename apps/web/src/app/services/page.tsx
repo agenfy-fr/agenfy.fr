@@ -5,6 +5,7 @@ import { BackgroundBeams, Reveal, SpotlightCard } from "@/components/effects";
 import { Breadcrumbs } from "@/components/layouts/Breadcrumbs";
 import { buildMetadata } from "@/lib/seo";
 import { IA_OFFERS, FOUNDATION_OFFERS, type Offer } from "@/lib/offers";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata = buildMetadata({
   title: "Expertises IA : audit, agents IA, développement, formation",
@@ -78,6 +79,7 @@ export default function ServicesPage() {
                 quatre expertises IA, appuyées sur des fondations Data et Cloud.
               </p>
             </Reveal>
+            <Illustration name="services" priority className="mt-14 max-w-5xl" />
           </div>
         </section>
 

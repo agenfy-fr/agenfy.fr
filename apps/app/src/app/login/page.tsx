@@ -23,7 +23,7 @@ export default async function LoginPage({
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-primary/5 to-transparent px-4 py-12">
       <div className="w-full max-w-sm">
         <Link href="/" className="mb-8 flex justify-center">
-          <Image src="/logo.svg" alt="Agenfy" width={140} height={45} className="h-10 w-auto" priority />
+          <Image src="/logo-mark.svg" alt="Agenfy" width={18} height={40} className="h-10 w-auto" priority />
         </Link>
 
         <Card className="border-border/60">

@@ -10,6 +10,7 @@ import { BackgroundBeams, Reveal } from "@/components/effects";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Target, Heart, Lightbulb, Users, Zap, Shield, Code, Cpu } from "lucide-react";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata = buildMetadata({
   title: "À propos : agence IA fondée par Evan Massé",
@@ -95,6 +96,7 @@ export default function AboutPage() {
                 Cloud qui les rendent fiables.
               </p>
             </div>
+            <Illustration name="a-propos" priority className="mt-14 max-w-5xl" />
           </Reveal>
         </section>
 

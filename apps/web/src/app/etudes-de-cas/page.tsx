@@ -7,6 +7,7 @@ import { BackgroundBeams, Reveal } from "@/components/effects";
 import Link from "next/link";
 import { ArrowRight, Lightbulb, Clock, Users, CheckCircle2 } from "lucide-react";
 import { caseStudies } from "@/lib/case-studies";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata: Metadata = {
   title: "Études de cas - Nos approches et méthodologies",
@@ -45,6 +46,7 @@ export default function CaseStudiesPage() {
               <Lightbulb className="w-4 h-4 text-primary" />
               <span>Cliquez sur chaque étude pour voir le détail complet</span>
             </div>
+            <Illustration name="etudes-de-cas" priority className="mt-14 max-w-5xl mx-auto" />
           </Reveal>
         </section>
 

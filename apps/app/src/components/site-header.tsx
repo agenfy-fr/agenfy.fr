@@ -17,8 +17,9 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
   return (
     <header className="no-print sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
-        <Link href={viewer ? "/dashboard" : "/"} className="flex items-center gap-2 shrink-0">
-          <Image src="/logo.svg" alt="Agenfy" width={110} height={36} className="h-7 w-auto dark:invert-0" priority />
+        <Link href={viewer ? "/dashboard" : "/"} className="flex items-center gap-2 shrink-0" aria-label="Agenfy Formation, accueil">
+          <Image src="/logo-mark.svg" alt="" width={14} height={32} className="h-7 w-auto" priority />
+          <span className="text-lg font-bold tracking-tight text-foreground">Agenfy</span>
           <span className="hidden sm:inline text-xs font-semibold uppercase tracking-wider text-muted-foreground border-l border-border pl-2">
             Formation
           </span>

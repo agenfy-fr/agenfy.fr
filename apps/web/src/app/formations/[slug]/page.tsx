@@ -10,6 +10,7 @@ import { JsonLd, courseSchema } from "@/components/schemas/JsonLd";
 import { buildMetadata } from "@/lib/seo";
 import { COURSES, getCourse } from "@/lib/courses";
 import { SITE } from "@/lib/site";
+import { Illustration } from "@/components/effects/Illustration";
 
 export function generateStaticParams() {
   return COURSES.map((c) => ({ slug: c.slug }));
@@ -76,6 +77,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 </Button>
               </div>
             </Reveal>
+            <Illustration name="formation" priority className="mt-14" />
           </div>
         </section>
 

@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { FaqItem } from "@/components/schemas/JsonLd";
 import { buildMetadata } from "@/lib/seo";
 import { getOffer } from "@/lib/offers";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata = buildMetadata({
   title: "Notre méthodologie IA : petit, mesurable, sécurisé",
@@ -163,6 +164,7 @@ export default function MethodologiePage() {
               boucle et ne jamais perdre la maîtrise de vos données.
             </p>
           </Reveal>
+          <Illustration name="methodologie" priority className="mt-14" />
         </div>
       </section>
 
