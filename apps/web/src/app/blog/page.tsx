@@ -4,6 +4,7 @@ import { buildMetadata } from "@/lib/seo";
 import { AUTHORS, DEFAULT_AUTHOR } from "@/lib/site";
 import { blogPosts } from "@/lib/blog-posts";
 import { BlogList, type BlogListItem } from "./BlogList";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata = buildMetadata({
   title: "Blog IA, Data et Cloud pour les entreprises",
@@ -29,7 +30,7 @@ export default function BlogPage() {
 
   return (
     <PageLayout>
-      <BlogList posts={posts} />
+      <BlogList posts={posts} visual={<Illustration name="blog" priority />} />
       {/* Wired to /api/newsletter (Supabase table `newsletter_subscribers`). */}
       <Newsletter />
     </PageLayout>

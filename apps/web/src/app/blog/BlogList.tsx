@@ -24,7 +24,7 @@ export interface BlogListItem {
 
 const categories = ["Tous", "Data", "IA", "Cloud", "Conseil", "Tech"];
 
-export function BlogList({ posts }: { posts: BlogListItem[] }) {
+export function BlogList({ posts, visual }: { posts: BlogListItem[]; visual?: React.ReactNode }) {
   const [selectedCategory, setSelectedCategory] = useState("Tous");
 
   const filteredPosts = useMemo(() => {
@@ -77,6 +77,7 @@ export function BlogList({ posts }: { posts: BlogListItem[] }) {
                 </Button>
               ))}
             </div>
+            {visual && <div className="mt-14 max-w-5xl mx-auto text-left">{visual}</div>}
           </Reveal>
         </section>
 

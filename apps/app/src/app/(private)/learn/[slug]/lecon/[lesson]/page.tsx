@@ -61,7 +61,7 @@ export default async function LessonPage({ params }: { params: Params }) {
   return (
     <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
       <nav aria-label="Sommaire de la formation" className="order-2 lg:order-1">
-        <div className="lg:sticky lg:top-24 rounded-2xl border bg-card p-4 max-h-[calc(100vh-8rem)] overflow-y-auto">
+        <div className="lg:sticky lg:top-24 rounded-2xl border bg-card p-4 max-h-60 overflow-y-auto lg:max-h-[calc(100vh-8rem)]">
           <Link href={base} className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> Vue d&apos;ensemble
           </Link>

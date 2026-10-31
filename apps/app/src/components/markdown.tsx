@@ -12,6 +12,15 @@ export function Markdown({ children, className }: { children: string; className?
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
+          // Wide GFM tables scroll inside their own box instead of the page on mobile.
+          table: ({ node, ...props }) => {
+            void node; // hast node, not a DOM attribute
+            return (
+              <div className="overflow-x-auto">
+                <table {...props} />
+              </div>
+            );
+          },
           a: ({ href, children: linkChildren, ...props }) => {
             const external = typeof href === "string" && /^https?:\/\//.test(href);
             return (

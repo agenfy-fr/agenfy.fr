@@ -44,7 +44,9 @@ export default function AppSidebar({ user, variant, subtitle }: AppSidebarProps)
             {!collapsed ? (
               <>
                 <Link href={home} className="flex min-w-0 items-center gap-2.5">
-                  <Image src="/agenfy-logo.svg" alt="" width={32} height={32} className="shrink-0" />
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center">
+                    <Image src="/logo-mark.svg" alt="" width={15} height={32} className="h-8 w-auto" />
+                  </span>
                   <span className="min-w-0">
                     <span className="block text-lg font-semibold leading-tight text-foreground">
                       Agenfy <span className="text-brand-gradient">{isStaff ? "Console" : "Client"}</span>
@@ -66,7 +68,7 @@ export default function AppSidebar({ user, variant, subtitle }: AppSidebarProps)
                   className={cn("absolute inset-0 h-8 w-8 text-muted-foreground", !logoHovered && "opacity-0 focus-visible:opacity-100")}
                 />
                 {!logoHovered && (
-                  <Image src="/agenfy-logo.svg" alt="" width={32} height={32} className="pointer-events-none" />
+                  <Image src="/logo-mark.svg" alt="" width={15} height={32} className="pointer-events-none h-8 w-auto" />
                 )}
               </div>
             )}

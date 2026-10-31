@@ -52,14 +52,9 @@ export function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-6">
-              <Image 
-                src="/logo.svg" 
-                alt="Agenfy" 
-                width={140} 
-                height={45}
-                className="h-12 w-auto"
-              />
+            <Link href="/" className="flex items-center gap-2.5 mb-6" aria-label="Agenfy, accueil">
+              <Image src="/logo-mark.svg" alt="" width={18} height={40} className="h-9 w-auto" />
+              <span className="text-2xl font-bold tracking-tight text-foreground">Agenfy</span>
             </Link>
             <p className="text-muted-foreground mb-4 max-w-sm">
               Agence IA pour PME et ETI : nous formons vos équipes, automatisons vos
