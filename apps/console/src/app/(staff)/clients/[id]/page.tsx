@@ -13,9 +13,9 @@ import { formatCents, formatDate } from "@/lib/format";
 import { UUID_RE } from "@/lib/schemas";
 import { requireStaffPage } from "@/lib/server/auth";
 import { displayName, getStaffDirectory, getUserDirectory } from "@/lib/server/directory";
-import type { ClientDocument, Organization, OrganizationInternal, OrganizationMember, Project } from "@/lib/types";
+import type { ClientDocument, Organization, OrganizationContact, OrganizationInternal, OrganizationMember, Project } from "@/lib/types";
 import { NewProjectButton } from "../../projects/project-forms";
-import { InternalForm, InviteMemberButton, MemberControls, OrganizationForm } from "../client-forms";
+import { ContactActions, InternalForm, MemberControls, NewContactButton, OrganizationForm } from "../client-forms";
 
 export const metadata: Metadata = { title: "Fiche client" };
 
@@ -24,17 +24,18 @@ export default async function ClientPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ invite?: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   const { id } = await params;
   if (!UUID_RE.test(id)) notFound();
   const { supabase, role } = await requireStaffPage("/clients");
-  const { invite } = await searchParams;
+  const { tab } = await searchParams;
 
-  const [orgRes, internalRes, membersRes, projectsRes, docsRes, requestsRes, invoicesRes, staff] = await Promise.all([
+  const [orgRes, internalRes, membersRes, contactsRes, projectsRes, docsRes, requestsRes, invoicesRes, staff] = await Promise.all([
     supabase.from("organizations").select("*").eq("id", id).maybeSingle(),
     supabase.from("organization_internal").select("*").eq("organization_id", id).maybeSingle(),
     supabase.from("organization_members").select("*").eq("organization_id", id).order("created_at"),
+    supabase.from("organization_contacts").select("*").eq("organization_id", id).order("is_primary", { ascending: false }).order("created_at"),
     supabase.from("projects").select("*").eq("organization_id", id).order("created_at", { ascending: false }),
     supabase.from("client_documents").select("*").eq("organization_id", id).order("created_at", { ascending: false }),
     supabase.from("client_requests").select("id, subject, status, created_at").eq("organization_id", id).order("created_at", { ascending: false }).limit(20),
@@ -47,6 +48,8 @@ export default async function ClientPage({
   const org = orgRes.data as Organization | null;
   if (!org) notFound();
   const members = (membersRes.data ?? []) as OrganizationMember[];
+  const contacts = (contactsRes.data ?? []) as OrganizationContact[];
+  const memberIds = new Set(members.map((m) => m.user_id));
   const projects = (projectsRes.data ?? []) as Project[];
   const users = await getUserDirectory(supabase, members.map((m) => m.user_id));
   const canEdit = canWrite(role);
@@ -54,10 +57,10 @@ export default async function ClientPage({
   return (
     <div className="space-y-6">
       <BreadcrumbLabel label={org.name} />
-      <Tabs defaultValue={invite ? "contacts" : "overview"}>
+      <Tabs defaultValue={tab === "contacts" ? "contacts" : "overview"}>
         <TabsList>
           <TabsTrigger value="overview">Fiche</TabsTrigger>
-          <TabsTrigger value="contacts">Contacts ({members.length})</TabsTrigger>
+          <TabsTrigger value="contacts">Contacts ({contacts.length})</TabsTrigger>
           <TabsTrigger value="projects">Projets ({projects.length})</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="activity">Demandes & factures</TabsTrigger>
@@ -84,18 +87,59 @@ export default async function ClientPage({
           </Card>
         </TabsContent>
 
-        <TabsContent value="contacts" className="mt-4">
+        <TabsContent value="contacts" className="mt-4 space-y-6">
           <Card>
             <CardHeader className="flex flex-row items-start justify-between gap-4">
               <div>
-                <CardTitle className="text-base">Accès à l&apos;espace client</CardTitle>
-                <CardDescription>Ces personnes voient les projets actifs, jalons, documents et factures de {org.name}.</CardDescription>
+                <CardTitle className="text-base">Contacts</CardTitle>
+                <CardDescription>Carnet d&apos;adresses du client. Ajouter un contact n&apos;envoie aucun e-mail.</CardDescription>
               </div>
-              {canEdit && <InviteMemberButton orgId={org.id} defaultEmail={invite} />}
+              {canEdit && <NewContactButton orgId={org.id} />}
+            </CardHeader>
+            <CardContent>
+              {contacts.length === 0 ? (
+                <EmptyState title="Aucun contact" description="Ajoutez les interlocuteurs du client (sans invitation)." className="p-4" />
+              ) : (
+                <ul className="divide-y">
+                  {contacts.map((c) => {
+                    const hasAccess = !!c.user_id && memberIds.has(c.user_id);
+                    return (
+                      <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+                        <div className="min-w-0 space-y-0.5">
+                          <p className="flex flex-wrap items-center gap-2 font-medium">
+                            {c.full_name || c.email}
+                            {c.is_primary && <StatusBadge size="sm" label="Principal" variant="purple" />}
+                            <StatusBadge size="sm" label={hasAccess ? "Accès espace client" : "Sans accès"} variant={hasAccess ? "success" : "neutral"} />
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {[c.job_title, c.email, c.phone].filter(Boolean).join(" · ")}
+                          </p>
+                          {c.email && (
+                            <Link href={`/mail/compose?to=${encodeURIComponent(c.email)}`} className="text-xs text-primary hover:underline">
+                              Écrire depuis la messagerie
+                            </Link>
+                          )}
+                        </div>
+                        {canEdit && <ContactActions orgId={org.id} contact={c} hasAccess={hasAccess} />}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Accès à l&apos;espace client</CardTitle>
+              <CardDescription>
+                Ces personnes voient les projets actifs, jalons, documents et factures de {org.name}. Pour ouvrir un accès, utilisez
+                « Ouvrir l&apos;espace client » sur un contact.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {members.length === 0 ? (
-                <EmptyState title="Aucun contact" description="Invitez un contact pour lui ouvrir l'espace client." className="p-4" />
+                <EmptyState title="Aucun accès ouvert" className="p-4" />
               ) : (
                 <ul className="divide-y">
                   {members.map((m) => {

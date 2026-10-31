@@ -53,7 +53,7 @@ ont été appliquées à la main : les marquer comme appliquées **avant** de po
 
 ```bash
 supabase migration repair --status applied 0001 0002   # seulement dans ce cas
-supabase db push --dry-run             # affiche ce qui sera appliqué : 0003, 0004, 0100-0103, 0200-0202, 0250
+supabase db push --dry-run             # affiche ce qui sera appliqué : 0003, 0004, 0100-0103, 0200-0202, 0250, 0300-0302
 supabase db push
 ```
 
@@ -130,3 +130,18 @@ app      CNAME  cname.vercel-dns.com.
 | Google Search Console, Bing Webmaster, Google Business | Couverts par la 2FA du compte Google / Microsoft utilisé |
 
 Conserver les codes de secours de chaque service dans le gestionnaire de mots de passe (coffre partagé de l'équipe).
+
+## Messagerie (boîte OVH dans la console)
+
+1. Vercel → projet `agenfy-console` → variable **`MAIL_ENCRYPTION_KEY`** (production + preview), valeur `openssl rand -base64 32`.
+2. Migration `0302_console_mailbox.sql` appliquée.
+3. Console → Paramètres → **Messagerie** : adresse, mot de passe de la boîte, offre OVH (MX Plan : `ssl0.ovh.net`, IMAP 993, SMTP 465),
+   « Tester la connexion », puis Enregistrer. Le mot de passe est chiffré, jamais réaffiché ; s'il change chez OVH, le ressaisir ici.
+4. Menu **Messagerie** (propriétaires et administrateurs uniquement) : lecture, recherche, réponse, transfert, pièces jointes (4 Mo).
+   Les images distantes sont bloquées par défaut (pistage) ; le contenu des e-mails est affiché dans un cadre isolé sans script.
+
+## Factures Shine
+
+Shine n'ouvre son API qu'aux prestataires agréés (AISP/PISP) : pas de synchronisation automatique. On crée et envoie la facture
+dans Shine, puis Facturation → Factures → « Enregistrer une facture Shine » (numéro, montants HT/TVA, PDF exporté de Shine).
+La facture apparaît dans le suivi, le tableau de bord et l'espace client (PDF téléchargeable).

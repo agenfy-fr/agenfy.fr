@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BreadcrumbLabel } from "@/components/nav/breadcrumb-label";
 import { BillingDocumentView } from "@/components/shared/billing-document";
+import { ShineInvoiceSummary } from "@/components/shared/shine-invoice-summary";
 import { UUID_RE } from "@/lib/schemas";
 import { getBillingIssuer } from "@/lib/server/issuer";
 import { PORTAL_INVOICE_STATUSES, PORTAL_QUOTE_STATUSES, portalScope } from "@/lib/server/portal";
@@ -26,6 +27,15 @@ export default async function PortalBillingDocumentPage({ params }: { params: Pr
     .maybeSingle();
   if (!data) notFound();
   const raw = data as (Quote | Invoice) & { organizations: { name: string; siren: string | null } | null };
+
+  if (kind === "invoice" && (raw as Invoice).source === "shine") {
+    return (
+      <div className="max-w-2xl space-y-4">
+        <BreadcrumbLabel label={raw.number ?? "Facture"} />
+        <ShineInvoiceSummary invoice={raw as Invoice} clientName={raw.organizations?.name ?? "—"} />
+      </div>
+    );
+  }
 
   const { data: lines } = await supabase
     .from(kind === "quote" ? "quote_lines" : "invoice_lines")

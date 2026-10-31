@@ -57,7 +57,8 @@ export function buildCSP(nonce: string, opts: BuildCspOptions = {}): string {
     `img-src 'self' data: blob: ${supabase.split(" ")[0] ?? ""}`.trim(),
     "font-src 'self' data:",
     `connect-src 'self' ${supabase}`.trim(),
-    "frame-src 'none'",
+    // Only our own sandboxed e-mail body (/api/mail/body) is ever framed.
+    "frame-src 'self'",
     "worker-src 'self' blob:",
     "frame-ancestors 'none'",
     "form-action 'self'",

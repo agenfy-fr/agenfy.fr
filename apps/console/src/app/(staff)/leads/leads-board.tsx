@@ -244,9 +244,9 @@ function LeadDetails({
           canEdit && (
             <ActionButton
               action={() => convertLead(lead.id)}
-              confirm={`Créer l'organisation cliente « ${lead.company || lead.name} » et marquer le lead comme gagné ?`}
+              confirm={`Créer l'organisation cliente « ${lead.company || lead.name} » (avec ${lead.name} comme contact, sans invitation) et marquer le lead comme gagné ?`}
               onSuccess={(data) => {
-                if (data) router.push(`/clients/${data.organizationId}?invite=${encodeURIComponent(data.email)}`);
+                if (data) router.push(`/clients/${data.organizationId}?tab=contacts`);
               }}
             >
               Convertir en client

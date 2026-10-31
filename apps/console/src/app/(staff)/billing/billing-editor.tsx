@@ -11,7 +11,8 @@ import { UUID_RE } from "@/lib/schemas";
 import { requireStaffPage } from "@/lib/server/auth";
 import { getBillingIssuer } from "@/lib/server/issuer";
 import type { BillingLine, Invoice, Quote } from "@/lib/types";
-import { BillingHeaderForm, BillingStatusActions, LinesEditor } from "./billing-forms";
+import { BillingHeaderForm, BillingStatusActions, LinesEditor, ShineInvoiceButton, ShineInvoiceEditForm } from "./billing-forms";
+import { ShineInvoiceSummary } from "@/components/shared/shine-invoice-summary";
 
 /** Shared editor/preview for a quote or an invoice. */
 export async function BillingEditor({ kind, id }: { kind: "quote" | "invoice"; id: string }) {
@@ -34,6 +35,42 @@ export async function BillingEditor({ kind, id }: { kind: "quote" | "invoice"; i
   const canEdit = canWriteDomain(role, BILLING_WRITE_ROLES);
   const isDraft = doc.status === "draft";
 
+  if (doc.kind === "invoice" && doc.source === "shine") {
+    return (
+      <div className="space-y-6">
+        <BreadcrumbLabel label={doc.number ?? "Facture"} />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <StatusBadge {...metaOf(meta, doc.status)} showDot />
+            <Link href={`/clients/${doc.organization_id}`} className="text-primary hover:underline">
+              {raw.organizations?.name}
+            </Link>
+            <span className="text-muted-foreground">Émise dans Shine</span>
+            {doc.quote_id && (
+              <Link href={`/billing/quotes/${doc.quote_id}`} className="text-muted-foreground hover:underline">
+                Devis d&apos;origine
+              </Link>
+            )}
+          </div>
+          {canEdit && <BillingStatusActions kind="invoice" docId={doc.id} status={doc.status} />}
+        </div>
+        <div className="grid gap-6 xl:grid-cols-2">
+          <ShineInvoiceSummary invoice={doc} clientName={raw.organizations?.name ?? "—"} />
+          {canEdit && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Modifier</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ShineInvoiceEditForm invoice={doc} projects={projects ?? []} />
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <BreadcrumbLabel label={doc.number ?? "Brouillon"} />
@@ -50,7 +87,25 @@ export async function BillingEditor({ kind, id }: { kind: "quote" | "invoice"; i
             </Link>
           )}
         </div>
-        {canEdit && <BillingStatusActions kind={kind} docId={doc.id} status={doc.status} />}
+        <div className="flex flex-wrap gap-2">
+          {canEdit && <BillingStatusActions kind={kind} docId={doc.id} status={doc.status} />}
+          {canEdit && doc.kind === "quote" && (doc.status === "accepted" || doc.status === "sent") && (
+            <ShineInvoiceButton
+              organizations={[]}
+              projects={[]}
+              variant="secondary"
+              label="Enregistrer la facture Shine"
+              defaults={{
+                organization_id: doc.organization_id,
+                project_id: doc.project_id,
+                quote_id: doc.id,
+                title: doc.title,
+                subtotal_cents: Number(doc.subtotal_cents),
+                vat_cents: Number(doc.vat_cents),
+              }}
+            />
+          )}
+        </div>
       </div>
 
       {isDraft && canEdit ? (

@@ -94,9 +94,25 @@ export const organizationInternalSchema = z.object({
   internal_notes: optText(20000),
 });
 
-export const inviteMemberSchema = z.object({
-  email: z.email({ error: "Adresse e-mail invalide." }).max(320),
-  full_name: optText(120),
+// --- Contacts (0300): address book; nothing is sent when a contact is added ---------
+export const contactSchema = z
+  .object({
+    full_name: optText(120),
+    email: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => (v ? v.toLowerCase() : null))
+      .refine((v) => v == null || z.email().safeParse(v).success, { error: "Adresse e-mail invalide." }),
+    phone: optText(40),
+    job_title: optText(120),
+    notes: optText(5000),
+    is_primary: checkbox,
+  })
+  .refine((c) => !!c.full_name || !!c.email, { error: "Indiquez au moins un nom ou un e-mail." });
+
+/** Explicit portal invitation of an existing contact. */
+export const inviteContactSchema = z.object({
   role: z.enum(ORG_ROLES).default("member"),
 });
 
@@ -211,6 +227,27 @@ export const billingLineSchema = z.object({
   unit_price: eurosToCents,
 });
 
+/** Invoice issued in Shine, recorded in the console (0301). Amounts typed in euros. */
+export const shineInvoiceSchema = z
+  .object({
+    organization_id: uuid,
+    project_id: optUuid,
+    quote_id: optUuid,
+    number: reqText(60, "Le numéro Shine"),
+    title: reqText(200, "L'objet"),
+    issue_date: isoDate,
+    due_date: optDate,
+    subtotal: eurosToCents,
+    vat: eurosToCents,
+    status: z.enum(["sent", "paid", "cancelled"]).default("sent"),
+    paid_at: optDate,
+    notes: optText(5000),
+  })
+  .transform((v) => ({
+    ...v,
+    paid_at: v.status === "paid" ? (v.paid_at ?? new Date().toISOString().slice(0, 10)) : null,
+  }));
+
 export const quoteStatusSchema = z.enum(QUOTE_STATUSES);
 export const invoiceStatusSchema = z.enum(INVOICE_STATUSES);
 
@@ -244,4 +281,38 @@ export const inviteStaffSchema = z.object({
 export const staffUpdateSchema = z.object({
   role: z.enum(STAFF_ROLES),
   suspended: checkbox,
+});
+
+// --- Mailbox (0302) -------------------------------------------------------------------
+const host = z
+  .string()
+  .trim()
+  .min(1, { error: "Serveur obligatoire." })
+  .max(255)
+  .regex(/^[a-z0-9.-]+$/i, { error: "Nom de serveur invalide." });
+const port = z.coerce.number().int().min(1).max(65535);
+
+export const mailSettingsSchema = z.object({
+  email: z.email({ error: "Adresse e-mail invalide." }).max(320),
+  display_name: optText(120),
+  username: z.string().trim().max(320).optional().transform((v) => v || null),
+  /** Empty = keep the stored password. */
+  password: z.string().max(500).optional().transform((v) => v || null),
+  imap_host: host,
+  imap_port: port.default(993),
+  smtp_host: host,
+  smtp_port: port.default(465),
+  signature: optText(2000),
+});
+
+export const composeSchema = z.object({
+  to: reqText(5000, "Le destinataire"),
+  cc: optText(5000),
+  bcc: optText(5000),
+  subject: z.string().trim().max(500).optional().transform((v) => v ?? ""),
+  body: z.string().max(200_000).optional().transform((v) => v ?? ""),
+  in_reply_to: optText(1000),
+  references: optText(10000),
+  reply_folder: optText(1000),
+  reply_uid: z.coerce.number().int().positive().optional(),
 });

@@ -53,6 +53,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|api/health|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    // api/mail/body sets its own sandbox CSP (framed by /mail/message).
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|api/health|api/mail/body|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

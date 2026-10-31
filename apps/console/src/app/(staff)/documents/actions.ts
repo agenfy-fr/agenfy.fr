@@ -5,17 +5,7 @@ import { revalidatePath } from "next/cache";
 import { MAX_UPLOAD_BYTES, documentSchema, uuid } from "@/lib/schemas";
 import { ActionError, check, formToObject, runAction, type ActionResult } from "@/lib/server/actions";
 import { requireStaffWriter } from "@/lib/server/auth";
-
-const DOCUMENTS_BUCKET = "client-documents";
-
-function safeFileName(name: string): string {
-  const cleaned = name
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^A-Za-z0-9._-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return (cleaned || "fichier").slice(-120);
-}
+import { DOCUMENTS_BUCKET, safeFileName } from "@/lib/server/storage";
 
 function revalidateDocumentViews(orgId: string, projectId: string | null) {
   revalidatePath(`/clients/${orgId}`);

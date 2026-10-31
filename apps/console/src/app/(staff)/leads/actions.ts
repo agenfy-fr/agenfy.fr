@@ -54,10 +54,10 @@ async function freeSlug(supabase: Awaited<ReturnType<typeof requireStaffRole>>["
 
 /**
  * Lead → client organization: creates the organization (+ CRM row linked to
- * the lead), marks the lead "Gagné". The contact can then be invited to the
- * portal from the client page (pre-filled e-mail).
+ * the lead) and its first contact (from the lead, nothing is e-mailed), marks
+ * the lead "Gagné". Portal access stays a separate, explicit step.
  */
-export async function convertLead(leadId: string): Promise<ActionResult<{ organizationId: string; email: string }>> {
+export async function convertLead(leadId: string): Promise<ActionResult<{ organizationId: string }>> {
   return runAction(async () => {
     const { supabase, user } = await requireStaffRole(LEAD_WRITE_ROLES);
     const id = uuid.parse(leadId);
@@ -84,6 +84,15 @@ export async function convertLead(leadId: string): Promise<ActionResult<{ organi
       }),
     );
     check(
+      await supabase.from("organization_contacts").insert({
+        organization_id: org.id,
+        full_name: lead.name,
+        email: lead.email.toLowerCase(),
+        phone: lead.phone ?? null,
+        is_primary: true,
+      }),
+    );
+    check(
       await supabase
         .from("leads")
         .update({ status: "Gagné", organization_id: org.id, converted_at: new Date().toISOString() })
@@ -91,6 +100,6 @@ export async function convertLead(leadId: string): Promise<ActionResult<{ organi
     );
     revalidatePath("/leads");
     revalidatePath("/clients");
-    return { organizationId: org.id, email: lead.email };
+    return { organizationId: org.id };
   }, "Lead converti en client.");
 }

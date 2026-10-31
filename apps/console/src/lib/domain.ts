@@ -80,12 +80,13 @@ export const TASK_TYPE_LABELS: Record<TaskType, string> = {
 };
 
 // --- Documents ---------------------------------------------------------------------
-export const DOCUMENT_KINDS = ["deliverable", "contract", "report", "other"] as const;
+export const DOCUMENT_KINDS = ["deliverable", "contract", "report", "invoice", "other"] as const;
 export type DocumentKind = (typeof DOCUMENT_KINDS)[number];
 export const DOCUMENT_KIND_LABELS: Record<DocumentKind, string> = {
   deliverable: "Livrable",
   contract: "Contrat",
   report: "Compte rendu",
+  invoice: "Facture",
   other: "Autre",
 };
 

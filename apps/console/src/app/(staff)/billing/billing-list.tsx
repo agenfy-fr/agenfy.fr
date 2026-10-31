@@ -9,7 +9,7 @@ import { BILLING_WRITE_ROLES, canWriteDomain } from "@/lib/access-control";
 import { INVOICE_STATUS_META, QUOTE_STATUS_META, metaOf } from "@/lib/domain";
 import { formatCents, formatDate } from "@/lib/format";
 import { requireStaffPage } from "@/lib/server/auth";
-import { NewBillingButton } from "./billing-forms";
+import { NewBillingButton, ShineInvoiceButton } from "./billing-forms";
 
 /** Shared list page for quotes and invoices (server component). */
 export async function BillingList({ kind }: { kind: "quote" | "invoice" }) {
@@ -18,13 +18,23 @@ export async function BillingList({ kind }: { kind: "quote" | "invoice" }) {
   const [{ data }, orgs, projects] = await Promise.all([
     supabase
       .from(table)
-      .select("id, number, title, status, total_cents, issue_date, created_at, organizations(name)")
+      .select(kind === "quote" ? "id, number, title, status, total_cents, issue_date, created_at, organizations(name)" : "id, number, title, status, total_cents, issue_date, created_at, source, organizations(name)")
       .order("created_at", { ascending: false })
       .limit(500),
     supabase.from("organizations").select("id, name").order("name"),
     supabase.from("projects").select("id, name, organization_id").order("name"),
   ]);
-  const rows = data ?? [];
+  const rows = (data ?? []) as unknown as {
+    id: string;
+    number: string | null;
+    title: string;
+    status: string;
+    total_cents: number;
+    issue_date: string | null;
+    created_at: string;
+    source?: "console" | "shine";
+    organizations: { name: string } | null;
+  }[];
   const meta = kind === "quote" ? QUOTE_STATUS_META : INVOICE_STATUS_META;
   const base = kind === "quote" ? "/billing/quotes" : "/billing/invoices";
   const canEdit = canWriteDomain(role, BILLING_WRITE_ROLES);
@@ -36,9 +46,15 @@ export async function BillingList({ kind }: { kind: "quote" | "invoice" }) {
         description={
           kind === "quote"
             ? "Numérotation DEV-AAAA-NNNN attribuée à l'envoi. Un devis accepté peut être transformé en facture."
-            : "Numérotation continue FAC-AAAA-NNNN attribuée à l'émission. Une facture émise ne peut plus être modifiée (annulez-la puis refaites-la)."
+            : "Les factures sont créées et envoyées depuis Shine, puis enregistrées ici avec leur PDF (suivi des paiements, espace client, tableau de bord)."
         }
-        actions={canEdit ? <NewBillingButton kind={kind} organizations={orgs.data ?? []} projects={projects.data ?? []} /> : null}
+        actions={
+          !canEdit ? null : kind === "quote" ? (
+            <NewBillingButton kind={kind} organizations={orgs.data ?? []} projects={projects.data ?? []} />
+          ) : (
+            <ShineInvoiceButton organizations={orgs.data ?? []} projects={projects.data ?? []} />
+          )
+        }
       />
       <Card className="overflow-hidden">
         {rows.length === 0 ? (
@@ -62,13 +78,14 @@ export async function BillingList({ kind }: { kind: "quote" | "invoice" }) {
                     <Link href={`${base}/${r.id}`} className="hover:underline">
                       {r.number ?? "Brouillon"}
                     </Link>
+                    {r.source === "shine" && <span className="ml-2 rounded bg-muted px-1.5 py-0.5 font-sans text-[10px] text-muted-foreground">Shine</span>}
                   </Td>
                   <Td>
                     <Link href={`${base}/${r.id}`} className="hover:underline">
                       {r.title}
                     </Link>
                   </Td>
-                  <Td muted>{(r.organizations as unknown as { name: string } | null)?.name}</Td>
+                  <Td muted>{r.organizations?.name}</Td>
                   <Td>
                     <StatusBadge size="sm" {...metaOf(meta, r.status)} />
                   </Td>

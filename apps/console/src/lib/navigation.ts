@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   ListTodo,
   Magnet,
+  Mail,
   Receipt,
   ScrollText,
   Settings,
@@ -30,7 +31,10 @@ export interface NavGroup {
 export const navigationGroups: NavGroup[] = [
   {
     label: "Général",
-    items: [{ title: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard }],
+    items: [
+      { title: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
+      { title: "Messagerie", href: "/mail", icon: Mail },
+    ],
   },
   {
     label: "Commercial",
