@@ -48,6 +48,8 @@ export interface Lesson {
   content_md: string;
   exercise_md: string | null;
   video_url: string | null;
+  /** Uploaded video in the private `training-videos` bucket (migration 0304). */
+  video_path: string | null;
   duration_minutes: number;
 }
 

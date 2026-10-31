@@ -3,7 +3,7 @@
  * migrations; the database remains the final authority.
  */
 import { z } from "zod";
-import { ORG_ROLES, STAFF_ROLES } from "./access-control";
+import { ORG_ROLES, PORTAL_ORG_ROLES, STAFF_ROLES } from "./access-control";
 import {
   DOCUMENT_KINDS,
   INVOICE_STATUSES,
@@ -19,6 +19,7 @@ import {
   REQUEST_STATUSES,
 } from "./domain";
 import { parseEurosToCents } from "./format";
+import { COURSE_CATEGORIES, COURSE_LEVELS, COURSE_MODALITIES, COURSE_STATUSES } from "./training";
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const uuid = z.string().regex(UUID_RE, { error: "Identifiant invalide." });
@@ -111,9 +112,114 @@ export const contactSchema = z
   })
   .refine((c) => !!c.full_name || !!c.email, { error: "Indiquez au moins un nom ou un e-mail." });
 
-/** Explicit portal invitation of an existing contact. */
+/** Explicit portal invitation of an existing contact (never the learner role). */
 export const inviteContactSchema = z.object({
-  role: z.enum(ORG_ROLES).default("member"),
+  role: z.enum(PORTAL_ORG_ROLES).default("member"),
+});
+
+export const orgRoleSchema = z.enum(ORG_ROLES);
+export const portalRoleSchema = z.enum(PORTAL_ORG_ROLES);
+
+// --- Training (0200 + 0304) -------------------------------------------------------------
+const slugText = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .max(80, { error: "80 caractères maximum." })
+  .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, { error: "Identifiant d'URL : minuscules, chiffres et tirets (ex. ia-generative)." });
+
+/** One item per line (objectives…). */
+export const linesToArray = z
+  .string()
+  .optional()
+  .transform((v) =>
+    (v ?? "")
+      .split(/\r?\n/)
+      .map((l) => l.replace(/^[-*•]\s*/, "").trim())
+      .filter(Boolean),
+  )
+  .refine((a) => a.length <= 30, { error: "30 lignes maximum." })
+  .refine((a) => a.every((l) => l.length <= 500), { error: "500 caractères maximum par ligne." });
+
+const minutes = z.coerce
+  .number({ error: "Durée en minutes attendue." })
+  .int({ error: "Nombre entier de minutes." })
+  .min(0, { error: "Durée positive attendue." })
+  .max(10000, { error: "Durée trop longue." });
+
+export const courseCreateSchema = z.object({
+  title: reqText(200, "Le titre"),
+  slug: slugText.optional(),
+  category: z.enum(COURSE_CATEGORIES),
+  level: z.enum(COURSE_LEVELS),
+  modality: z.enum(COURSE_MODALITIES),
+  duration_hours: z.coerce
+    .number({ error: "Durée en heures attendue." })
+    .gt(0, { error: "La durée doit être positive." })
+    .max(9999, { error: "Durée trop longue." }),
+  audience: reqText(2000, "Le public visé"),
+  prerequisites: reqText(2000, "Les prérequis"),
+});
+
+export const courseSchema = courseCreateSchema.extend({
+  slug: slugText,
+  subtitle: optText(300),
+  status: z.enum(COURSE_STATUSES),
+  objectives: linesToArray,
+  teaching_methods: optText(5000),
+  evaluation_methods: optText(5000),
+  accessibility: optText(5000),
+  access_delay: optText(1000),
+  duration_label: optText(120),
+  price_ht_cents: optEurosToCents,
+  price_label: optText(200),
+  max_group_size: z.coerce
+    .number()
+    .int()
+    .min(1, { error: "Au moins 1 personne." })
+    .max(10000)
+    .optional()
+    .transform((v) => v ?? null),
+});
+
+export const moduleSchema = z.object({
+  title: reqText(200, "Le titre"),
+  summary: optText(2000),
+  duration_minutes: minutes.default(0),
+});
+
+export const lessonCreateSchema = z.object({
+  title: reqText(200, "Le titre"),
+  module_id: uuid,
+});
+
+export const lessonSchema = z.object({
+  title: reqText(200, "Le titre"),
+  slug: slugText,
+  module_id: uuid,
+  duration_minutes: minutes.default(0),
+  objectives: linesToArray,
+  content_md: z.string().max(200000, { error: "Contenu trop long (200 000 caractères maximum)." }).optional().transform((v) => v ?? ""),
+  exercise_md: optText(50000),
+});
+
+export const lessonVideoUrlSchema = z.object({
+  video_url: httpsUrl,
+});
+
+export const videoUploadRequestSchema = z.object({
+  fileName: z.string().trim().min(1).max(200),
+  size: z.number().int().positive(),
+  type: z.string().max(100),
+});
+
+/** Give training access: one or more courses. */
+export const grantTrainingSchema = z.object({
+  course_ids: z
+    .union([uuid, z.array(uuid)], { error: "Choisissez au moins une formation." })
+    .transform((v) => [...new Set(Array.isArray(v) ? v : [v])])
+    .refine((v) => v.length > 0 && v.length <= 20, { error: "Choisissez entre 1 et 20 formations." }),
+  full_name: optText(120),
 });
 
 // --- Leads ----------------------------------------------------------------------------

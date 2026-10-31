@@ -1,13 +1,13 @@
 "use client";
 
-import { Pencil, Plus, Send, Trash2, UserPlus } from "lucide-react";
+import { Crown, GraduationCap, Pencil, Plus, Send, Trash2, UserPlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { NativeSelect } from "@/components/ui/native-select";
 import { ActionButton, ActionForm } from "@/components/shared/action-form";
 import { FormDialog } from "@/components/shared/form-dialog";
 import { Field, FormGrid } from "@/components/shared/field";
-import { ORG_ROLES, ORG_ROLE_LABELS } from "@/lib/access-control";
+import { ORG_ROLE_LABELS, PORTAL_ORG_ROLES } from "@/lib/access-control";
 import { ORG_SIZE_BANDS, ORG_STATUSES, ORG_STATUS_META } from "@/lib/domain";
 import { toast } from "@/lib/toast";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +17,7 @@ import {
   createContact,
   createOrganization,
   deleteContact,
+  grantTrainingAccess,
   inviteContact,
   removeMemberAccess,
   updateContact,
@@ -170,26 +171,7 @@ export function ContactActions({ orgId, contact, hasAccess }: { orgId: string; c
   const label = contact.full_name || contact.email || "ce contact";
   return (
     <div className="flex items-center gap-1">
-      {contact.email && !hasAccess && (
-        <FormDialog
-          trigger={<><Send className="h-4 w-4" aria-hidden="true" /> Ouvrir l&apos;espace client</>}
-          triggerProps={{ size: "sm", variant: "outline" }}
-          title={`Inviter ${label} à l'espace client`}
-          description={`Un e-mail d'invitation va être envoyé à ${contact.email} (sauf si un compte existe déjà). Le contact verra les projets, documents et factures de ce client.`}
-          action={inviteContact.bind(null, orgId, contact.id)}
-          submitLabel="Envoyer l'invitation"
-        >
-          <Field label="Rôle dans l'espace client" htmlFor={`inv-role-${contact.id}`}>
-            <NativeSelect id={`inv-role-${contact.id}`} name="role" defaultValue="member">
-              {ORG_ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {ORG_ROLE_LABELS[r]}
-                </option>
-              ))}
-            </NativeSelect>
-          </Field>
-        </FormDialog>
-      )}
+      {contact.email && !hasAccess && <InviteContactDialog orgId={orgId} contactId={contact.id} label={label} email={contact.email} />}
       <FormDialog
         trigger={<Pencil className="h-4 w-4" aria-hidden="true" />}
         triggerProps={{ size: "icon", variant: "ghost", title: "Modifier", "aria-label": `Modifier ${label}` }}
@@ -226,7 +208,7 @@ export function MemberControls({ orgId, userId, role, label }: { orgId: string; 
           else toast.error(res.error);
         }}
       >
-        {ORG_ROLES.map((r) => (
+        {PORTAL_ORG_ROLES.map((r) => (
           <option key={r} value={r}>
             {ORG_ROLE_LABELS[r]}
           </option>
@@ -237,14 +219,148 @@ export function MemberControls({ orgId, userId, role, label }: { orgId: string; 
         variant="ghost"
         aria-label={`Retirer l'accès de ${label}`}
         title="Retirer l'accès"
-        confirm={`Retirer l'accès de ${label} à l'espace client ? Si l'invitation n'a jamais été utilisée, le compte est aussi supprimé et le lien reçu par e-mail ne fonctionne plus.`}
+        confirm={`Retirer l'accès de ${label} à l'espace client ? S'il suit une formation de ce client, il garde uniquement l'accès à ses formations. Sinon, si l'invitation n'a jamais été utilisée, le compte est aussi supprimé et le lien reçu par e-mail ne fonctionne plus. Aucun e-mail envoyé.`}
         action={() => removeMemberAccess(orgId, userId)}
         onSuccess={(result) => {
           if (result === "deleted") toast.info("Invitation inutilisée : le compte a été supprimé, le lien envoyé ne fonctionne plus.");
+          if (result === "learner") toast.info("La personne garde l'accès à ses formations (app.agenfy.fr), sans espace client.");
         }}
       >
         <Trash2 className="h-4 w-4" />
       </ActionButton>
     </div>
+  );
+}
+
+/** Explicit portal invitation of a contact (console.agenfy.fr): the ONLY e-mail to a contact for the portal. */
+export function InviteContactDialog({ orgId, contactId, label, email }: { orgId: string; contactId: string; label: string; email: string }) {
+  return (
+    <FormDialog
+      trigger={<><Send className="h-4 w-4" aria-hidden="true" /> Ouvrir l&apos;espace client</>}
+      triggerProps={{ size: "sm", variant: "outline" }}
+      title={`Inviter ${label} à l'espace client`}
+      description={`Un e-mail d'invitation à console.agenfy.fr va être envoyé à ${email} (sauf si un compte existe déjà : aucun e-mail dans ce cas). La personne verra les projets, documents et factures de ce client.`}
+      action={inviteContact.bind(null, orgId, contactId)}
+      submitLabel="Envoyer l'invitation"
+    >
+      <Field label="Rôle dans l'espace client" htmlFor={`inv-role-${contactId}`}>
+        <NativeSelect id={`inv-role-${contactId}`} name="role" defaultValue="member">
+          {PORTAL_ORG_ROLES.map((r) => (
+            <option key={r} value={r}>
+              {ORG_ROLE_LABELS[r]}
+            </option>
+          ))}
+        </NativeSelect>
+      </Field>
+    </FormDialog>
+  );
+}
+
+/** Learner (training only) → portal, with an existing account: no e-mail. */
+export function OpenPortalForAccountDialog({ orgId, userId, label }: { orgId: string; userId: string; label: string }) {
+  return (
+    <FormDialog
+      trigger={<><Send className="h-4 w-4" aria-hidden="true" /> Ouvrir l&apos;espace client</>}
+      triggerProps={{ size: "sm", variant: "outline" }}
+      title={`Ouvrir l'espace client à ${label}`}
+      description="La personne a déjà un compte : aucun e-mail n'est envoyé. Elle se connecte à console.agenfy.fr avec ses identifiants habituels et verra les projets, documents et factures de ce client. Ses formations restent accessibles."
+      action={async (_prev: unknown, formData: FormData) => updateMemberRole(orgId, userId, String(formData.get("role") ?? ""))}
+      submitLabel="Ouvrir l'accès"
+    >
+      <Field label="Rôle dans l'espace client" htmlFor={`open-role-${userId}`}>
+        <NativeSelect id={`open-role-${userId}`} name="role" defaultValue="member">
+          {PORTAL_ORG_ROLES.map((r) => (
+            <option key={r} value={r}>
+              {ORG_ROLE_LABELS[r]}
+            </option>
+          ))}
+        </NativeSelect>
+      </Field>
+    </FormDialog>
+  );
+}
+
+export function PromoteResponsableButton({ orgId, userId, label }: { orgId: string; userId: string; label: string }) {
+  return (
+    <ActionButton
+      size="sm"
+      variant="ghost"
+      title="Promouvoir responsable"
+      confirm={`Faire de ${label} un responsable du client ? Il accède à l'espace client (projets, documents, factures) et suit les formations de l'équipe sur app.agenfy.fr. Aucun e-mail envoyé.`}
+      action={() => updateMemberRole(orgId, userId, "owner")}
+    >
+      <Crown className="h-4 w-4" aria-hidden="true" /> Promouvoir responsable
+    </ActionButton>
+  );
+}
+
+/**
+ * Give access to one or more published courses on app.agenfy.fr. The dialog
+ * states who receives an e-mail: nobody when the person already has an
+ * account, otherwise ONE invitation to the training platform.
+ */
+export function GrantTrainingDialog({
+  orgId,
+  contactId,
+  userId,
+  label,
+  email,
+  hasAccount,
+  courses,
+}: {
+  orgId: string;
+  contactId: string | null;
+  userId: string | null;
+  label: string;
+  email: string | null;
+  hasAccount: boolean;
+  courses: { id: string; title: string }[];
+}) {
+  const p = userId ?? contactId ?? "x";
+  const description = hasAccount
+    ? `${label} a déjà un compte : aucun e-mail n'est envoyé. Les formations apparaissent sur son espace formation (app.agenfy.fr).`
+    : `Un e-mail d'invitation à l'espace formation (app.agenfy.fr) va être envoyé à ${email} pour créer son mot de passe (aucun e-mail si un compte existe déjà avec cette adresse). Aucun accès à l'espace client n'est ouvert.`;
+  return (
+    <FormDialog<"invited" | "existing">
+      trigger={<><GraduationCap className="h-4 w-4" aria-hidden="true" /> Donner accès à des formations</>}
+      triggerProps={{ size: "sm", variant: "outline", disabled: courses.length === 0 }}
+      title={`Formations de ${label}`}
+      description={description}
+      action={grantTrainingAccess.bind(null, orgId, { contactId, userId })}
+      submitLabel={hasAccount ? "Donner l'accès" : "Donner l'accès et envoyer l'invitation"}
+      onSuccess={(result) => {
+        if (result === "invited") toast.info(`Invitation envoyée à ${email}.`);
+      }}
+    >
+      <fieldset className="space-y-2">
+        <legend className="mb-2 text-sm font-medium">Formations publiées</legend>
+        {courses.map((c) => (
+          <div key={c.id} className="flex items-center gap-2">
+            <Checkbox id={`grant-${p}-${c.id}`} name="course_ids" value={c.id} />
+            <Label htmlFor={`grant-${p}-${c.id}`} className="font-normal">
+              {c.title}
+            </Label>
+          </div>
+        ))}
+      </fieldset>
+    </FormDialog>
+  );
+}
+
+/** Learner without active training: detach the account from this client (no e-mail). */
+export function DetachLearnerButton({ orgId, userId, label }: { orgId: string; userId: string; label: string }) {
+  return (
+    <ActionButton
+      size="sm"
+      variant="ghost"
+      title="Détacher du client"
+      confirm={`Détacher ${label} de ce client ? Ses inscriptions annulées restent dans l'historique. Aucun e-mail envoyé.`}
+      action={() => removeMemberAccess(orgId, userId)}
+      onSuccess={(result) => {
+        if (result === "deleted") toast.info("Invitation inutilisée : le compte a été supprimé, le lien envoyé ne fonctionne plus.");
+      }}
+    >
+      <Trash2 className="h-4 w-4" aria-hidden="true" /> Détacher
+    </ActionButton>
   );
 }

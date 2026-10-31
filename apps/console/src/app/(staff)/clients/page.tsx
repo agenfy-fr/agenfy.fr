@@ -21,14 +21,14 @@ interface Row {
   created_at: string;
   organization_internal: { status: string } | null;
   projects: { status: string }[];
-  organization_members: { user_id: string }[];
+  organization_members: { user_id: string; role: string }[];
 }
 
 export default async function ClientsPage() {
   const { supabase, role } = await requireStaffPage("/clients");
   const { data } = await supabase
     .from("organizations")
-    .select("id, name, sector, created_at, organization_internal(status), projects(status), organization_members(user_id)")
+    .select("id, name, sector, created_at, organization_internal(status), projects(status), organization_members(user_id, role)")
     .order("name");
   const rows = (data ?? []) as unknown as Row[];
 
@@ -50,7 +50,8 @@ export default async function ClientsPage() {
                 <Th>Statut</Th>
                 <Th>Secteur</Th>
                 <Th numeric>Projets actifs</Th>
-                <Th numeric>Contacts</Th>
+                <Th numeric>Accès espace client</Th>
+                <Th numeric>Apprenants</Th>
                 <Th>Créé le</Th>
               </tr>
             </DataTableHead>
@@ -69,7 +70,8 @@ export default async function ClientsPage() {
                     </Td>
                     <Td muted>{r.sector ?? "—"}</Td>
                     <Td numeric>{r.projects.filter((p) => p.status === "active").length}</Td>
-                    <Td numeric>{r.organization_members.length}</Td>
+                    <Td numeric>{r.organization_members.filter((m) => m.role !== "learner").length}</Td>
+                    <Td numeric>{r.organization_members.filter((m) => m.role === "learner").length}</Td>
                     <Td muted>{formatDate(r.created_at)}</Td>
                   </Tr>
                 );
