@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, Dumbbell, ListChecks, Target } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, Dumbbell, ExternalLink, ListChecks, PlayCircle, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Markdown } from "@/components/markdown";
 import { ProgressBar } from "@/components/progress-bar";
@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatDuration } from "@/lib/format";
 import { lessonNeighbours } from "@/lib/progress";
 import type { Lesson } from "@/lib/types";
+import { SIGNED_VIDEO_TTL, TRAINING_VIDEO_BUCKET, resolveVideoUrl, type ResolvedVideo } from "@/lib/video";
 import { setLessonCompleted } from "../../../actions";
 
 type Params = Promise<{ slug: string; lesson: string }>;
@@ -33,16 +34,18 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return { title: l ? `${l.title} — ${course.title}` : course.title };
 }
 
-/** Allow only video embeds from known providers. */
-function embeddableVideo(url: string | null): string | null {
-  if (!url) return null;
-  try {
-    const u = new URL(url);
-    const allowed = ["www.youtube-nocookie.com", "www.youtube.com", "player.vimeo.com", "www.loom.com"];
-    return u.protocol === "https:" && allowed.includes(u.hostname) ? u.toString() : null;
-  } catch {
-    return null;
+/**
+ * Video of the lesson: uploaded file (private bucket, signed URL created with
+ * the learner's session — Storage RLS only lets enrolled learners and staff
+ * read it) or https link (YouTube / Vimeo / Loom embed, direct file, link).
+ */
+async function lessonVideo(lesson: Lesson): Promise<ResolvedVideo | null> {
+  if (lesson.video_path) {
+    const supabase = await createClient();
+    const { data } = await supabase.storage.from(TRAINING_VIDEO_BUCKET).createSignedUrl(lesson.video_path, SIGNED_VIDEO_TTL);
+    return data?.signedUrl ? { kind: "file", src: data.signedUrl } : null;
   }
+  return resolveVideoUrl(lesson.video_url);
 }
 
 export default async function LessonPage({ params }: { params: Params }) {
@@ -56,12 +59,12 @@ export default async function LessonPage({ params }: { params: Params }) {
   const done = completedLessonIds.has(lesson.id);
   const isLastOfModule = currentModule?.lessons.at(-1)?.id === lesson.id;
   const base = `/learn/${slug}`;
-  const video = embeddableVideo(lesson.video_url);
+  const video = await lessonVideo(lesson);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
       <nav aria-label="Sommaire de la formation" className="order-2 lg:order-1">
-        <div className="lg:sticky lg:top-24 rounded-2xl border bg-card p-4 max-h-[calc(100vh-8rem)] overflow-y-auto">
+        <div className="lg:sticky lg:top-24 rounded-2xl border bg-card p-4 max-h-60 overflow-y-auto lg:max-h-[calc(100vh-8rem)]">
           <Link href={base} className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> Vue d&apos;ensemble
           </Link>
@@ -137,10 +140,10 @@ export default async function LessonPage({ params }: { params: Params }) {
           </section>
         )}
 
-        {video && (
+        {video?.kind === "embed" && (
           <div className="mt-6 aspect-video overflow-hidden rounded-2xl border">
             <iframe
-              src={video}
+              src={video.src}
               title={`Vidéo : ${lesson.title}`}
               className="h-full w-full"
               allow="fullscreen; picture-in-picture"
@@ -148,6 +151,31 @@ export default async function LessonPage({ params }: { params: Params }) {
               referrerPolicy="strict-origin-when-cross-origin"
             />
           </div>
+        )}
+        {video?.kind === "file" && (
+          <div className="mt-6 overflow-hidden rounded-2xl border bg-black">
+            <video
+              src={video.src}
+              controls
+              preload="metadata"
+              playsInline
+              controlsList="nodownload"
+              className="aspect-video h-full w-full"
+              aria-label={`Vidéo : ${lesson.title}`}
+            />
+          </div>
+        )}
+        {video?.kind === "link" && (
+          <a
+            href={video.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 flex items-center gap-3 rounded-2xl border p-4 text-sm hover:bg-secondary"
+          >
+            <PlayCircle className="size-6 shrink-0 text-primary" aria-hidden />
+            <span className="flex-1 font-medium">Regarder la vidéo de la leçon</span>
+            <ExternalLink className="size-4 text-muted-foreground" aria-hidden />
+          </a>
         )}
 
         <Markdown className="mt-8">{lesson.content_md}</Markdown>

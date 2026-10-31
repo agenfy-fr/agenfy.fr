@@ -12,6 +12,7 @@ import { getOffer } from "@/lib/offers";
 import { getBlogPostBySlug } from "@/lib/blog-posts";
 import { GLOSSARY, GLOSSARY_UPDATED, definedTermSchema, getGlossaryTerm, glossaryPath } from "@/lib/glossary";
 import { formatDateFr } from "@/lib/dates";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const dynamicParams = false;
 
@@ -63,6 +64,7 @@ export default async function GlossaryTermPage({ params }: { params: Promise<{ s
             {/* Direct answer block: the paragraph answer engines should quote. */}
             <p className="text-lg text-foreground/90 leading-relaxed border-l-4 border-primary pl-5">{term.definition}</p>
           </Reveal>
+          <Illustration name="glossaire" priority className="mt-10" />
         </div>
       </section>
 

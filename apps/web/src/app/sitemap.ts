@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { blogPosts } from "@/lib/blog-posts";
+import { getIndexableSummaries } from "@/lib/blog";
 import { OFFERS } from "@/lib/offers";
 import { COURSES } from "@/lib/courses";
 import { SITE, AUTHORS } from "@/lib/site";
@@ -14,8 +14,13 @@ const page = (path: string, priority: number, changeFrequency: Entry["changeFreq
   priority,
 });
 
-// Illustrative case studies (/etudes-de-cas) are noindex and deliberately left out.
-export default function sitemap(): MetadataRoute.Sitemap {
+// Picks up articles published from the console (see lib/blog.ts).
+export const revalidate = 300;
+
+// Illustrative case studies (/etudes-de-cas) are noindex and deliberately left out,
+// as are blog articles marked noindex in the console.
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await getIndexableSummaries();
   return [
     page("/", 1, "weekly"),
     page("/services", 0.9),
@@ -33,9 +38,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...Object.keys(AUTHORS).map((slug) => page(`/auteurs/${slug}`, 0.5)),
     page("/blog", 0.7, "weekly"),
     page("/contact", 0.6),
-    ...blogPosts.map((post) => ({
+    ...posts.map((post) => ({
       url: `${SITE.url}/blog/${post.slug}`,
-      lastModified: new Date(post.date),
+      lastModified: new Date(post.updated ?? post.date),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),

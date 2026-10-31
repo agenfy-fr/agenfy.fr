@@ -150,6 +150,15 @@ export function parseTaskKey(key: string): { code: string; number: number } | nu
   return { code: m[1].toUpperCase(), number: Number.parseInt(m[2], 10) };
 }
 
+// --- Blog (0303) ---------------------------------------------------------------------
+/** Display statuses (lib/blog.ts displayStatus: published + future date = scheduled). */
+export const BLOG_STATUS_META: Labeled<"draft" | "scheduled" | "published" | "archived"> = {
+  draft: { label: "Brouillon", variant: "neutral" },
+  scheduled: { label: "Programmé", variant: "info" },
+  published: { label: "Publié", variant: "success" },
+  archived: { label: "Archivé", variant: "caution" },
+};
+
 export function metaOf(
   meta: Readonly<Record<string, { label: string; variant: StatusBadgeVariant }>>,
   value: string | null | undefined,

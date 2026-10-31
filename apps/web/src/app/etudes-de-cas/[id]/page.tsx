@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Clock, Users, CheckCircle2, AlertTriangle, Lightbulb, Wrench, Target } from "lucide-react";
 import { caseStudies, getCaseStudyById } from "@/lib/case-studies";
 import { Reveal } from "@/components/effects";
+import { Illustration } from "@/components/effects/Illustration";
 
 interface CaseStudyPageProps {
   params: Promise<{
@@ -103,6 +104,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
                 <span>Équipe : <strong className="text-foreground">{study.implementation.team}</strong></span>
               </div>
             </div>
+            <Illustration name="etudes-de-cas" priority className="mt-12 max-w-5xl" />
           </Reveal>
         </section>
 

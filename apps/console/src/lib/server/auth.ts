@@ -23,8 +23,8 @@ import {
   canWriteDomain,
   decideArea,
   isStaffRole,
+  splitMemberships,
   type AccessContext,
-  type Membership,
   type StaffRole,
 } from "@/lib/access-control";
 
@@ -73,8 +73,11 @@ export const getSession = cache(async (): Promise<Session | null> => {
   ]);
 
   // Fail closed: an RPC error means "not staff", a query error "no membership".
+  // Learner rows (training only, 0304) never open the client portal.
   const staffRole = !roleRes.error && isStaffRole(roleRes.data) ? (roleRes.data as StaffRole) : null;
-  const memberships = membersRes.error ? [] : ((membersRes.data ?? []) as Membership[]);
+  const { memberships, learnerOrgIds } = splitMemberships(
+    membersRes.error ? [] : ((membersRes.data ?? []) as { organization_id: string; role: string }[]),
+  );
   let mfaPending = false;
   if (!staffRole) {
     const pending = await supabase.rpc("staff_mfa_pending");
@@ -84,7 +87,7 @@ export const getSession = cache(async (): Promise<Session | null> => {
   return {
     supabase,
     user,
-    access: { userId: user.id, email: user.email ?? null, staffRole, memberships },
+    access: { userId: user.id, email: user.email ?? null, staffRole, memberships, learnerOrgIds },
     mfaPending,
   };
 });
@@ -104,7 +107,7 @@ export async function requireStaffPage(pathname?: string): Promise<StaffSession>
   return { ...session!, role: session!.access.staffRole! };
 }
 
-/** Client portal guard: at least one organization membership. */
+/** Client portal guard: at least one portal membership (learners excluded). */
 export async function requireMemberPage(): Promise<Session> {
   const session = await getSession();
   const decision = decideArea("portal", session?.access ?? null);

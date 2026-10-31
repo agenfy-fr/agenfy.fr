@@ -9,7 +9,7 @@ import { JsonLd, personSchema } from "@/components/schemas/JsonLd";
 import { buildMetadata } from "@/lib/seo";
 import { AUTHORS } from "@/lib/site";
 import { formatDateFr } from "@/lib/dates";
-import { getPostsByAuthor } from "@/lib/blog-posts";
+import { getSummariesByAuthor } from "@/lib/blog";
 
 const author = AUTHORS["evan-masse"];
 const path = `/auteurs/${author.slug}`;
@@ -20,8 +20,10 @@ export const metadata = buildMetadata({
   path,
 });
 
-export default function EvanMassePage() {
-  const posts = getPostsByAuthor(author.slug);
+export const revalidate = 300;
+
+export default async function EvanMassePage() {
+  const posts = await getSummariesByAuthor(author.slug);
 
   return (
     <PageLayout>

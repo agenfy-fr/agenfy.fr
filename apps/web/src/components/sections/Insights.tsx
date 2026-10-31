@@ -6,13 +6,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Reveal } from "@/components/effects";
 import { ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
-import { blogPosts } from "@/lib/blog-posts";
+/** Serializable card data: article bodies never ship to the client bundle. */
+export interface InsightPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  readTime: string;
+}
 
-const latestPosts = [...blogPosts]
-  .sort((a, b) => (a.date < b.date ? 1 : -1))
-  .slice(0, 3);
-
-export function Insights() {
+/** Latest articles (static + console), passed by the home page (server). */
+export function Insights({ posts }: { posts: InsightPost[] }) {
+  const latestPosts = posts.slice(0, 3);
   return (
     <section className="py-24 lg:py-32 relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">

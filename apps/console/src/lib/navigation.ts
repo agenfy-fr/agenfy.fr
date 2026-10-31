@@ -14,6 +14,9 @@ import {
   Users,
   LifeBuoy,
   FolderOpen,
+  Newspaper,
+  GraduationCap,
+  KeyRound,
 } from "lucide-react";
 
 export interface NavItem {
@@ -52,11 +55,22 @@ export const navigationGroups: NavGroup[] = [
     ],
   },
   {
+    label: "Formation",
+    items: [
+      { title: "Formations", href: "/training", icon: GraduationCap },
+      { title: "Accès formation", href: "/training/access", icon: KeyRound },
+    ],
+  },
+  {
     label: "Facturation",
     items: [
       { title: "Devis", href: "/billing/quotes", icon: ScrollText },
       { title: "Factures", href: "/billing/invoices", icon: Receipt },
     ],
+  },
+  {
+    label: "Contenu",
+    items: [{ title: "Blog", href: "/blog", icon: Newspaper }],
   },
   {
     label: "Administration",

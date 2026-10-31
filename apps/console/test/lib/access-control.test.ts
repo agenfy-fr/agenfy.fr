@@ -3,12 +3,16 @@ import {
   BILLING_WRITE_ROLES,
   LEAD_WRITE_ROLES,
   STAFF_ROLES,
+  TRAINING_WRITE_ROLES,
   canAccessRoute,
   canWrite,
   canWriteDomain,
   decideArea,
   filterNavForRole,
+  isLearnerOnly,
+  isMember,
   resolveHome,
+  splitMemberships,
   safeNextPath,
   type AccessContext,
   type StaffRole,
@@ -155,5 +159,55 @@ describe("safeNextPath — open-redirect protection", () => {
     [null, null],
   ])("%s → %s", (input, expected) => {
     expect(safeNextPath(input)).toBe(expected);
+  });
+});
+
+describe("training access (0304): learners never enter the console portal", () => {
+  const learner = (orgs: string[] = [ORG_A]): AccessContext => ({ ...ctx(null), learnerOrgIds: orgs });
+
+  it("splits own membership rows into portal memberships and training-only organizations", () => {
+    expect(
+      splitMemberships([
+        { organization_id: ORG_A, role: "owner" },
+        { organization_id: "b", role: "learner" },
+        { organization_id: "c", role: "superuser" },
+      ]),
+    ).toEqual({ memberships: [{ organization_id: ORG_A, role: "owner" }], learnerOrgIds: ["b"] });
+  });
+
+  it("a learner-only account lands on /unauthorized (message + link to app.agenfy.fr), never the portal", () => {
+    expect(isLearnerOnly(learner())).toBe(true);
+    expect(resolveHome(learner())).toBe("/unauthorized");
+    expect(decideArea("portal", learner())).toEqual({ allow: false, redirect: "/unauthorized" });
+    expect(decideArea("staff", learner())).toEqual({ allow: false, redirect: "/unauthorized" });
+  });
+
+  it("a learner row passed as a membership by mistake still does not open the portal", () => {
+    const forged: AccessContext = { ...ctx(null), memberships: [{ organization_id: ORG_A, role: "learner" }] };
+    expect(isMember(forged)).toBe(false);
+    expect(decideArea("portal", forged)).toEqual({ allow: false, redirect: "/unauthorized" });
+  });
+
+  it("a responsable who also follows a training keeps the portal", () => {
+    const both: AccessContext = { ...ctx(null, [ORG_A]), learnerOrgIds: ["other"] };
+    expect(isLearnerOnly(both)).toBe(false);
+    expect(decideArea("portal", both)).toEqual({ allow: true });
+  });
+
+  it("staff who are also learners stay staff", () => {
+    expect(isLearnerOnly({ ...ctx("trainer"), learnerOrgIds: [ORG_A] })).toBe(false);
+  });
+
+  it("training section: every staff role reads, writes mirror is_training_staff()", () => {
+    for (const role of STAFF_ROLES) {
+      expect(canAccessRoute(role, "/training")).toBe(true);
+      expect(canAccessRoute(role, "/training/access")).toBe(true);
+      expect(canWriteDomain(role, TRAINING_WRITE_ROLES)).toBe(role !== "readonly");
+    }
+  });
+
+  it("training entries appear in the staff navigation", () => {
+    const hrefs = filterNavForRole(navigationGroups, "trainer").flatMap((g) => g.items.map((i) => i.href));
+    expect(hrefs).toEqual(expect.arrayContaining(["/training", "/training/access"]));
   });
 });

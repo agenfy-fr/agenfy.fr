@@ -9,6 +9,7 @@ import { JsonLd, articleSchema, type FaqItem } from "@/components/schemas/JsonLd
 import { buildMetadata } from "@/lib/seo";
 import { DEFAULT_AUTHOR } from "@/lib/site";
 import { formatDateFr } from "@/lib/dates";
+import { Illustration } from "@/components/effects/Illustration";
 
 const PATH = "/comparatifs/chatgpt-claude-copilot-mistral-entreprise";
 const PUBLISHED = "2026-10-29";
@@ -241,6 +242,7 @@ export default function ComparatifAssistantsPage() {
               </p>
             </div>
           </Reveal>
+          <Illustration name="comparatifs" priority className="mt-12" />
         </div>
       </section>
 

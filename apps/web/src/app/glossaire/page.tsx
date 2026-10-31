@@ -13,6 +13,7 @@ import {
   sortedGlossary,
 } from "@/lib/glossary";
 import { formatDateFr } from "@/lib/dates";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata = buildMetadata({
   title: "Glossaire de l'IA en entreprise : définitions claires",
@@ -51,6 +52,7 @@ export default function GlossaryIndexPage() {
               Mis à jour le <time dateTime={GLOSSARY_UPDATED}>{formatDateFr(GLOSSARY_UPDATED)}</time>
             </p>
           </Reveal>
+          <Illustration name="glossaire" priority className="mt-14" />
         </div>
       </section>
 

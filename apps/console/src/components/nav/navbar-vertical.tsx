@@ -19,7 +19,7 @@ export function Navbar({ groups }: { groups: NavGroup[] }) {
   const NAV_GROUPS = groups;
   const allItems = NAV_GROUPS.flatMap((g) => g.items);
   const pathname = usePathname() ?? "";
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(
@@ -82,7 +82,12 @@ export function Navbar({ groups }: { groups: NavGroup[] }) {
                           : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       )}
                     >
-                      <Link href={item.href} aria-current={active ? "page" : undefined}>
+                      <Link
+                        href={item.href}
+                        aria-current={active ? "page" : undefined}
+                        // The mobile drawer lives in the shared layout: close it on navigation.
+                        onClick={() => isMobile && setOpenMobile(false)}
+                      >
                         <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
                         <span>{item.title}</span>
                       </Link>

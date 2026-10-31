@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/layouts/Breadcrumbs";
 import { buildMetadata } from "@/lib/seo";
 import { AXES, LEVELS, QUESTIONS } from "@/lib/diagnostic";
 import { DiagnosticQuiz } from "./DiagnosticQuiz";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata = buildMetadata({
   title: "Diagnostic de maturité IA gratuit pour les entreprises",
@@ -46,6 +47,7 @@ export default function DiagnosticPage() {
               {QUESTIONS.length} questions, environ 5 minutes. Obtenez votre score sur 100, votre niveau
               sur {LEVELS.length} et vos deux priorités d&apos;action, immédiatement et sans inscription.
             </p>
+            <Illustration name="diagnostic" priority className="mb-12" />
             <DiagnosticQuiz />
           </div>
         </section>

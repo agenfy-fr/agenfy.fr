@@ -118,3 +118,31 @@
   background-clip: text;
   color: transparent;
 }
+
+/* Markdown content: rich-text editor (components/editor) and article preview.
+   Mirrors the typography of the public blog (apps/web blog-posts.tsx). */
+.markdown-body { line-height: 1.75; color: hsl(var(--foreground)); font-size: 0.95rem; }
+.markdown-body > :first-child { margin-top: 0; }
+.markdown-body h2 { font-size: 1.5rem; font-weight: 700; margin: 2.25rem 0 0.75rem; line-height: 1.3; }
+.markdown-body h3 { font-size: 1.2rem; font-weight: 600; margin: 1.75rem 0 0.5rem; line-height: 1.35; }
+.markdown-body p { margin: 0 0 1rem; color: hsl(var(--muted-foreground)); }
+.markdown-body strong { color: hsl(var(--foreground)); font-weight: 600; }
+.markdown-body a { color: hsl(var(--primary-text)); text-decoration: underline; text-underline-offset: 2px; }
+.markdown-body ul { list-style: disc; padding-left: 1.5rem; margin: 0 0 1.25rem; color: hsl(var(--muted-foreground)); }
+.markdown-body ol { list-style: decimal; padding-left: 1.5rem; margin: 0 0 1.25rem; color: hsl(var(--muted-foreground)); }
+.markdown-body li { margin: 0.25rem 0; }
+.markdown-body li > p { margin: 0; }
+.markdown-body blockquote { border: 1px solid hsl(var(--primary) / 0.25); background: hsl(var(--primary) / 0.05); border-radius: 0.75rem; padding: 1rem 1.25rem; margin: 1.5rem 0; }
+.markdown-body blockquote p { color: hsl(var(--foreground)); margin: 0; }
+.markdown-body code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85em; background: hsl(var(--muted)); border-radius: 0.25rem; padding: 0.1rem 0.3rem; }
+.markdown-body pre { background: hsl(var(--muted)); border: 1px solid hsl(var(--border)); border-radius: 0.75rem; padding: 1rem; overflow-x: auto; margin: 0 0 1.5rem; }
+.markdown-body pre code { background: none; padding: 0; font-size: 0.85rem; }
+.markdown-body hr { border: 0; border-top: 1px solid hsl(var(--border)); margin: 2rem 0; }
+.markdown-body img { max-width: 100%; height: auto; border-radius: 0.75rem; margin: 1.5rem 0; }
+.markdown-body img.ProseMirror-selectednode { outline: 3px solid hsl(var(--ring)); }
+.markdown-body table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 0 0 1.5rem; }
+.markdown-body th, .markdown-body td { border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; text-align: left; vertical-align: top; }
+.markdown-body th { background: hsl(var(--muted)); font-weight: 600; }
+.markdown-body th p, .markdown-body td p { margin: 0; }
+.markdown-body .selectedCell { background: hsl(var(--primary) / 0.08); }
+.markdown-body p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: hsl(var(--muted-foreground)); float: left; height: 0; pointer-events: none; }

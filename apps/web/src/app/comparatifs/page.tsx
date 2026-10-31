@@ -4,6 +4,7 @@ import { PageLayout } from "@/components/layouts";
 import { Breadcrumbs } from "@/components/layouts/Breadcrumbs";
 import { BackgroundBeams, Reveal } from "@/components/effects";
 import { buildMetadata } from "@/lib/seo";
+import { Illustration } from "@/components/effects/Illustration";
 
 export const metadata = buildMetadata({
   title: "Comparatifs IA pour les entreprises",
@@ -41,6 +42,7 @@ export default function ComparatifsPage() {
               de cause. Agenfy n&apos;est revendeur d&apos;aucun des outils cités.
             </p>
           </Reveal>
+          <Illustration name="comparatifs" priority className="mt-14" />
         </div>
       </section>
       <section className="pb-20">

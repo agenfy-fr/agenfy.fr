@@ -3,7 +3,7 @@
  * migrations; the database remains the final authority.
  */
 import { z } from "zod";
-import { ORG_ROLES, STAFF_ROLES } from "./access-control";
+import { ORG_ROLES, PORTAL_ORG_ROLES, STAFF_ROLES } from "./access-control";
 import {
   DOCUMENT_KINDS,
   INVOICE_STATUSES,
@@ -19,6 +19,8 @@ import {
   REQUEST_STATUSES,
 } from "./domain";
 import { parseEurosToCents } from "./format";
+import { BLOG_AUTHORS, BLOG_CATEGORIES, BLOG_STATUSES, SLUG_MAX, SLUG_RE, parisLocalToIso } from "./blog";
+import { COURSE_CATEGORIES, COURSE_LEVELS, COURSE_MODALITIES, COURSE_STATUSES } from "./training";
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const uuid = z.string().regex(UUID_RE, { error: "Identifiant invalide." });
@@ -48,7 +50,10 @@ export const optUuid = uuid.optional().transform((v) => v ?? null);
 
 /** Checkbox: "on" / "true" → true, absent → false. */
 export const checkbox = z
-  .union([z.literal("on"), z.literal("true"), z.literal("false"), z.undefined()])
+  .union([z.literal("on"), z.literal("true"), z.literal("false")])
+  // .optional() (not z.undefined() in the union): zod 4 requires the key otherwise,
+  // and an unchecked box is simply absent from the FormData.
+  .optional()
   .transform((v) => v === "on" || v === "true");
 
 /** Euros typed by a human ("1 234,50") → integer cents. */
@@ -111,9 +116,114 @@ export const contactSchema = z
   })
   .refine((c) => !!c.full_name || !!c.email, { error: "Indiquez au moins un nom ou un e-mail." });
 
-/** Explicit portal invitation of an existing contact. */
+/** Explicit portal invitation of an existing contact (never the learner role). */
 export const inviteContactSchema = z.object({
-  role: z.enum(ORG_ROLES).default("member"),
+  role: z.enum(PORTAL_ORG_ROLES).default("member"),
+});
+
+export const orgRoleSchema = z.enum(ORG_ROLES);
+export const portalRoleSchema = z.enum(PORTAL_ORG_ROLES);
+
+// --- Training (0200 + 0304) -------------------------------------------------------------
+const slugText = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .max(80, { error: "80 caractères maximum." })
+  .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, { error: "Identifiant d'URL : minuscules, chiffres et tirets (ex. ia-generative)." });
+
+/** One item per line (objectives…). */
+export const linesToArray = z
+  .string()
+  .optional()
+  .transform((v) =>
+    (v ?? "")
+      .split(/\r?\n/)
+      .map((l) => l.replace(/^[-*•]\s*/, "").trim())
+      .filter(Boolean),
+  )
+  .refine((a) => a.length <= 30, { error: "30 lignes maximum." })
+  .refine((a) => a.every((l) => l.length <= 500), { error: "500 caractères maximum par ligne." });
+
+const minutes = z.coerce
+  .number({ error: "Durée en minutes attendue." })
+  .int({ error: "Nombre entier de minutes." })
+  .min(0, { error: "Durée positive attendue." })
+  .max(10000, { error: "Durée trop longue." });
+
+export const courseCreateSchema = z.object({
+  title: reqText(200, "Le titre"),
+  slug: slugText.optional(),
+  category: z.enum(COURSE_CATEGORIES),
+  level: z.enum(COURSE_LEVELS),
+  modality: z.enum(COURSE_MODALITIES),
+  duration_hours: z.coerce
+    .number({ error: "Durée en heures attendue." })
+    .gt(0, { error: "La durée doit être positive." })
+    .max(9999, { error: "Durée trop longue." }),
+  audience: reqText(2000, "Le public visé"),
+  prerequisites: reqText(2000, "Les prérequis"),
+});
+
+export const courseSchema = courseCreateSchema.extend({
+  slug: slugText,
+  subtitle: optText(300),
+  status: z.enum(COURSE_STATUSES),
+  objectives: linesToArray,
+  teaching_methods: optText(5000),
+  evaluation_methods: optText(5000),
+  accessibility: optText(5000),
+  access_delay: optText(1000),
+  duration_label: optText(120),
+  price_ht_cents: optEurosToCents,
+  price_label: optText(200),
+  max_group_size: z.coerce
+    .number()
+    .int()
+    .min(1, { error: "Au moins 1 personne." })
+    .max(10000)
+    .optional()
+    .transform((v) => v ?? null),
+});
+
+export const moduleSchema = z.object({
+  title: reqText(200, "Le titre"),
+  summary: optText(2000),
+  duration_minutes: minutes.default(0),
+});
+
+export const lessonCreateSchema = z.object({
+  title: reqText(200, "Le titre"),
+  module_id: uuid,
+});
+
+export const lessonSchema = z.object({
+  title: reqText(200, "Le titre"),
+  slug: slugText,
+  module_id: uuid,
+  duration_minutes: minutes.default(0),
+  objectives: linesToArray,
+  content_md: z.string().max(200000, { error: "Contenu trop long (200 000 caractères maximum)." }).optional().transform((v) => v ?? ""),
+  exercise_md: optText(50000),
+});
+
+export const lessonVideoUrlSchema = z.object({
+  video_url: httpsUrl,
+});
+
+export const videoUploadRequestSchema = z.object({
+  fileName: z.string().trim().min(1).max(200),
+  size: z.number().int().positive(),
+  type: z.string().max(100),
+});
+
+/** Give training access: one or more courses. */
+export const grantTrainingSchema = z.object({
+  course_ids: z
+    .union([uuid, z.array(uuid)], { error: "Choisissez au moins une formation." })
+    .transform((v) => [...new Set(Array.isArray(v) ? v : [v])])
+    .refine((v) => v.length > 0 && v.length <= 20, { error: "Choisissez entre 1 et 20 formations." }),
+  full_name: optText(120),
 });
 
 // --- Leads ----------------------------------------------------------------------------
@@ -199,6 +309,60 @@ export const documentSchema = z.object({
  * Keep next.config.ts serverActions.bodySizeLimit just above this value.
  */
 export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+
+// --- Blog (0303) -------------------------------------------------------------------------
+const blogSlugSchema = z
+  .string({ error: "L'URL (slug) est obligatoire." })
+  .trim()
+  .max(SLUG_MAX, { error: `${SLUG_MAX} caractères maximum.` })
+  .regex(SLUG_RE, { error: "Slug : minuscules, chiffres et tirets uniquement (ex. agents-ia-pme)." });
+const blogImagePath = z
+  .string()
+  .trim()
+  .max(300)
+  .regex(/^[A-Za-z0-9][A-Za-z0-9/._-]*$/, { error: "Chemin d'image invalide." })
+  .refine((p) => !p.includes(".."), { error: "Chemin d'image invalide." })
+  .optional()
+  .transform((v) => v ?? null);
+
+export const blogCreateSchema = z.object({
+  title: reqText(200, "Le titre"),
+  category: z.enum(BLOG_CATEGORIES).default("IA"),
+});
+
+export const blogPostSchema = z.object({
+  title: reqText(200, "Le titre"),
+  slug: blogSlugSchema,
+  excerpt: z.string().trim().max(500, { error: "Chapô : 500 caractères maximum." }).optional().transform((v) => v ?? ""),
+  category: z.enum(BLOG_CATEGORIES, { error: "Catégorie invalide." }),
+  author_slug: z.enum(BLOG_AUTHORS.map((a) => a.slug) as [string, ...string[]], { error: "Auteur inconnu." }),
+  content_md: z.string().max(200_000, { error: "Article trop long (200 000 caractères maximum)." }).optional().transform((v) => v ?? ""),
+  cover_image_path: blogImagePath,
+  cover_image_alt: optText(300),
+  og_image_path: blogImagePath,
+  featured: checkbox,
+  noindex: checkbox,
+  reading_minutes: z.coerce.number().int().min(1).max(240).optional().transform((v) => v ?? null),
+  seo_title: optText(120),
+  seo_description: optText(320),
+  focus_keyword: optText(100),
+  canonical_url: httpsUrl.optional().transform((v) => v ?? null),
+  status: z.enum(BLOG_STATUSES).default("draft"),
+  /** Paris wall-clock time from <input type="datetime-local">; empty = now on publish. */
+  published_at: z
+    .string()
+    .optional()
+    .transform((v, ctx) => {
+      if (!v) return null;
+      const iso = parisLocalToIso(v);
+      if (!iso) {
+        ctx.addIssue({ code: "custom", message: "Date de publication invalide." });
+        return z.NEVER;
+      }
+      return iso;
+    }),
+  intent: z.enum(["save", "publish", "unpublish"]).default("save"),
+});
 
 // --- Billing ----------------------------------------------------------------------------
 export const billingCreateSchema = z.object({

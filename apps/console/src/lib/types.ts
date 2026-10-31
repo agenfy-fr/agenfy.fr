@@ -222,3 +222,70 @@ export interface ClientRequestMessage {
   internal: boolean;
   created_at: string;
 }
+
+// --- Training (0200 + 0304) -------------------------------------------------------------
+export interface Course {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  category: "essentiels" | "technique" | "management";
+  level: "debutant" | "intermediaire" | "avance";
+  audience: string;
+  prerequisites: string;
+  objectives: string[];
+  teaching_methods: string | null;
+  evaluation_methods: string | null;
+  accessibility: string | null;
+  access_delay: string | null;
+  duration_hours: number;
+  duration_label: string | null;
+  modality: "presentiel" | "distanciel" | "hybride" | "elearning";
+  price_ht_cents: number | null;
+  price_label: string | null;
+  max_group_size: number | null;
+  status: "draft" | "published" | "archived";
+  version: number;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CourseModule {
+  id: string;
+  course_id: string;
+  position: number;
+  title: string;
+  summary: string | null;
+  duration_minutes: number;
+}
+
+export interface Lesson {
+  id: string;
+  course_id: string;
+  module_id: string;
+  slug: string;
+  position: number;
+  title: string;
+  objectives: string[];
+  content_md: string;
+  exercise_md: string | null;
+  video_url: string | null;
+  /** Object in the private `training-videos` bucket (0304). */
+  video_path: string | null;
+  duration_minutes: number;
+  updated_at: string;
+}
+
+export interface Enrollment {
+  id: string;
+  user_id: string;
+  course_id: string;
+  organization_id: string | null;
+  cohort_id: string | null;
+  status: "active" | "completed" | "cancelled";
+  progress_percent: number;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+}

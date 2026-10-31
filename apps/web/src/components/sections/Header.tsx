@@ -71,7 +71,7 @@ export function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+        isScrolled || isMobileMenuOpen
           ? "bg-background/80 backdrop-blur-lg border-b border-border"
           : "bg-transparent"
       }`}
@@ -79,15 +79,9 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo.svg"
-              alt="Agenfy"
-              width={160}
-              height={50}
-              className="h-14 w-auto"
-              priority
-            />
+          <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Agenfy, accueil">
+            <Image src="/logo-mark.svg" alt="" width={18} height={40} className="h-9 w-auto" priority />
+            <span className="text-2xl font-bold tracking-tight text-foreground">Agenfy</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -167,7 +161,8 @@ export function Header() {
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
             <button
-              className="p-2 text-foreground"
+              type="button"
+              className="p-2.5 -mr-2.5 text-foreground"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={isMobileMenuOpen}
@@ -179,7 +174,7 @@ export function Header() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-6 border-t border-border animate-fade-in">
+          <div className="md:hidden max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain py-6 border-t border-border animate-fade-in">
             <nav className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <div key={link.href}>

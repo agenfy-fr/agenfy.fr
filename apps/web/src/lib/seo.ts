@@ -12,6 +12,8 @@ interface BuildMetadataInput {
   authors?: string[];
   keywords?: string[];
   noIndex?: boolean;
+  /** Absolute canonical URL when it differs from `path` (article first published elsewhere). */
+  canonical?: string;
 }
 
 // Every page calls this so canonical, Open Graph and Twitter can never drift apart.
@@ -26,13 +28,14 @@ export function buildMetadata({
   authors,
   keywords,
   noIndex = false,
+  canonical,
 }: BuildMetadataInput): Metadata {
   const url = absoluteUrl(path);
   return {
     title,
     description,
     keywords,
-    alternates: { canonical: url },
+    alternates: { canonical: canonical ?? url },
     openGraph: {
       title: `${title} | ${SITE.name}`,
       description,
