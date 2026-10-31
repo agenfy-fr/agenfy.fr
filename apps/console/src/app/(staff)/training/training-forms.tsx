@@ -385,10 +385,10 @@ export function LessonForm({ lesson, modules, canEdit }: { lesson: Lesson; modul
         <Field label="Objectifs de la leçon" htmlFor={`ls-obj-${p}`} hint="Un objectif par ligne.">
           <Textarea id={`ls-obj-${p}`} name="objectives" rows={3} defaultValue={lesson.objectives.join("\n")} />
         </Field>
-        <Field label="Article (Markdown)" htmlFor={`ls-content-${p}`} hint="Titres (##), listes, liens, tableaux, code. Le HTML n'est pas interprété.">
+        <Field label="Article" htmlFor={`ls-content-${p}`}>
           <MarkdownField id={`ls-content-${p}`} name="content_md" defaultValue={lesson.content_md} disabled={!canEdit} />
         </Field>
-        <Field label="Exercice (Markdown, facultatif)" htmlFor={`ls-ex-${p}`}>
+        <Field label="Exercice (facultatif)" htmlFor={`ls-ex-${p}`}>
           <MarkdownField id={`ls-ex-${p}`} name="exercise_md" defaultValue={lesson.exercise_md ?? ""} rows={6} disabled={!canEdit} />
         </Field>
       </fieldset>

@@ -5,8 +5,9 @@ import { safeNext } from "@/lib/safe-next";
 
 /**
  * Landing route for magic links, invitations and password recovery.
- * Supports both the PKCE flow (?code=) and the token-hash flow
- * (?token_hash=&type=, recommended in the Supabase e-mail templates).
+ * Supports the PKCE flow (?code=), the token-hash flow (?token_hash=&type=,
+ * recommended in the Supabase e-mail templates) and the implicit flow
+ * (tokens in the fragment → /auth/confirm), used by console invitations.
  */
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
@@ -14,6 +15,14 @@ export async function GET(request: NextRequest) {
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
   let next = safeNext(searchParams.get("next"));
+
+  // Neither: implicit flow, the tokens are in the URL fragment (kept by the
+  // browser across this redirect) and handled client-side by /auth/confirm.
+  if (!code && !tokenHash) {
+    const confirm = new URL("/auth/confirm", origin);
+    confirm.searchParams.set("next", next);
+    return NextResponse.redirect(confirm);
+  }
 
   const supabase = await createClient();
   let ok = false;

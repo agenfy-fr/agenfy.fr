@@ -1,21 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
-import { MarkdownView } from "./markdown-view";
+import { MarkdownEditor } from "@/components/editor/markdown-editor";
 
 /**
- * Markdown editor for lesson articles: textarea + live preview.
- *
- * Deliberately isolated: the reusable WYSIWYG Markdown editor
- * (src/components/editor/) will replace this component. Keep the contract:
- * an uncontrolled form field named `name` (e.g. `content_md`) holding Markdown.
+ * Lesson article field: the shared WYSIWYG Markdown editor (also used by the
+ * blog). Contract unchanged: a form field named `name` holding Markdown,
+ * rendered as Markdown by app.agenfy.fr. No image upload here (blog images
+ * are public; lesson visuals go through video or external links).
  */
 export function MarkdownField({
   id,
   name,
   defaultValue,
-  rows = 18,
   disabled,
 }: {
   id: string;
@@ -24,23 +20,9 @@ export function MarkdownField({
   rows?: number;
   disabled?: boolean;
 }) {
-  const [value, setValue] = useState(defaultValue);
   return (
-    <div className="grid gap-3 lg:grid-cols-2">
-      <Textarea
-        id={id}
-        name={name}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        rows={rows}
-        disabled={disabled}
-        spellCheck
-        className="font-mono text-xs leading-relaxed"
-      />
-      <div className="min-h-32 overflow-auto rounded-md border bg-card p-4" aria-label="Aperçu" role="region">
-        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Aperçu</p>
-        {value.trim() ? <MarkdownView>{value}</MarkdownView> : <p className="text-sm text-muted-foreground">Rien à afficher.</p>}
-      </div>
+    <div id={id}>
+      <MarkdownEditor name={name} defaultValue={defaultValue} disabled={disabled} label="Contenu de la leçon" />
     </div>
   );
 }
