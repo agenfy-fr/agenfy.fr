@@ -19,7 +19,12 @@ const nextConfig: NextConfig = {
     serverActions: { bodySizeLimit: "4.4mb" },
   },
   async headers() {
-    return [{ source: "/:path*", headers: SECURITY_HEADERS }];
+    return [
+      // Everything but the e-mail body, which is framed by /mail/message and
+      // carries its own CSP (frame-ancestors 'self', sandbox).
+      { source: "/:path((?!api/mail/body$).*)", headers: SECURITY_HEADERS },
+      { source: "/api/mail/body", headers: SECURITY_HEADERS.filter((h) => h.key !== "X-Frame-Options") },
+    ];
   },
 };
 

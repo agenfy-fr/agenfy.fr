@@ -350,4 +350,63 @@ select set_config('request.jwt.claim.aal', 'aal1', true);
 select public.t_eq((select public.staff_mfa_pending()::int), 0, 'alice (client): no staff 2FA pending');
 rollback;
 
+-- ---------------------------------------------------------------------------
+-- 0300 contacts, 0301 Shine invoices, 0302 mailbox settings
+-- ---------------------------------------------------------------------------
+insert into public.organization_contacts (organization_id, full_name, email) values
+  ('aaaaaaaa-0000-4000-8000-000000000000', 'Contact A', 'contact@client-a.test');
+insert into public.mail_accounts (email, imap_host, smtp_host, username, password_encrypted)
+values ('contact@agenfy.fr', 'ssl0.ovh.net', 'ssl0.ovh.net', 'contact@agenfy.fr', 'v1:cipher');
+
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000001', true);
+select public.t_allowed(
+  $$insert into public.organization_contacts (organization_id, full_name) values ('bbbbbbbb-0000-4000-8000-000000000000', 'Sans e-mail')$$,
+  'owner: adds a contact without e-mail (nothing sent)');
+select public.t_denied(
+  $$insert into public.organization_contacts (organization_id, email) values ('aaaaaaaa-0000-4000-8000-000000000000', 'CONTACT@client-a.test')$$,
+  'contacts: e-mail unique per organization (case-insensitive)');
+select public.t_denied(
+  $$insert into public.organization_contacts (organization_id) values ('aaaaaaaa-0000-4000-8000-000000000000')$$,
+  'contacts: a name or an e-mail is required');
+select public.t_allowed(
+  $$insert into public.invoices (organization_id, title, source, number, status, subtotal_cents, vat_cents, issue_date)
+    values ('aaaaaaaa-0000-4000-8000-000000000000', 'Mission IA', 'shine', ' F-2026-0042 ', 'sent', 100000, 20000, '2026-10-30')$$,
+  'owner: records a Shine invoice');
+select public.t_eq((select count(*) from public.invoices where source = 'shine' and number = 'F-2026-0042' and total_cents = 120000), 1,
+  'shine invoice: typed number kept (trimmed), total = HT + TVA');
+select public.t_allowed(
+  $$update public.invoices set subtotal_cents = 110000, vat_cents = 22000, status = 'paid', paid_at = '2026-10-31' where number = 'F-2026-0042'$$,
+  'shine invoice stays editable');
+select public.t_eq((select total_cents from public.invoices where number = 'F-2026-0042'), 132000, 'shine invoice: total recomputed on edit');
+select public.t_denied(
+  $$insert into public.invoices (organization_id, title, source, status) values ('aaaaaaaa-0000-4000-8000-000000000000', 'x', 'shine', 'sent')$$,
+  'shine invoice: number required');
+select public.t_denied(
+  $$update public.invoices set source = 'console' where number = 'F-2026-0042'$$,
+  'invoice source is immutable');
+select public.t_denied($$select * from public.mail_accounts$$, 'owner (session): mailbox secrets unreadable');
+select public.t_denied($$delete from public.mail_accounts$$, 'owner (session): cannot touch mailbox secrets');
+rollback;
+
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-00000000000a', true);
+select public.t_eq((select count(*) from public.organization_contacts), 0, 'alice: no access to the address book');
+select public.t_denied(
+  $$insert into public.organization_contacts (organization_id, full_name) values ('aaaaaaaa-0000-4000-8000-000000000000', 'x')$$,
+  'alice: cannot add contacts');
+select public.t_denied($$select * from public.mail_accounts$$, 'alice: no mailbox secrets');
+rollback;
+
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000002', true);
+select public.t_eq((select count(*) from public.organization_contacts), 1, 'reader: sees contacts');
+select public.t_denied(
+  $$insert into public.organization_contacts (organization_id, full_name) values ('aaaaaaaa-0000-4000-8000-000000000000', 'x')$$,
+  'reader: cannot add contacts');
+rollback;
+
 \echo 'RLS isolation suite: all assertions passed'

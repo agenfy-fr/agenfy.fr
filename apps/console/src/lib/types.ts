@@ -62,6 +62,20 @@ export interface OrganizationMember {
   created_at: string;
 }
 
+export interface OrganizationContact {
+  id: string;
+  organization_id: string;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  job_title: string | null;
+  notes: string | null;
+  is_primary: boolean;
+  user_id: string | null;
+  invited_at: string | null;
+  created_at: string;
+}
+
 export interface DirectoryUser {
   id: string;
   email: string | null;
@@ -177,6 +191,9 @@ export interface Quote extends BillingDocumentBase {
 
 export interface Invoice extends BillingDocumentBase {
   status: InvoiceStatus;
+  /** 'shine' = issued in Shine, recorded here (number and amounts typed, PDF in document_id). */
+  source: "console" | "shine";
+  document_id: string | null;
   quote_id: string | null;
   due_date: string | null;
   paid_at: string | null;

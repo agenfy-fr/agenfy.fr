@@ -40,6 +40,8 @@ export const ADMIN_ROLES: readonly StaffRole[] = ["owner", "admin"];
 export const ROLE_ACCESS = {
   "/leads": ["sales", "consultant", "readonly"],
   "/billing": ["sales", "readonly"],
+  // Shared company mailbox: owner/admin only.
+  "/mail": [],
 } as const satisfies Record<string, readonly StaffRole[]>;
 
 export type ProtectedRoute = keyof typeof ROLE_ACCESS;

@@ -4,12 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Callout } from "@/components/shared/callout";
 import { DataTable, DataTableHead, Td, Th, Tr } from "@/components/shared/data-table";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { STAFF_ROLE_LABELS, canWrite } from "@/lib/access-control";
+import { STAFF_ROLE_LABELS, canWrite, isAdminRole } from "@/lib/access-control";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { API_TOKEN_PUBLIC_COLUMNS, type ApiTokenRow } from "@/lib/planning/api-tokens";
 import { requireStaffPage } from "@/lib/server/auth";
 import { siteOrigin } from "@/lib/server/site";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getMailSettingsView } from "@/lib/server/mail/config";
+import { hasMailKey } from "@/lib/server/mail/crypto";
+import { MailSettingsForm } from "./mail-settings-form";
 import { NewTokenForm, RevokeTokenButton } from "./token-forms";
 
 export const metadata: Metadata = { title: "Paramètres" };
@@ -35,6 +38,7 @@ export default async function SettingsPage() {
     tokensError = true;
   }
   const mcpUrl = `${await siteOrigin()}/api/mcp`;
+  const mail = isAdminRole(role) ? await getMailSettingsView().catch(() => null) : null;
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1fr_2fr]">
@@ -51,6 +55,42 @@ export default async function SettingsPage() {
           </Link>
         </CardContent>
       </Card>
+
+      {mail && (
+        <Card id="messagerie" className="xl:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-base">Messagerie</CardTitle>
+            <CardDescription>
+              Boîte mail de l&apos;entreprise (OVH : IMAP/SMTP) consultable dans Messagerie, réservée aux propriétaires et administrateurs.
+              Si vous changez le mot de passe chez OVH, mettez-le à jour ici.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {!hasMailKey() && (
+              <Callout tone="warning">
+                MAIL_ENCRYPTION_KEY n&apos;est pas configurée sur le serveur : impossible d&apos;enregistrer un mot de passe chiffré.
+              </Callout>
+            )}
+            {mail.source === "env" && (
+              <Callout tone="info">Boîte actuellement configurée par les variables MAIL_* de Vercel. Enregistrer ce formulaire la remplace.</Callout>
+            )}
+            <MailSettingsForm
+              initial={{
+                stored: mail.source === "settings",
+                email: mail.email ?? "contact@agenfy.fr",
+                display_name: mail.display_name ?? "Agenfy",
+                username: mail.username ?? "",
+                imap_host: mail.imap_host ?? "ssl0.ovh.net",
+                imap_port: mail.imap_port ?? 993,
+                smtp_host: mail.smtp_host ?? "ssl0.ovh.net",
+                smtp_port: mail.smtp_port ?? 465,
+                signature: mail.signature ?? "",
+              }}
+            />
+            {mail.updated_at && <p className="text-xs text-muted-foreground">Mis à jour le {formatDateTime(mail.updated_at)}</p>}
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

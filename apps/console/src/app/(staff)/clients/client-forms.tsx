@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2, UserPlus } from "lucide-react";
+import { Pencil, Plus, Send, Trash2, UserPlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -10,11 +10,16 @@ import { Field, FormGrid } from "@/components/shared/field";
 import { ORG_ROLES, ORG_ROLE_LABELS } from "@/lib/access-control";
 import { ORG_SIZE_BANDS, ORG_STATUSES, ORG_STATUS_META } from "@/lib/domain";
 import { toast } from "@/lib/toast";
-import type { Organization, OrganizationInternal, StaffMember } from "@/lib/types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import type { Organization, OrganizationContact, OrganizationInternal, StaffMember } from "@/lib/types";
 import {
+  createContact,
   createOrganization,
-  inviteMember,
-  removeMember,
+  deleteContact,
+  inviteContact,
+  removeMemberAccess,
+  updateContact,
   updateMemberRole,
   updateOrganization,
   updateOrganizationInternal,
@@ -114,34 +119,97 @@ export function InternalForm({
   );
 }
 
-export function InviteMemberButton({ orgId, defaultEmail }: { orgId: string; defaultEmail?: string }) {
+function ContactFields({ contact }: { contact?: OrganizationContact }) {
+  const p = contact?.id ?? "new";
   return (
-    <FormDialog
-      trigger={<><UserPlus className="h-4 w-4" aria-hidden="true" /> Inviter un contact</>}
-      triggerProps={{ size: "sm", variant: "outline" }}
-      title="Inviter un contact client"
-      description="Le contact reçoit un e-mail d'invitation et accède uniquement aux données de cette organisation."
-      action={inviteMember.bind(null, orgId)}
-      submitLabel="Inviter"
-    >
-      <Field label="E-mail" htmlFor="inv-email">
-        <Input id="inv-email" name="email" type="email" defaultValue={defaultEmail} required />
-      </Field>
+    <>
       <FormGrid>
-        <Field label="Nom complet" htmlFor="inv-name">
-          <Input id="inv-name" name="full_name" />
+        <Field label="Nom complet" htmlFor={`ct-name-${p}`}>
+          <Input id={`ct-name-${p}`} name="full_name" defaultValue={contact?.full_name ?? ""} />
         </Field>
-        <Field label="Rôle" htmlFor="inv-role">
-          <NativeSelect id="inv-role" name="role" defaultValue="member">
-            {ORG_ROLES.map((r) => (
-              <option key={r} value={r}>
-                {ORG_ROLE_LABELS[r]}
-              </option>
-            ))}
-          </NativeSelect>
+        <Field label="Fonction" htmlFor={`ct-job-${p}`}>
+          <Input id={`ct-job-${p}`} name="job_title" defaultValue={contact?.job_title ?? ""} />
+        </Field>
+        <Field label="E-mail" htmlFor={`ct-email-${p}`}>
+          <Input id={`ct-email-${p}`} name="email" type="email" defaultValue={contact?.email ?? ""} />
+        </Field>
+        <Field label="Téléphone" htmlFor={`ct-phone-${p}`}>
+          <Input id={`ct-phone-${p}`} name="phone" type="tel" defaultValue={contact?.phone ?? ""} />
         </Field>
       </FormGrid>
+      <Field label="Notes internes" htmlFor={`ct-notes-${p}`}>
+        <Textarea id={`ct-notes-${p}`} name="notes" rows={3} defaultValue={contact?.notes ?? ""} />
+      </Field>
+      <div className="flex items-center gap-2">
+        <Checkbox id={`ct-primary-${p}`} name="is_primary" defaultChecked={contact?.is_primary ?? false} />
+        <Label htmlFor={`ct-primary-${p}`} className="font-normal">
+          Contact principal
+        </Label>
+      </div>
+    </>
+  );
+}
+
+/** Address book entry: nothing is e-mailed. */
+export function NewContactButton({ orgId }: { orgId: string }) {
+  return (
+    <FormDialog
+      trigger={<><UserPlus className="h-4 w-4" aria-hidden="true" /> Ajouter un contact</>}
+      triggerProps={{ size: "sm" }}
+      title="Ajouter un contact"
+      description="Fiche contact uniquement : aucun e-mail n'est envoyé et aucun accès n'est ouvert."
+      action={createContact.bind(null, orgId)}
+      submitLabel="Ajouter"
+    >
+      <ContactFields />
     </FormDialog>
+  );
+}
+
+export function ContactActions({ orgId, contact, hasAccess }: { orgId: string; contact: OrganizationContact; hasAccess: boolean }) {
+  const label = contact.full_name || contact.email || "ce contact";
+  return (
+    <div className="flex items-center gap-1">
+      {contact.email && !hasAccess && (
+        <FormDialog
+          trigger={<><Send className="h-4 w-4" aria-hidden="true" /> Ouvrir l&apos;espace client</>}
+          triggerProps={{ size: "sm", variant: "outline" }}
+          title={`Inviter ${label} à l'espace client`}
+          description={`Un e-mail d'invitation va être envoyé à ${contact.email} (sauf si un compte existe déjà). Le contact verra les projets, documents et factures de ce client.`}
+          action={inviteContact.bind(null, orgId, contact.id)}
+          submitLabel="Envoyer l'invitation"
+        >
+          <Field label="Rôle dans l'espace client" htmlFor={`inv-role-${contact.id}`}>
+            <NativeSelect id={`inv-role-${contact.id}`} name="role" defaultValue="member">
+              {ORG_ROLES.map((r) => (
+                <option key={r} value={r}>
+                  {ORG_ROLE_LABELS[r]}
+                </option>
+              ))}
+            </NativeSelect>
+          </Field>
+        </FormDialog>
+      )}
+      <FormDialog
+        trigger={<Pencil className="h-4 w-4" aria-hidden="true" />}
+        triggerProps={{ size: "icon", variant: "ghost", title: "Modifier", "aria-label": `Modifier ${label}` }}
+        title="Modifier le contact"
+        action={updateContact.bind(null, orgId, contact.id)}
+        submitLabel="Enregistrer"
+      >
+        <ContactFields contact={contact} />
+      </FormDialog>
+      <ActionButton
+        size="icon"
+        variant="ghost"
+        aria-label={`Supprimer ${label}`}
+        title="Supprimer le contact"
+        confirm={`Supprimer la fiche de ${label} ? (aucun e-mail n'est envoyé)`}
+        action={() => deleteContact(orgId, contact.id)}
+      >
+        <Trash2 className="h-4 w-4" />
+      </ActionButton>
+    </div>
   );
 }
 
@@ -169,8 +237,11 @@ export function MemberControls({ orgId, userId, role, label }: { orgId: string; 
         variant="ghost"
         aria-label={`Retirer l'accès de ${label}`}
         title="Retirer l'accès"
-        confirm={`Retirer l'accès de ${label} à cette organisation ? (le compte n'est pas supprimé)`}
-        action={() => removeMember(orgId, userId)}
+        confirm={`Retirer l'accès de ${label} à l'espace client ? Si l'invitation n'a jamais été utilisée, le compte est aussi supprimé et le lien reçu par e-mail ne fonctionne plus.`}
+        action={() => removeMemberAccess(orgId, userId)}
+        onSuccess={(result) => {
+          if (result === "deleted") toast.info("Invitation inutilisée : le compte a été supprimé, le lien envoyé ne fonctionne plus.");
+        }}
       >
         <Trash2 className="h-4 w-4" />
       </ActionButton>
