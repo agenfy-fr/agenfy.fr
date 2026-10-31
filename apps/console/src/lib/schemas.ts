@@ -19,6 +19,7 @@ import {
   REQUEST_STATUSES,
 } from "./domain";
 import { parseEurosToCents } from "./format";
+import { BLOG_AUTHORS, BLOG_CATEGORIES, BLOG_STATUSES, SLUG_MAX, SLUG_RE, parisLocalToIso } from "./blog";
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const uuid = z.string().regex(UUID_RE, { error: "Identifiant invalide." });
@@ -48,7 +49,10 @@ export const optUuid = uuid.optional().transform((v) => v ?? null);
 
 /** Checkbox: "on" / "true" → true, absent → false. */
 export const checkbox = z
-  .union([z.literal("on"), z.literal("true"), z.literal("false"), z.undefined()])
+  .union([z.literal("on"), z.literal("true"), z.literal("false")])
+  // .optional() (not z.undefined() in the union): zod 4 requires the key otherwise,
+  // and an unchecked box is simply absent from the FormData.
+  .optional()
   .transform((v) => v === "on" || v === "true");
 
 /** Euros typed by a human ("1 234,50") → integer cents. */
@@ -199,6 +203,60 @@ export const documentSchema = z.object({
  * Keep next.config.ts serverActions.bodySizeLimit just above this value.
  */
 export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+
+// --- Blog (0303) -------------------------------------------------------------------------
+const blogSlugSchema = z
+  .string({ error: "L'URL (slug) est obligatoire." })
+  .trim()
+  .max(SLUG_MAX, { error: `${SLUG_MAX} caractères maximum.` })
+  .regex(SLUG_RE, { error: "Slug : minuscules, chiffres et tirets uniquement (ex. agents-ia-pme)." });
+const blogImagePath = z
+  .string()
+  .trim()
+  .max(300)
+  .regex(/^[A-Za-z0-9][A-Za-z0-9/._-]*$/, { error: "Chemin d'image invalide." })
+  .refine((p) => !p.includes(".."), { error: "Chemin d'image invalide." })
+  .optional()
+  .transform((v) => v ?? null);
+
+export const blogCreateSchema = z.object({
+  title: reqText(200, "Le titre"),
+  category: z.enum(BLOG_CATEGORIES).default("IA"),
+});
+
+export const blogPostSchema = z.object({
+  title: reqText(200, "Le titre"),
+  slug: blogSlugSchema,
+  excerpt: z.string().trim().max(500, { error: "Chapô : 500 caractères maximum." }).optional().transform((v) => v ?? ""),
+  category: z.enum(BLOG_CATEGORIES, { error: "Catégorie invalide." }),
+  author_slug: z.enum(BLOG_AUTHORS.map((a) => a.slug) as [string, ...string[]], { error: "Auteur inconnu." }),
+  content_md: z.string().max(200_000, { error: "Article trop long (200 000 caractères maximum)." }).optional().transform((v) => v ?? ""),
+  cover_image_path: blogImagePath,
+  cover_image_alt: optText(300),
+  og_image_path: blogImagePath,
+  featured: checkbox,
+  noindex: checkbox,
+  reading_minutes: z.coerce.number().int().min(1).max(240).optional().transform((v) => v ?? null),
+  seo_title: optText(120),
+  seo_description: optText(320),
+  focus_keyword: optText(100),
+  canonical_url: httpsUrl.optional().transform((v) => v ?? null),
+  status: z.enum(BLOG_STATUSES).default("draft"),
+  /** Paris wall-clock time from <input type="datetime-local">; empty = now on publish. */
+  published_at: z
+    .string()
+    .optional()
+    .transform((v, ctx) => {
+      if (!v) return null;
+      const iso = parisLocalToIso(v);
+      if (!iso) {
+        ctx.addIssue({ code: "custom", message: "Date de publication invalide." });
+        return z.NEVER;
+      }
+      return iso;
+    }),
+  intent: z.enum(["save", "publish", "unpublish"]).default("save"),
+});
 
 // --- Billing ----------------------------------------------------------------------------
 export const billingCreateSchema = z.object({

@@ -14,6 +14,13 @@
     "onlyBuiltDependencies": [
       "sharp",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "linkifyjs": "4.3.3",
+      "prosemirror-changeset": "2.4.4",
+      "prosemirror-schema-list": "1.5.1",
+      "prosemirror-transform": "1.12.2",
+      "prosemirror-view": "1.42.6"
+    }
   }
 }
