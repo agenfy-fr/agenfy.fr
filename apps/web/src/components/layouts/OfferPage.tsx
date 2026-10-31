@@ -8,6 +8,8 @@ import { BackgroundBeams, Reveal } from "@/components/effects";
 import { Breadcrumbs } from "@/components/layouts/Breadcrumbs";
 import { JsonLd, serviceSchema } from "@/components/schemas/JsonLd";
 import { getOffer, type Offer } from "@/lib/offers";
+import { Illustration } from "@/components/effects/Illustration";
+import { OFFER_ILLUSTRATION } from "@/lib/illustrations";
 
 export function OfferPage({ offer, children }: { offer: Offer; children?: React.ReactNode }) {
   const Icon = offer.icon;
@@ -59,6 +61,9 @@ export function OfferPage({ offer, children }: { offer: Offer; children?: React.
                 </Button>
               </div>
             </Reveal>
+            {OFFER_ILLUSTRATION[offer.slug] && (
+              <Illustration name={OFFER_ILLUSTRATION[offer.slug]} priority className="mt-14" />
+            )}
           </div>
         </section>
 
