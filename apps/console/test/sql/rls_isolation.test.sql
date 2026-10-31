@@ -435,6 +435,129 @@ select public.t_eq((select count(*) from public.blog_posts), 1, 'alice (client):
 select public.t_denied($$insert into public.blog_posts (slug, title) values ('pirate', 'x')$$, 'alice: cannot create a blog post');
 select public.t_denied($$update public.blog_posts set title = 'x'$$, 'alice: cannot edit blog posts');
 select public.t_denied($$insert into storage.objects (bucket_id, name) values ('blog-images', 'posts/x.png')$$, 'alice: cannot upload blog images');
+-- 0304 training access: learners (employees) reach training, never the portal
+-- ---------------------------------------------------------------------------
+insert into auth.users (id, email) values
+  ('00000000-0000-4000-8000-0000000000ca', 'carol@client-a.test');
+
+insert into public.courses (id, slug, title, audience, prerequisites, duration_hours, modality, status) values
+  ('cccccccc-0000-4000-8000-000000000001', 'ia-test', 'IA test', 'Tous', 'Aucun', 7, 'elearning', 'published'),
+  ('cccccccc-0000-4000-8000-000000000002', 'ia-autre', 'IA autre', 'Tous', 'Aucun', 7, 'elearning', 'published');
+insert into public.course_modules (id, course_id, position, title) values
+  ('cccccccc-0000-4000-8000-0000000000d1', 'cccccccc-0000-4000-8000-000000000001', 1, 'Module 1'),
+  ('cccccccc-0000-4000-8000-0000000000d2', 'cccccccc-0000-4000-8000-000000000002', 1, 'Module autre');
+insert into public.lessons (id, course_id, module_id, slug, position, title, video_path) values
+  ('cccccccc-0000-4000-8000-0000000000e1', 'cccccccc-0000-4000-8000-000000000001', 'cccccccc-0000-4000-8000-0000000000d1',
+   'intro', 1, 'Intro', 'cccccccc-0000-4000-8000-000000000001/cccccccc-0000-4000-8000-0000000000e1/intro.mp4'),
+  ('cccccccc-0000-4000-8000-0000000000e2', 'cccccccc-0000-4000-8000-000000000001', 'cccccccc-0000-4000-8000-0000000000d1',
+   'suite', 2, 'Suite', null),
+  ('cccccccc-0000-4000-8000-0000000000e3', 'cccccccc-0000-4000-8000-000000000002', 'cccccccc-0000-4000-8000-0000000000d2',
+   'autre', 1, 'Autre', 'cccccccc-0000-4000-8000-000000000002/cccccccc-0000-4000-8000-0000000000e3/autre.mp4');
+insert into storage.objects (bucket_id, name) values
+  ('training-videos', 'cccccccc-0000-4000-8000-000000000001/cccccccc-0000-4000-8000-0000000000e1/intro.mp4'),
+  ('training-videos', 'cccccccc-0000-4000-8000-000000000002/cccccccc-0000-4000-8000-0000000000e3/autre.mp4'),
+  ('training-videos', 'cccccccc-0000-4000-8000-000000000001/orphan.mp4');
+
+select public.t_eq((select count(*) from storage.buckets where id = 'training-videos' and not public), 1,
+  'training-videos bucket is private');
+select public.t_denied(
+  $$insert into public.lessons (course_id, module_id, slug, position, title, video_path)
+    values ('cccccccc-0000-4000-8000-000000000001', 'cccccccc-0000-4000-8000-0000000000d1', 'x', 9, 'x',
+            'cccccccc-0000-4000-8000-000000000002/x/autre.mp4')$$,
+  'lesson video_path must live under its course/lesson folder');
+select public.t_denied(
+  $$update public.lessons set video_url = 'https://www.youtube.com/watch?v=x' where id = 'cccccccc-0000-4000-8000-0000000000e1'$$,
+  'lesson has either a video link or an uploaded video');
+
+-- Staff enrolls carol (employee of A) and alice (responsable of A).
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000001', true);
+select public.t_eq((select count(*) from public.enroll_by_email('carol@client-a.test', 'cccccccc-0000-4000-8000-000000000001',
+  'aaaaaaaa-0000-4000-8000-000000000000') where true), 1, 'owner: enrolls carol for client A');
+select public.t_eq((select count(*) from public.enroll_by_email('alice@client-a.test', 'cccccccc-0000-4000-8000-000000000001',
+  'aaaaaaaa-0000-4000-8000-000000000000') where true), 1, 'owner: enrolls alice for client A');
+commit;
+
+select public.t_eq((select count(*) from public.organization_members
+  where user_id = '00000000-0000-4000-8000-0000000000ca' and role = 'learner'), 1,
+  'enroll_by_email: new person joins the organization as learner (not member)');
+select public.t_eq((select count(*) from public.organization_members
+  where user_id = '00000000-0000-4000-8000-00000000000a' and role = 'owner'), 1,
+  'enroll_by_email: existing responsable keeps her role');
+
+-- carol: learner only
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000ca', true);
+select public.t_eq((select public.is_org_member('aaaaaaaa-0000-4000-8000-000000000000')::int), 0, 'carol: not a portal member');
+select public.t_eq(
+  (select count(*) from public.organizations) + (select count(*) from public.projects)
+  + (select count(*) from public.project_milestones) + (select count(*) from public.client_documents)
+  + (select count(*) from public.invoices) + (select count(*) from public.quotes)
+  + (select count(*) from public.client_requests) + (select count(*) from public.organization_contacts),
+  0, 'carol: no client portal data');
+select public.t_eq((select count(*) from storage.objects where bucket_id = 'client-documents'), 0, 'carol: no client files');
+select public.t_eq((select count(*) from public.organization_members), 1, 'carol: reads only her own membership row');
+select public.t_eq((select count(*) from public.profiles), 1, 'carol: reads only her own profile');
+select public.t_denied(
+  $$insert into public.client_requests (organization_id, created_by, subject, body)
+    values ('aaaaaaaa-0000-4000-8000-000000000000', '00000000-0000-4000-8000-0000000000ca', 'x', 'x')$$,
+  'carol: cannot open a portal request');
+select public.t_denied(
+  $$update public.organization_members set role = 'member' where user_id = '00000000-0000-4000-8000-0000000000ca'$$,
+  'carol: cannot promote herself');
+select public.t_eq((select count(*) from public.enrollments), 1, 'carol: sees her enrollment');
+select public.t_eq((select count(*) from public.lessons), 2, 'carol: reads the lessons of her course only');
+select public.t_eq((select count(*) from storage.objects where bucket_id = 'training-videos'), 1,
+  'carol: reads only the video of a lesson of her course');
+select public.t_denied(
+  $$insert into storage.objects (bucket_id, name) values ('training-videos', 'cccccccc-0000-4000-8000-000000000001/x.mp4')$$,
+  'carol: cannot upload videos');
+select public.t_denied($$select public.move_lesson('cccccccc-0000-4000-8000-0000000000e1', 1)$$, 'carol: cannot reorder lessons');
+rollback;
+
+-- alice: responsable of A keeps the portal and follows her team's training
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-00000000000a', true);
+select public.t_eq((select count(*) from public.projects), 1, 'alice: still sees A projects');
+select public.t_eq((select count(*) from public.enrollments where organization_id = 'aaaaaaaa-0000-4000-8000-000000000000'), 2,
+  'alice (manager): sees the enrollments of her organization');
+select public.t_eq((select count(*) from public.profiles where id = '00000000-0000-4000-8000-0000000000ca'), 1,
+  'alice: sees the profile of her employee');
+select public.t_eq((select count(*) from public.organization_members), 2, 'alice: sees the members of A, learners included');
+rollback;
+
+-- bob (B): nothing of A's training
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-00000000000b', true);
+select public.t_eq((select count(*) from public.enrollments), 0, 'bob: no enrollment of A');
+select public.t_eq((select count(*) from storage.objects where bucket_id = 'training-videos'), 0, 'bob: no training video');
+select public.t_eq((select count(*) from public.profiles where id = '00000000-0000-4000-8000-0000000000ca'), 0, 'bob: no profile of A');
+rollback;
+
+-- cancelled enrollment = no more video
+update public.enrollments set status = 'cancelled' where user_id = '00000000-0000-4000-8000-0000000000ca';
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000ca', true);
+select public.t_eq((select count(*) from storage.objects where bucket_id = 'training-videos'), 0, 'carol (cancelled): no video');
+select public.t_eq((select count(*) from public.lessons), 0, 'carol (cancelled): no lesson');
+rollback;
+
+-- staff: consultant (training staff) uploads and reorders, readonly only reads
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000003', true);
+select public.t_allowed(
+  $$insert into storage.objects (bucket_id, name) values ('training-videos', 'cccccccc-0000-4000-8000-000000000001/new.mp4')$$,
+  'consult: uploads a training video');
+select public.t_eq((select public.move_lesson('cccccccc-0000-4000-8000-0000000000e1', 1)::int), 1, 'consult: moves a lesson down');
+select public.t_eq((select position from public.lessons where id = 'cccccccc-0000-4000-8000-0000000000e1'), 2, 'move_lesson: swapped');
+select public.t_eq((select public.move_lesson('cccccccc-0000-4000-8000-0000000000e1', 1)::int), 0, 'move_lesson: last stays last');
+select public.t_eq((select public.move_course_module('cccccccc-0000-4000-8000-0000000000d1', -1)::int), 0, 'move_course_module: first stays first');
 rollback;
 
 begin;
@@ -471,6 +594,16 @@ select public.t_denied($$insert into public.blog_posts (slug, title, cover_image
 select public.t_denied($$insert into public.blog_posts (slug, title, og_image_path) values ('autre', 'x', 'posts/../x.png')$$, 'blog: OG image path cannot escape');
 select public.t_allowed($$insert into public.blog_posts (slug, title, cover_image_path, og_image_path) values ('autre', 'x', 'posts/2026/a.webp', 'posts/2026/b.png')$$, 'blog: valid image paths accepted');
 select public.t_allowed($$insert into storage.objects (bucket_id, name) values ('blog-images', 'posts/2026/x.png')$$, 'consultant: uploads a blog image');
+select public.t_eq((select count(*) from storage.objects where bucket_id = 'training-videos'), 3, 'reader: reads every training video');
+select public.t_denied(
+  $$insert into storage.objects (bucket_id, name) values ('training-videos', 'cccccccc-0000-4000-8000-000000000001/r.mp4')$$,
+  'reader: cannot upload training videos');
+select public.t_denied($$delete from storage.objects where bucket_id = 'training-videos'$$, 'reader: cannot delete training videos');
+rollback;
+
+begin;
+set local role anon;
+select public.t_eq((select count(*) from storage.objects where bucket_id = 'training-videos'), 0, 'anon: no training video');
 rollback;
 
 \echo 'RLS isolation suite: all assertions passed'

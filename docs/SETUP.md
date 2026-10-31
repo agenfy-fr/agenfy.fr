@@ -54,6 +54,7 @@ ont été appliquées à la main : les marquer comme appliquées **avant** de po
 ```bash
 supabase migration repair --status applied 0001 0002   # seulement dans ce cas
 supabase db push --dry-run             # affiche ce qui sera appliqué : 0003, 0004, 0100-0103, 0200-0202, 0250, 0300-0303
+supabase db push --dry-run             # affiche ce qui sera appliqué : 0003, 0004, 0100-0103, 0200-0202, 0250, 0300-0304
 supabase db push
 ```
 
@@ -159,3 +160,30 @@ La facture apparaît dans le suivi, le tableau de bord et l'espace client (PDF t
 4. Mise à jour du site : automatique sous 5 minutes (ISR). Pour une mise à jour immédiate après publication, définir
    la même valeur aléatoire **`REVALIDATE_SECRET`** (`openssl rand -base64 32`) dans les projets Vercel www **et** console.
    Optionnel côté console : `WEB_SITE_URL` (défaut `https://www.agenfy.fr`, à changer pour tester une preview).
+## Formations et accès (migration 0304)
+
+1. Appliquer `0304_training_access.sql` (après 0303). Elle crée le bucket privé **`training-videos`** (50 Mo par fichier = limite
+   du plan gratuit Supabase ; pour plus, relever la limite globale dans Storage → Settings sur un plan payant, puis
+   `update storage.buckets set file_size_limit = … where id = 'training-videos'`).
+2. Vercel → `agenfy-console` : variable **`NEXT_PUBLIC_APP_URL=https://app.agenfy.fr`** (lien des invitations formation).
+3. Supabase → Authentication → URL Configuration : vérifier que `https://app.agenfy.fr/auth/callback` (avec paramètres,
+   ex. `https://app.agenfy.fr/auth/callback**`) est autorisé, et que le modèle d'e-mail *Invite user* mène bien au callback
+   de l'app (lien `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=invite` ou équivalent).
+
+Qui voit quoi :
+
+| Rôle chez le client (`organization_members.role`) | Espace client (console) | Espace formation (app) |
+|---|---|---|
+| `owner` Responsable / `manager` Gestionnaire | projets, documents, factures, demandes | ses formations + `/manager` (progression de l'équipe) |
+| `member` Membre | projets, documents, factures, demandes | ses formations éventuelles |
+| `learner` Apprenant | **aucun** (message + lien vers app.agenfy.fr) | uniquement les formations attribuées |
+
+Console → **Formations** : créer une formation (brouillon → publiée), modules et leçons (ordre, article Markdown avec aperçu,
+vidéo = lien YouTube/Vimeo/https ou fichier envoyé directement du navigateur vers le stockage privé).
+Console → **Clients → fiche → Accès** : toutes les personnes du client (responsable, salariés, contacts sans compte), accès
+espace client oui/non + rôle, formations (statut, progression). Ajouter un salarié comme contact n'envoie rien ; « Donner
+accès à des formations » envoie au plus une invitation à app.agenfy.fr si la personne n'a pas de compte (indiqué dans la
+fenêtre avant confirmation). **Accès formation** liste toutes les inscriptions.
+
+Avant 0304, `enroll_by_email()` ajoutait les apprenants comme `member` (accès au portail). La requête commentée en fin de
+migration liste ces personnes : les repasser en « Apprenant » depuis l'onglet Accès si besoin (« Retirer l'accès »).

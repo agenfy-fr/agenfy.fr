@@ -55,6 +55,8 @@ export function buildCSP(nonce: string, opts: BuildCspOptions = {}): string {
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
     `img-src 'self' data: blob: ${supabase.split(" ")[0] ?? ""}`.trim(),
+    // Lesson video preview: short-lived signed URLs of the private Storage bucket.
+    `media-src 'self' blob: ${supabase.split(" ")[0] ?? ""}`.trim(),
     "font-src 'self' data:",
     `connect-src 'self' ${supabase}`.trim(),
     // Only our own sandboxed e-mail body (/api/mail/body) is ever framed.

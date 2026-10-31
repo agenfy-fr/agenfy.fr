@@ -47,10 +47,10 @@ const auth = await import("@/lib/server/auth");
 const ORG_A = "aaaaaaaa-0000-4000-8000-000000000000";
 const ORG_B = "bbbbbbbb-0000-4000-8000-000000000000";
 
-function signIn(staffRole: string | null, orgs: string[] = [], metadata?: Record<string, unknown>) {
+function signIn(staffRole: string | null, orgs: string[] = [], metadata?: Record<string, unknown>, role = "member") {
   state.user = { id: "u1", email: "u@example.test", user_metadata: metadata };
   state.staffRole = staffRole;
-  state.memberships = orgs.map((organization_id) => ({ organization_id, role: "member" }));
+  state.memberships = orgs.map((organization_id) => ({ organization_id, role }));
 }
 
 async function redirectOf(p: Promise<unknown>): Promise<string | null> {
@@ -149,5 +149,32 @@ describe("action guards", () => {
     signIn(null, [ORG_A]);
     await expect(auth.requireMemberOf(ORG_A)).resolves.toBeTruthy();
     await expect(auth.requireMemberOf(ORG_B)).rejects.toBeInstanceOf(auth.ForbiddenError);
+  });
+});
+
+describe("training-only accounts (0304 learner role)", () => {
+  it("learner employee: no portal, no back-office → /unauthorized (link to app.agenfy.fr)", async () => {
+    signIn(null, [ORG_A], undefined, "learner");
+    expect(await redirectOf(auth.requireMemberPage())).toBe("/unauthorized");
+    expect(await redirectOf(auth.requireStaffPage("/dashboard"))).toBe("/unauthorized");
+    const session = await auth.getSession();
+    expect(session?.access.memberships).toEqual([]);
+    expect(session?.access.learnerOrgIds).toEqual([ORG_A]);
+  });
+
+  it("learner cannot act as a member of the organization (portal actions)", async () => {
+    signIn(null, [ORG_A], undefined, "learner");
+    await expect(auth.requireMemberOf(ORG_A)).rejects.toBeInstanceOf(auth.ForbiddenError);
+  });
+
+  it("responsable (owner) keeps the portal", async () => {
+    signIn(null, [ORG_A], undefined, "owner");
+    expect(await redirectOf(auth.requireMemberPage())).toBeNull();
+    await expect(auth.requireMemberOf(ORG_A)).resolves.toBeTruthy();
+  });
+
+  it("unknown membership role fails closed", async () => {
+    signIn(null, [ORG_A], undefined, "superuser");
+    expect(await redirectOf(auth.requireMemberPage())).toBe("/unauthorized");
   });
 });

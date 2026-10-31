@@ -23,11 +23,15 @@ const ROUTE_LABELS: Record<string, string> = {
   account: "Mon compte",
   blog: "Blog",
   preview: "Aperçu",
+  training: "Formations",
+  access: "Accès formation",
+  lessons: "Leçons",
 };
 
 /** Intermediate segments without their own page.tsx: rendered as text targets. */
 const NON_NAVIGABLE_SEGMENTS: Record<string, string> = {
   "/billing": "/billing/invoices",
+  "/training/lessons": "/training",
 };
 
 function truncateId(segment: string): string | null {
