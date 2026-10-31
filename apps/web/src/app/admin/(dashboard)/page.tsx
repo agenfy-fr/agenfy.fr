@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { blogPosts } from "@/lib/blog-posts";
+import { getAllBlogSummaries } from "@/lib/blog";
 import { caseStudies } from "@/lib/case-studies";
 import { FileText, Briefcase, Mail, Users, ArrowRight } from "lucide-react";
 
@@ -19,7 +19,7 @@ export default async function AdminDashboardPage() {
     .eq("status", "Nouveau");
 
   const kpis = [
-    { label: "Articles publiés", value: blogPosts.length, icon: FileText },
+    { label: "Articles publiés", value: (await getAllBlogSummaries()).length, icon: FileText },
     { label: "Études de cas", value: caseStudies.length, icon: Briefcase },
     {
       label: "Abonnés newsletter",

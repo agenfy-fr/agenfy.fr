@@ -21,6 +21,8 @@ const ROUTE_LABELS: Record<string, string> = {
   documents: "Documents",
   new: "Nouveau",
   account: "Mon compte",
+  blog: "Blog",
+  preview: "Aperçu",
 };
 
 /** Intermediate segments without their own page.tsx: rendered as text targets. */

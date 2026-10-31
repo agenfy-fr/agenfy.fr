@@ -409,4 +409,68 @@ select public.t_denied(
   'reader: cannot add contacts');
 rollback;
 
+-- ---------------------------------------------------------------------------
+-- 0303 blog posts (public site reads published posts with the anon key)
+-- ---------------------------------------------------------------------------
+insert into public.blog_posts (slug, title, status, published_at) values
+  ('article-publie', 'Publié', 'published', now() - interval '1 day'),
+  ('article-programme', 'Programmé', 'published', now() + interval '7 days'),
+  ('article-brouillon', 'Brouillon', 'draft', null),
+  ('article-archive', 'Archivé', 'archived', now() - interval '30 days');
+
+begin;
+set local role anon;
+select public.t_eq((select count(*) from public.blog_posts), 1, 'anon: only the published, past-dated blog post');
+select public.t_eq((select count(*) from public.blog_posts where slug = 'article-publie'), 1, 'anon: sees the published post');
+select public.t_denied($$insert into public.blog_posts (slug, title) values ('pirate', 'x')$$, 'anon: cannot create a blog post');
+select public.t_denied($$update public.blog_posts set title = 'x'$$, 'anon: cannot edit blog posts');
+select public.t_denied($$delete from public.blog_posts$$, 'anon: cannot delete blog posts');
+select public.t_denied($$insert into storage.objects (bucket_id, name) values ('blog-images', 'posts/x.png')$$, 'anon: cannot upload blog images');
+rollback;
+
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-00000000000a', true);
+select public.t_eq((select count(*) from public.blog_posts), 1, 'alice (client): only the published blog post');
+select public.t_denied($$insert into public.blog_posts (slug, title) values ('pirate', 'x')$$, 'alice: cannot create a blog post');
+select public.t_denied($$update public.blog_posts set title = 'x'$$, 'alice: cannot edit blog posts');
+select public.t_denied($$insert into storage.objects (bucket_id, name) values ('blog-images', 'posts/x.png')$$, 'alice: cannot upload blog images');
+rollback;
+
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000002', true);
+select public.t_eq((select count(*) from public.blog_posts), 4, 'reader: sees drafts, scheduled and archived posts');
+select public.t_denied($$update public.blog_posts set title = 'x'$$, 'reader: cannot edit blog posts');
+select public.t_denied($$insert into public.blog_posts (slug, title) values ('lecture', 'x')$$, 'reader: cannot create a blog post');
+select public.t_denied($$insert into storage.objects (bucket_id, name) values ('blog-images', 'posts/x.png')$$, 'reader: cannot upload blog images');
+rollback;
+
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000001', true);
+select set_config('request.jwt.claim.aal', 'aal1', true);
+select public.t_eq((select count(*) from public.blog_posts), 1, 'owner aal1: only the public blog post');
+select public.t_denied($$update public.blog_posts set title = 'x'$$, 'owner aal1: cannot edit blog posts');
+rollback;
+
+begin;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000003', true);
+select public.t_allowed(
+  $$insert into public.blog_posts (slug, title, content_md) values ('nouvel-article', 'Nouvel article', '## Titre')$$,
+  'consultant: creates a draft blog post');
+select public.t_allowed($$update public.blog_posts set status = 'published' where slug = 'nouvel-article'$$, 'consultant: publishes it');
+select public.t_eq((select count(*) from public.blog_posts where slug = 'nouvel-article' and published_at is not null), 1,
+  'blog: publishing without a date sets published_at');
+select public.t_denied($$insert into public.blog_posts (slug, title) values ('Mauvais Slug', 'x')$$, 'blog: slug format enforced');
+select public.t_denied($$insert into public.blog_posts (slug, title) values ('article-publie', 'x')$$, 'blog: slug unique');
+select public.t_denied($$insert into public.blog_posts (slug, title, category) values ('autre', 'x', 'Sport')$$, 'blog: category limited to the site categories');
+select public.t_denied($$insert into public.blog_posts (slug, title, canonical_url) values ('autre', 'x', 'http://x.test')$$, 'blog: canonical must be https');
+select public.t_denied($$insert into public.blog_posts (slug, title, cover_image_path) values ('autre', 'x', '../secret')$$, 'blog: image path cannot escape');
+select public.t_denied($$insert into public.blog_posts (slug, title, og_image_path) values ('autre', 'x', 'posts/../x.png')$$, 'blog: OG image path cannot escape');
+select public.t_allowed($$insert into public.blog_posts (slug, title, cover_image_path, og_image_path) values ('autre', 'x', 'posts/2026/a.webp', 'posts/2026/b.png')$$, 'blog: valid image paths accepted');
+select public.t_allowed($$insert into storage.objects (bucket_id, name) values ('blog-images', 'posts/2026/x.png')$$, 'consultant: uploads a blog image');
+rollback;
+
 \echo 'RLS isolation suite: all assertions passed'

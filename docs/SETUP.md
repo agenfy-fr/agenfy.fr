@@ -53,7 +53,7 @@ ont été appliquées à la main : les marquer comme appliquées **avant** de po
 
 ```bash
 supabase migration repair --status applied 0001 0002   # seulement dans ce cas
-supabase db push --dry-run             # affiche ce qui sera appliqué : 0003, 0004, 0100-0103, 0200-0202, 0250, 0300-0302
+supabase db push --dry-run             # affiche ce qui sera appliqué : 0003, 0004, 0100-0103, 0200-0202, 0250, 0300-0303
 supabase db push
 ```
 
@@ -145,3 +145,17 @@ Conserver les codes de secours de chaque service dans le gestionnaire de mots de
 Shine n'ouvre son API qu'aux prestataires agréés (AISP/PISP) : pas de synchronisation automatique. On crée et envoie la facture
 dans Shine, puis Facturation → Factures → « Enregistrer une facture Shine » (numéro, montants HT/TVA, PDF exporté de Shine).
 La facture apparaît dans le suivi, le tableau de bord et l'espace client (PDF téléchargeable).
+
+## Blog (articles écrits dans la console)
+
+1. Migration `0303_blog_posts.sql` appliquée : table `blog_posts` + bucket Storage public `blog-images`
+   (images PNG/JPEG/WebP/GIF/AVIF, 5 Mo par le bucket, 4 Mo par la console à cause de la limite Vercel).
+2. Console → **Blog** (propriétaires, administrateurs, consultants, commerciaux ; lecture seule pour `readonly`) :
+   nouvel article (brouillon), éditeur visuel enregistré en Markdown, images, couverture, panneau SEO, Publier / Dépublier.
+   Une date de publication future programme la mise en ligne (heure de Paris).
+3. www.agenfy.fr lit les articles publiés avec la clé **anon** (`NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   dans le projet Vercel www) et les fusionne avec les articles écrits dans le code (`apps/web/src/lib/blog-posts.tsx`) ;
+   à slug identique, la version console gagne. Sans ces variables, le site ne montre que les articles du code.
+4. Mise à jour du site : automatique sous 5 minutes (ISR). Pour une mise à jour immédiate après publication, définir
+   la même valeur aléatoire **`REVALIDATE_SECRET`** (`openssl rand -base64 32`) dans les projets Vercel www **et** console.
+   Optionnel côté console : `WEB_SITE_URL` (défaut `https://www.agenfy.fr`, à changer pour tester une preview).

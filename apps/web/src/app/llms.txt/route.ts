@@ -1,13 +1,15 @@
-import { blogPosts } from "@/lib/blog-posts";
+import { getIndexableSummaries } from "@/lib/blog";
 import { OFFERS } from "@/lib/offers";
 import { COURSES } from "@/lib/courses";
 import { SITE, DEFAULT_AUTHOR } from "@/lib/site";
 import { GLOSSARY, glossaryPath } from "@/lib/glossary";
 
-// Generated from the same sources as the pages, so it can never drift from the site.
-export const dynamic = "force-static";
+// Generated from the same sources as the pages, so it can never drift from the site
+// (blog articles published from the console included, refreshed every 5 minutes).
+export const revalidate = 300;
 
-export function GET() {
+export async function GET() {
+  const posts = await getIndexableSummaries();
   const url = (path: string) => `${SITE.url}${path}`;
   const lines = [
     `# ${SITE.name}`,
@@ -42,7 +44,7 @@ export function GET() {
     "",
     "## Articles",
     "",
-    ...blogPosts.map((p) => `- [${p.title}](${url(`/blog/${p.slug}`)}): ${p.excerpt}`),
+    ...posts.map((p) => `- [${p.title}](${url(`/blog/${p.slug}`)}): ${p.excerpt}`),
     "",
     "## Contact",
     "",

@@ -1,8 +1,23 @@
 import type { NextConfig } from "next";
 
+/** Supabase Storage host serving the console's blog images (bucket `blog-images`). */
+function supabaseImagePatterns(): NonNullable<NonNullable<NextConfig["images"]>["remotePatterns"]> {
+  const pathname = "/storage/v1/object/public/blog-images/**";
+  const patterns = [{ protocol: "https" as const, hostname: "*.supabase.co", pathname }];
+  try {
+    const host = process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : null;
+    if (host && !host.endsWith(".supabase.co")) patterns.push({ protocol: "https" as const, hostname: host, pathname });
+  } catch {
+    // Invalid URL: keep the default pattern.
+  }
+  return patterns;
+}
+
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+
+  images: { remotePatterns: supabaseImagePatterns() },
 
   async redirects() {
     return [

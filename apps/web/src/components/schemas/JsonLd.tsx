@@ -92,6 +92,8 @@ export function articleSchema(input: {
   dateModified?: string;
   author: Author;
   section: string;
+  /** Absolute URL of the article image (default: site OG image). */
+  image?: string;
 }): Schema {
   return {
     "@context": "https://schema.org",
@@ -104,7 +106,7 @@ export function articleSchema(input: {
     dateModified: input.dateModified ?? input.datePublished,
     articleSection: input.section,
     inLanguage: "fr-FR",
-    image: absoluteUrl("/og-image.jpg"),
+    image: input.image ?? absoluteUrl("/og-image.jpg"),
     author: {
       "@type": "Person",
       "@id": `${SITE.url}/auteurs/${input.author.slug}#person`,

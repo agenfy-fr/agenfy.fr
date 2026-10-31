@@ -15,6 +15,10 @@ import {
 } from "@/components/sections";
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
+import { getAllBlogSummaries } from "@/lib/blog";
+
+// "Nos derniers articles" includes articles published from the console.
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   alternates: { canonical: SITE.url, types: { "text/plain": `${SITE.url}/llms.txt` } },
@@ -48,7 +52,10 @@ const faq = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const latestPosts = (await getAllBlogSummaries())
+    .slice(0, 3)
+    .map(({ slug, title, excerpt, category, readTime }) => ({ slug, title, excerpt, category, readTime }));
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -60,7 +67,7 @@ export default function Home() {
         <Process />
         <FormationsTeaser />
         <Benefits />
-        <Insights />
+        <Insights posts={latestPosts} />
         <FAQ items={faq} />
         <CTA />
         <Newsletter />

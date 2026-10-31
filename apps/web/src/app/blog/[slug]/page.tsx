@@ -9,27 +9,36 @@ import { Button } from "@/components/ui/button";
 import { BackgroundBeams, Reveal } from "@/components/effects";
 import { Breadcrumbs } from "@/components/layouts/Breadcrumbs";
 import { JsonLd, articleSchema } from "@/components/schemas/JsonLd";
+import { MarkdownContent } from "@/components/blog/MarkdownContent";
 import { buildMetadata } from "@/lib/seo";
 import { AUTHORS, DEFAULT_AUTHOR } from "@/lib/site";
 import { getOffer } from "@/lib/offers";
 import { formatDateFr } from "@/lib/dates";
-import { blogPosts, getBlogPostBySlug, getRelatedPosts, CATEGORY_OFFER } from "@/lib/blog-posts";
+import { CATEGORY_OFFER } from "@/lib/blog-posts";
+import { getAllArticles, getAllBlogSummaries, getArticle } from "@/lib/blog";
+import { relatedArticles } from "@/lib/blog-cms";
 
-export const dynamicParams = false;
+// ISR: static articles are prebuilt; console articles published later are
+// rendered on first visit (dynamicParams), then cached like the others.
+export const revalidate = 300;
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  return (await getAllArticles()).map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getArticle(slug);
   if (!post) return { title: "Article introuvable" };
   const author = AUTHORS[post.authorSlug] ?? DEFAULT_AUTHOR;
   return buildMetadata({
-    title: post.title,
-    description: post.excerpt,
+    title: post.seo.title ?? post.title,
+    description: post.seo.description ?? post.excerpt,
     path: `/blog/${post.slug}`,
+    canonical: post.seo.canonical,
+    ogImage: post.seo.ogImage,
+    keywords: post.seo.keywords,
+    noIndex: post.noindex,
     type: "article",
     publishedTime: post.date,
     modifiedTime: post.updated ?? post.date,
@@ -39,14 +48,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getArticle(slug);
   if (!post) notFound();
 
   const path = `/blog/${post.slug}`;
   const author = AUTHORS[post.authorSlug] ?? DEFAULT_AUTHOR;
   const authorPath = `/auteurs/${author.slug}`;
   const offer = getOffer(CATEGORY_OFFER[post.category]);
-  const related = getRelatedPosts(post, 3);
+  const related = relatedArticles(await getAllBlogSummaries(), post, 3);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -59,6 +68,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           dateModified: post.updated,
           author,
           section: post.category,
+          image: post.seo.ogImage,
         })}
       />
       <Header />
@@ -117,7 +127,20 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
         <section className="py-12 lg:py-16">
           <div className="max-w-4xl mx-auto px-6 lg:px-8">
-            <article className="prose-custom">{post.content}</article>
+            {post.cover && (
+              <Image
+                src={post.cover.url}
+                alt={post.cover.alt}
+                width={1200}
+                height={630}
+                priority
+                sizes="(min-width: 896px) 832px, 100vw"
+                className="w-full h-auto rounded-2xl border border-border/50 mb-10 object-cover"
+              />
+            )}
+            <article className="prose-custom">
+              {post.body.kind === "react" ? post.body.content : <MarkdownContent markdown={post.body.markdown} />}
+            </article>
 
             {/* Author box */}
             <aside

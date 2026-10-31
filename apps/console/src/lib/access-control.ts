@@ -42,6 +42,8 @@ export const ROLE_ACCESS = {
   "/billing": ["sales", "readonly"],
   // Shared company mailbox: owner/admin only.
   "/mail": [],
+  // Blog of www.agenfy.fr (0303): marketing roles; readonly can review.
+  "/blog": ["consultant", "sales", "readonly"],
 } as const satisfies Record<string, readonly StaffRole[]>;
 
 export type ProtectedRoute = keyof typeof ROLE_ACCESS;
@@ -49,6 +51,8 @@ export type ProtectedRoute = keyof typeof ROLE_ACCESS;
 /** Write permissions per domain (owner/admin implicit, readonly never). */
 export const LEAD_WRITE_ROLES: readonly StaffRole[] = ["sales", "consultant"];
 export const BILLING_WRITE_ROLES: readonly StaffRole[] = ["sales"];
+/** Mirror of staff_has_role(array['consultant', 'sales']) in 0303_blog_posts.sql. */
+export const BLOG_WRITE_ROLES: readonly StaffRole[] = ["consultant", "sales"];
 
 export function isStaffRole(role: unknown): role is StaffRole {
   return typeof role === "string" && (STAFF_ROLES as readonly string[]).includes(role);
